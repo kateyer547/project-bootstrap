@@ -2,14 +2,14 @@
   "name": "kateyer-plugins",
   "description": "Plugins Claude Code personnels : cadrage de projet et développement par paliers.",
   "owner": {
-    "name": "Auteur"
+    "name": "kateyer"
   },
   "plugins": [
     {
       "name": "project-bootstrap",
       "source": "./plugins/project-bootstrap",
       "description": "Entretien de cadrage de projet et génération de la documentation et du skill de développement par paliers.",
-      "version": "1.0.0"
+      "version": "1.0.1"
     }
   ]
 }
