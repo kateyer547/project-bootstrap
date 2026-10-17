@@ -17,7 +17,10 @@ Cadrage réalisé le {{DATE_DU_JOUR}}. Toute évolution d'une décision passe pa
 | [09 Déploiement](09-deploiement.md) | CI/CD, mise en production, retour arrière |
 | [10 Qualité et tests](10-qualite-tests.md) | Stratégie de tests, outillage, Definition of Done |
 | [11 Paliers](11-paliers.md) | Étapes de réalisation et validation |
+| [12 Maquettes](12-maquettes.md) | Écrans, parcours, identité visuelle (`design/`) |
 | [ADR](adr/) | Décisions d'architecture |
+
+<!-- AIDE : supprime la ligne « 12 Maquettes » si l'application n'a pas d'interface. -->
 
 ## Glossaire
 

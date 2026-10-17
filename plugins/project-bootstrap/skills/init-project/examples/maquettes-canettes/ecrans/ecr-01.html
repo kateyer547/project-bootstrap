@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Connexion · Canettes</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../components.css">
+<script src="../proto.js"></script>
+</head>
+<body>
+<main class="main" style="display:grid;place-items:center;min-height:100vh;padding-bottom:var(--space-5)">
+  <div class="container-sm stack">
+    <div class="center stack-sm" style="align-items:center">
+      <span class="brand-mark" style="width:56px;height:56px;font-size:20px;border-radius:16px">CA</span>
+      <h1>Canettes</h1>
+      <p class="muted">La collection du groupe, au même endroit.</p>
+    </div>
+    <section data-etat="normal">
+      <form class="card stack" action="ecr-02.html" data-f="F-01">
+        <div class="field"><label class="label" for="email">Adresse e-mail</label><input class="input" id="email" type="email" value="emre@exemple.fr"></div>
+        <div class="field"><div class="row-between"><label class="label" for="mdp">Mot de passe</label><a class="small" href="#">Oublié ?</a></div><input class="input" id="mdp" type="password" value="motdepasse"></div>
+        <label class="checkbox"><input type="checkbox" checked> Rester connecté</label>
+        <button class="btn btn-primary btn-block btn-lg" type="submit">Se connecter</button>
+      </form>
+    </section>
+    <section data-etat="erreur" hidden>
+      <form class="card stack" action="ecr-02.html">
+        <div class="alert alert-danger" role="alert">Adresse e-mail ou mot de passe incorrect.</div>
+        <div class="field has-error"><label class="label" for="email2">Adresse e-mail</label><input class="input" id="email2" type="email" value="emre@exemple.fr"></div>
+        <div class="field has-error"><label class="label" for="mdp2">Mot de passe</label><input class="input" id="mdp2" type="password" value="erreur"><span class="field-error">Il vous reste 4 tentatives avant blocage temporaire.</span></div>
+        <button class="btn btn-primary btn-block btn-lg" type="submit">Se connecter</button>
+      </form>
+    </section>
+    <p class="center small muted">Pas encore de compte ? <a href="#">Demander une invitation au groupe</a></p>
+  </div>
+</main>
+</body>
+</html>

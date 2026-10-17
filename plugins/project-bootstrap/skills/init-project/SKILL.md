@@ -1,6 +1,6 @@
 ---
 name: init-project
-description: Cadrage complet d'un nouveau projet logiciel, à lancer au démarrage d'un projet ou pour mettre à jour un cadrage existant. Mène un entretien (vision, fonctionnel, stack, données, modélisation, architecture, sécurité, infrastructure, déploiement, qualité, étapes de réalisation) puis génère docs/, CLAUDE.md, PLAN.md, la configuration .claude/ et le skill build-app qui développe le projet palier par palier.
+description: Cadrage complet d'un nouveau projet logiciel, à lancer au démarrage d'un projet ou pour mettre à jour un cadrage existant. Mène un entretien (vision, fonctionnel, identité visuelle avec maquettes cliquables de l'application, stack, données, modélisation, architecture, sécurité, infrastructure, déploiement, qualité, étapes de réalisation) puis génère docs/, CLAUDE.md, PLAN.md, la configuration .claude/ et le skill build-app qui développe le projet palier par palier.
 ---
 
 # Cadrage de projet
@@ -33,7 +33,7 @@ Les deux rythmes couvrent les mêmes blocs et produisent les mêmes documents.
 
 ## Étape 2 — Entretien
 
-Suis `references/questionnaire.md` (dans le dossier de ce skill), blocs A à J dans l'ordre.
+Suis `references/questionnaire.md` (dans le dossier de ce skill), dans l'ordre A, B, L, puis C à J. Le bloc L (identité visuelle) ne concerne que les applications avec une interface.
 
 Règles de conduite :
 
@@ -44,6 +44,17 @@ Règles de conduite :
 - **Saute** les questions sans objet et dis-le en une ligne.
 - **Récapitulatif** à la fin de chaque bloc (3 à 8 lignes), validé avant de passer au suivant.
 - **Sauvegarde** : après chaque bloc validé, ajoute ses décisions à `.bootstrap/notes.md`, pour pouvoir reprendre si la session s'interrompt.
+
+## Étape 2 bis — Maquettes (applications avec interface)
+
+Juste après le bloc L, et avant de parler de stack, montre à l'utilisateur à quoi ressemblera l'application finale. Suis `references/maquettes.md` :
+
+1. Fais valider la liste des écrans (`ECR-xx`) et leurs fonctionnalités.
+2. Crée `design/` à partir de `templates/design/` : un tableau de tous les écrans façon Figma, des pages HTML cliquables avec des données réalistes, les états vide / chargement / erreur, les thèmes clair et sombre.
+3. Vérifie le rendu (captures mobile et ordinateur si possible), puis demande à l'utilisateur d'ouvrir `design/index.html`.
+4. Itère jusqu'à validation explicite. Tout retour qui change un comportement met à jour les `F-xx` et `RG-xx` du bloc B.
+
+Ensuite seulement, passe au bloc C.
 
 ## Étape 3 — Synthèse (bloc K du questionnaire)
 
@@ -70,6 +81,9 @@ Copie les modèles du dossier `templates/` de ce skill vers le projet, puis remp
 | `templates/claude/skills/build-app/SKILL.md` | `.claude/skills/build-app/SKILL.md` |
 | `templates/claude/agents/tier-reviewer.md` | `.claude/agents/tier-reviewer.md` |
 | `templates/env.example` | `.env.example` |
+| `templates/docs/12-maquettes.md` | `docs/12-maquettes.md` (seulement si `design/` existe) |
+
+Le dossier `design/` a déjà été créé à l'étape 2 bis ; vérifie seulement qu'il est cohérent avec la version finale de la spécification.
 
 Règles de remplissage :
 

@@ -59,6 +59,7 @@ Le compte rendu tient en quelques lignes : ce qui a été livré, la sortie rés
 - Ne passe jamais au palier suivant avec une validation en échec.
 - N'invente aucune fonctionnalité absente de `docs/02-specifications-fonctionnelles.md`. Si un comportement n'est pas spécifié, arrête-toi, propose deux options et demande.
 - Ne change ni la stack, ni une dépendance majeure, ni le modèle de données, ni l'architecture sans ADR validé par l'utilisateur.
+- Pour toute tâche d'interface, ouvre la maquette de l'écran concerné (`docs/12-maquettes.md` → `design/ecrans/ecr-NN.html`) et reproduis sa structure, ses libellés et ses états. Le thème de l'application reprend les variables de `design/tokens.css`. Tout écart volontaire est noté dans `PLAN.md` et validé par l'utilisateur.
 - Les migrations de base sont versionnées et passent par l'outil prévu dans `docs/05-modele-donnees.md`.
 - Aucun secret dans le code ni dans les commits : uniquement des variables documentées dans `.env.example`.
 - N'agis jamais sur les environnements : {{ENVS_INTERDITS}}.

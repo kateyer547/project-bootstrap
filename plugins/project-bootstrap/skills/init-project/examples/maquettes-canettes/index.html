@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maquettes</title>
+<!-- Tableau des écrans, façon Figma. Fichier générique : seul ecrans.js est à remplir. -->
+<script src="ecrans.js"></script>
+<style>
+  :root {
+    --bg: #eceef2; --dot: #d3d7de; --panel: #ffffff; --text: #171a20; --muted: #626a78;
+    --line: #dde1e7; --accent: #2f6bff; --chip: #eef1f6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #14171c; --dot: #252a32; --panel: #1c2027; --text: #e7eaef; --muted: #98a1b0; --line: #2b313a; --accent: #6b95ff; --chip: #262b33; }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--text);
+    background: var(--bg) radial-gradient(var(--dot) 1px, transparent 1px) 0 0 / 22px 22px;
+    min-height: 100vh;
+  }
+  header {
+    position: sticky; top: 0; z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px;
+    padding: 14px 20px; background: color-mix(in srgb, var(--panel) 92%, transparent);
+    backdrop-filter: blur(8px); border-bottom: 1px solid var(--line);
+  }
+  header h1 { margin: 0; font-size: 17px; }
+  header p { margin: 2px 0 0; color: var(--muted); font-size: 13px; }
+  .title { flex: 1 1 260px; min-width: 0; }
+  .controls { display: flex; flex-wrap: wrap; gap: 8px; }
+  .seg { display: inline-flex; padding: 3px; border-radius: 10px; background: var(--chip); }
+  .seg button {
+    border: 0; background: none; color: var(--muted); font: inherit; font-weight: 600;
+    padding: 6px 11px; border-radius: 8px; cursor: pointer;
+  }
+  .seg button[aria-pressed="true"] { background: var(--panel); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+  main { padding: 24px 20px 60px; }
+  .flow { margin-bottom: 36px; }
+  .flow h2 { margin: 0 0 14px; font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+  .board { display: flex; flex-wrap: wrap; gap: 28px; align-items: flex-start; }
+  .frame { display: flex; flex-direction: column; gap: 8px; }
+  .frame-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; max-width: 100%; }
+  .frame-head strong { font-size: 13px; }
+  .frame-head .id { font: 600 11px ui-monospace, Consolas, monospace; color: var(--muted); }
+  .chips { display: flex; flex-wrap: wrap; gap: 4px; }
+  .chip { font: 600 11px ui-monospace, Consolas, monospace; padding: 2px 6px; border-radius: 5px; background: var(--chip); color: var(--muted); }
+  .screens { display: flex; gap: 16px; flex-wrap: wrap; }
+  .viewport {
+    position: relative; overflow: hidden; background: #fff; border-radius: 14px;
+    box-shadow: 0 1px 2px rgba(0,0,0,.08), 0 8px 24px rgba(0,0,0,.10); outline: 1px solid var(--line);
+  }
+  .viewport iframe { position: absolute; top: 0; left: 0; border: 0; transform-origin: 0 0; pointer-events: none; }
+  .viewport a.cover { position: absolute; inset: 0; z-index: 1; }
+  .viewport a.cover:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; border-radius: 14px; }
+  .label { font-size: 11px; color: var(--muted); margin-top: 4px; }
+  .states { display: flex; gap: 6px; flex-wrap: wrap; font-size: 12px; }
+  .states a { color: var(--accent); text-decoration: none; }
+  .states a:hover { text-decoration: underline; }
+  .empty { color: var(--muted); }
+</style>
+</head>
+<body>
+<header>
+  <div class="title">
+    <h1 id="nom">Maquettes</h1>
+    <p id="desc"></p>
+  </div>
+  <div class="controls">
+    <div class="seg" role="group" aria-label="Appareil">
+      <button type="button" data-device="mobile" aria-pressed="true">Mobile</button>
+      <button type="button" data-device="desktop" aria-pressed="false">Ordinateur</button>
+      <button type="button" data-device="both" aria-pressed="false">Les deux</button>
+    </div>
+    <div class="seg" role="group" aria-label="Thème">
+      <button type="button" data-skin="light" aria-pressed="true">Clair</button>
+      <button type="button" data-skin="dark" aria-pressed="false">Sombre</button>
+    </div>
+    <div class="seg" role="group" aria-label="Annotations">
+      <button type="button" data-annot="0" aria-pressed="true">Sans annotations</button>
+      <button type="button" data-annot="1" aria-pressed="false">Annotations</button>
+    </div>
+  </div>
+</header>
+<main id="board"></main>
+
+<script>
+(function () {
+  var projet = window.PROJET || {};
+  var ecrans = window.ECRANS || [];
+  document.getElementById('nom').textContent = (projet.nom || 'Projet') + ' — maquettes';
+  document.getElementById('desc').textContent = (projet.description || '') + ' · ' + ecrans.length + ' écran(s) · cliquez sur un écran pour l\'ouvrir';
+  document.title = (projet.nom || 'Projet') + ' — maquettes';
+
+  var DEVICES = {
+    mobile: { w: 390, h: 844, scale: 0.5, label: 'Mobile 390 × 844' },
+    desktop: { w: 1440, h: 900, scale: 0.3, label: 'Ordinateur 1440 × 900' }
+  };
+  var state = { device: 'mobile', theme: 'light', annot: '0' };
+  try {
+    var saved = JSON.parse(localStorage.getItem('proto-board') || '{}');
+    ['device', 'theme', 'annot'].forEach(function (k) { if (saved[k]) state[k] = saved[k]; });
+  } catch (e) { /* stockage indisponible */ }
+
+  function query(extra) {
+    var q = 'theme=' + state.theme + (state.annot === '1' ? '&annotations=1' : '');
+    return '?' + q + (extra ? '&' + extra : '');
+  }
+
+  function viewport(ecran, key) {
+    var d = DEVICES[key];
+    var wrap = document.createElement('div');
+    var vp = document.createElement('div');
+    vp.className = 'viewport';
+    vp.style.width = Math.round(d.w * d.scale) + 'px';
+    vp.style.height = Math.round(d.h * d.scale) + 'px';
+    var frame = document.createElement('iframe');
+    frame.src = ecran.fichier + query();
+    frame.title = ecran.id + ' ' + ecran.nom + ' (' + d.label + ')';
+    frame.loading = 'lazy';
+    frame.tabIndex = -1;
+    frame.style.width = d.w + 'px';
+    frame.style.height = d.h + 'px';
+    frame.style.transform = 'scale(' + d.scale + ')';
+    var link = document.createElement('a');
+    link.className = 'cover';
+    link.href = ecran.fichier + query();
+    link.setAttribute('aria-label', 'Ouvrir ' + ecran.nom);
+    vp.appendChild(frame);
+    vp.appendChild(link);
+    var label = document.createElement('div');
+    label.className = 'label';
+    label.textContent = d.label;
+    wrap.appendChild(vp);
+    wrap.appendChild(label);
+    return wrap;
+  }
+
+  function render() {
+    var board = document.getElementById('board');
+    board.innerHTML = '';
+    if (!ecrans.length) {
+      board.innerHTML = '<p class="empty">Aucun écran déclaré dans ecrans.js.</p>';
+      return;
+    }
+    var flows = [];
+    var byFlow = {};
+    ecrans.forEach(function (e) {
+      var f = e.parcours || 'Écrans';
+      if (!byFlow[f]) { byFlow[f] = []; flows.push(f); }
+      byFlow[f].push(e);
+    });
+    flows.forEach(function (f) {
+      var section = document.createElement('section');
+      section.className = 'flow';
+      var h = document.createElement('h2');
+      h.textContent = f;
+      section.appendChild(h);
+      var grid = document.createElement('div');
+      grid.className = 'board';
+      byFlow[f].forEach(function (e) {
+        var card = document.createElement('div');
+        card.className = 'frame';
+        var head = document.createElement('div');
+        head.className = 'frame-head';
+        head.innerHTML = '<span class="id"></span><strong></strong>';
+        head.querySelector('.id').textContent = e.id;
+        head.querySelector('strong').textContent = e.nom;
+        card.appendChild(head);
+        var chips = document.createElement('div');
+        chips.className = 'chips';
+        (e.fonctionnalites || []).concat(e.roles || []).forEach(function (t) {
+          var c = document.createElement('span'); c.className = 'chip'; c.textContent = t; chips.appendChild(c);
+        });
+        card.appendChild(chips);
+        var screens = document.createElement('div');
+        screens.className = 'screens';
+        if (state.device === 'mobile' || state.device === 'both') screens.appendChild(viewport(e, 'mobile'));
+        if (state.device === 'desktop' || state.device === 'both') screens.appendChild(viewport(e, 'desktop'));
+        card.appendChild(screens);
+        if (e.etats && e.etats.length > 1) {
+          var st = document.createElement('div');
+          st.className = 'states';
+          st.appendChild(document.createTextNode('États :'));
+          e.etats.forEach(function (name) {
+            var a = document.createElement('a');
+            a.href = e.fichier + query('etat=' + encodeURIComponent(name));
+            a.textContent = name;
+            st.appendChild(a);
+          });
+          card.appendChild(st);
+        }
+        grid.appendChild(card);
+      });
+      section.appendChild(grid);
+      board.appendChild(section);
+    });
+  }
+
+  function sync() {
+    document.querySelectorAll('[data-device]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.device === state.device)); });
+    document.querySelectorAll('[data-skin]')).forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.skin === state.theme)); });
+    document.querySelectorAll('[data-annot]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.annot === state.annot)); });
+    try { localStorage.setItem('proto-board', JSON.stringify(state)); } catch (e) { /* stockage indisponible */ }
+    render();
+  }
+
+  document.querySelectorAll('[data-device]').forEach(function (b) { b.addEventListener('click', function () { state.device = b.dataset.device; sync(); }); });
+  document.querySelectorAll('[data-skin]')).forEach(function (b) { b.addEventListener('click', function () { state.theme = b.dataset.skin; sync(); }); });
+  document.querySelectorAll('[data-annot]').forEach(function (b) { b.addEventListener('click', function () { state.annot = b.dataset.annot; sync(); }); });
+  sync();
+})();
+</script>
+</body>
+</html>

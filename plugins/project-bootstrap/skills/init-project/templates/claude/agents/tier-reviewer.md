@@ -23,6 +23,7 @@ Le numéro N du palier à relire.
 - Chaque règle `RG-xx` concernée est implémentée et testée, cas limites compris.
 - Aucune fonctionnalité hors spécification n'a été ajoutée.
 - Le code respecte l'architecture de `docs/06-architecture.md` (sens des dépendances entre couches, format des erreurs, nommage des routes).
+- Pour les paliers d'interface : chaque écran livré respecte sa maquette de `design/` (structure, libellés, états vide / chargement / erreur, thème). Si Playwright est disponible, capture l'écran réel et la maquette à 390 px et 1440 px de large et compare-les.
 - Le schéma de base correspond à `docs/05-modele-donnees.md` et passe par des migrations versionnées.
 
 **Intégrité des tests**

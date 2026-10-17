@@ -32,6 +32,9 @@ Blocs couverts :
 | I. Déploiement | forge, branches, pipeline, stratégie de mise en production, retour arrière |
 | J. Qualité | niveaux de tests, couverture, lint, revue, Definition of Done |
 | K. Paliers | découpage, commandes de validation, points d'arrêt, autonomie de l'agent |
+| L. Identité visuelle | ambiance, couleurs, police, thèmes, navigation, références, puis **maquettes cliquables** |
+
+**Maquettes de l'application** (si elle a une interface) : juste après le fonctionnel, Claude construit dans `design/` un prototype cliquable façon Figma. `design/index.html` affiche tous les écrans côte à côte, en mobile ou ordinateur, en clair ou sombre, avec les fonctionnalités annotées ; chaque écran s'ouvre en plein écran avec ses états (normal, vide, chargement, erreur) et ses liens vers les écrans suivants. Tu itères jusqu'à ce que le rendu te plaise, et la spec est mise à jour en même temps. Un exemple complet est dans `skills/init-project/examples/maquettes-canettes/`.
 
 Avant d'écrire, Claude te fait valider le modèle de données, le schéma d'architecture et le plan des paliers.
 
@@ -43,7 +46,9 @@ PLAN.md                            avancement partagé entre les sessions
 .env.example                       variables d'environnement
 docs/
   00-index.md … 11-paliers.md      la spécification complète
+  12-maquettes.md                  écrans, parcours, identité visuelle
   adr/                             une décision structurante par fichier
+design/                            maquettes cliquables (index.html = tableau des écrans)
 .claude/
   settings.json                    permissions et hook de formatage
   skills/build-app/SKILL.md        le développement par paliers
@@ -80,7 +85,8 @@ Relance `/project-bootstrap:init-project` dans un projet déjà cadré : Claude 
 ## Personnaliser
 
 - Questions : `skills/init-project/references/questionnaire.md`
-- Modèles de documents : `skills/init-project/templates/`
+- Modèles de documents et de maquettes : `skills/init-project/templates/`
+- Guide des maquettes : `skills/init-project/references/maquettes.md`
 - Contrôles automatiques : `skills/init-project/scripts/verify-bootstrap.sh`
 - Relecture de la spec : `agents/spec-reviewer.md`
 

@@ -8,7 +8,7 @@ Tu es un architecte relecteur. Tu n'as pas mené l'entretien de cadrage : tu jug
 
 ## Méthode
 
-Lis, dans l'ordre : `docs/00-index.md` à `docs/11-paliers.md`, les ADR de `docs/adr/`, `CLAUDE.md`, `PLAN.md`, `.claude/settings.json`, `.claude/skills/build-app/SKILL.md`, `.env.example`.
+Lis, dans l'ordre : `docs/00-index.md` à `docs/11-paliers.md`, les ADR de `docs/adr/`, `CLAUDE.md`, `PLAN.md`, `.claude/settings.json`, `.claude/skills/build-app/SKILL.md`, `.env.example`, et si présents `docs/12-maquettes.md`, `design/ecrans.js` et les écrans de `design/ecrans/`.
 
 ## Points de contrôle
 
@@ -16,6 +16,7 @@ Lis, dans l'ordre : `docs/00-index.md` à `docs/11-paliers.md`, les ADR de `docs
 - Chaque `F-xx` du MVP a des critères d'acceptation testables, apparaît dans au moins un palier, et s'appuie sur des entités de `05` et des routes ou écrans de `06` / `02`.
 - Chaque `RG-xx` est rattachée à au moins une fonctionnalité.
 - Chaque entité de `05` sert au moins une fonctionnalité.
+- Si `design/` existe : chaque `F-xx` du MVP avec une interface apparaît dans au moins un écran de `docs/12-maquettes.md`, chaque écran listé existe dans `design/ecrans/`, et les libellés, champs et actions des maquettes correspondent à la spécification de `02`.
 - Chaque route d'API de `06` a ses rôles autorisés, cohérents avec la matrice de `02`.
 
 **Cohérence**

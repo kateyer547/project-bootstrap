@@ -103,6 +103,53 @@ if [ -f docs/02-specifications-fonctionnelles.md ] && [ -f docs/11-paliers.md ];
   fi
 fi
 
+echo "== Maquettes"
+if [ -d design ]; then
+  for f in design/index.html design/ecrans.js design/tokens.css design/components.css design/proto.js docs/12-maquettes.md; do
+    if [ -s "$f" ]; then ok "$f"; else fail "$f manquant ou vide"; fi
+  done
+  design_files=$(find design -type f \( -name '*.html' -o -name '*.css' -o -name '*.js' \) ! -path 'design/captures/*' 2>/dev/null)
+  if [ -f design/ecrans/_modele.html ]; then fail "design/ecrans/_modele.html ne doit pas être copié dans le projet"; fi
+  # shellcheck disable=SC2086
+  left=$(grep -n -E '\{\{[^}]*\}\}' $design_files docs/12-maquettes.md 2>/dev/null || true)
+  if [ -z "$left" ]; then ok "maquettes sans marqueur {{...}}"; else
+    fail "marqueurs {{...}} restants dans les maquettes :"; echo "$left" | head -15 | sed 's/^/         /'
+  fi
+  # shellcheck disable=SC2086
+  aide=$(grep -l -F 'AIDE :' $design_files docs/12-maquettes.md 2>/dev/null || true)
+  if [ -z "$aide" ]; then ok "maquettes sans commentaire d'aide"; else fail "commentaires d'aide restants dans : $(echo "$aide" | tr '\n' ' ')"; fi
+  if [ -f design/ecrans.js ]; then
+    screens=$(grep -o -E 'fichier:[[:space:]]*"[^"]+"' design/ecrans.js | sed -E 's/.*"([^"]+)"/\1/')
+    if [ -z "$screens" ]; then fail "aucun écran déclaré dans design/ecrans.js"; else
+      count=0; missing_screens=""
+      for s in $screens; do
+        count=$((count + 1))
+        [ -f "design/$s" ] || missing_screens="$missing_screens $s"
+      done
+      if [ -z "$missing_screens" ]; then ok "$count écran(s) déclaré(s), tous présents"; else fail "écrans déclarés mais absents :$missing_screens"; fi
+    fi
+  fi
+  # Liens internes entre écrans
+  broken=""
+  for page in design/ecrans/*.html; do
+    [ -f "$page" ] || continue
+    for target in $(grep -o -E 'href="[^"#?:]+\.html' "$page" | sed 's/href="//'); do
+      [ -f "$(dirname "$page")/$target" ] || broken="$broken $(basename "$page")→$target"
+    done
+  done
+  if [ -z "$broken" ]; then ok "tous les liens entre écrans aboutissent"; else fail "liens cassés :$broken"; fi
+  # Fonctionnalités MVP visibles dans au moins un écran (avertissement seulement)
+  if [ -f docs/02-specifications-fonctionnelles.md ] && [ -f docs/12-maquettes.md ]; then
+    nomock=""
+    for id in $(grep -o -E '\bF-[0-9]{2,3}\b' docs/02-specifications-fonctionnelles.md | sort -u); do
+      grep -q -E "\b$id\b" docs/12-maquettes.md design/ecrans.js 2>/dev/null || nomock="$nomock $id"
+    done
+    [ -n "$nomock" ] && printf '  INFO fonctionnalités sans écran (normal si elles n%sont pas d%sinterface) :%s\n' "'" "'" "$nomock"
+  fi
+else
+  ok "pas de dossier design/ (application sans interface)"
+fi
+
 echo "== Secrets"
 suspects=""
 for f in .env.example CLAUDE.md docs/*.md; do

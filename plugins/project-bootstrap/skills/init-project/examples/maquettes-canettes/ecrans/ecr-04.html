@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ajouter une canette · Canettes</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../components.css">
+<script src="../proto.js"></script>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <a class="brand" href="ecr-02.html"><span class="brand-mark">CA</span>Canettes</a>
+    <span class="spacer"></span>
+    <a class="btn btn-ghost btn-icon" href="ecr-05.html" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></a>
+    <span class="avatar" aria-label="Profil d'Emre">EM</span>
+  </header>
+  <div class="app-body">
+    <nav class="sidebar" aria-label="Navigation principale"><a class="nav-item" href="ecr-02.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Collection</a><a class="nav-item active" href="ecr-04.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>Ajouter</a><a class="nav-item" href="ecr-05.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Groupe</a>
+      <div class="nav-section">Groupe</div>
+      <a class="nav-item" href="ecr-05.html"><span class="avatar" style="width:24px;height:24px;font-size:11px">LB</span>Les Bulleurs</a>
+    </nav>
+    <main class="main"><div class="container">
+      <a class="btn btn-ghost" href="ecr-02.html" style="margin-left:-12px;margin-bottom:var(--space-3)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>Annuler</a>
+      <div class="page-header"><div><h1>Ajouter une canette</h1><p>Elle sera visible par tout le groupe.</p></div></div>
+      <form class="grid grid-2" action="ecr-03.html" style="align-items:start" data-f="F-05">
+        <div class="card stack" style="align-items:center;text-align:center;border-style:dashed;padding:var(--space-8) var(--space-4)">
+          <span class="avatar" style="width:56px;height:56px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:26px;height:26px"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z"/><circle cx="12" cy="13" r="3"/></svg></span>
+          <strong>Prendre une photo</strong>
+          <p class="small muted">L'édition est reconnue automatiquement quand elle existe déjà dans le catalogue.</p>
+          <button class="btn btn-secondary" type="button">Choisir une image</button>
+        </div>
+        <div class="card stack">
+          <section data-etat="erreur" hidden><div class="alert alert-danger" role="alert">Cette édition est déjà dans votre collection : augmentez plutôt la quantité.</div></section>
+          <div class="field"><label class="label" for="ed">Édition</label><select class="select" id="ed"><option>Édition Été — Pastèque (2024)</option><option>Nouvelle édition…</option></select><span class="hint">63 éditions dans le catalogue du groupe</span></div>
+          <div class="grid grid-2">
+            <div class="field"><label class="label" for="q">Quantité</label><input class="input" id="q" type="number" value="1" min="1"></div>
+            <div class="field"><label class="label" for="etat">État</label><select class="select" id="etat"><option>Pleine, parfaite</option><option>Vide, parfaite</option><option>Abîmée</option></select></div>
+          </div>
+          <div class="field"><label class="label" for="lieu">Lieu d'achat <span class="muted">(facultatif)</span></label><input class="input" id="lieu" placeholder="Ex. : Carrefour Dijon Toison d'Or"></div>
+          <div class="field"><label class="label" for="note">Note</label><textarea class="textarea" id="note" placeholder="Une anecdote, un détail sur la canette…"></textarea></div>
+          <section data-etat="normal"></section>
+          <div class="row" style="justify-content:flex-end"><a class="btn btn-ghost" href="ecr-02.html">Annuler</a><button class="btn btn-primary" type="submit">Ajouter à ma collection</button></div>
+        </div>
+      </form>
+    </div></main>
+  </div>
+  <nav class="bottom-nav" aria-label="Navigation mobile"><a class="" href="ecr-02.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Collection</a><a class="active" href="ecr-04.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>Ajouter</a><a class="" href="ecr-05.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Groupe</a></nav>
+</div>
+</body>
+</html>

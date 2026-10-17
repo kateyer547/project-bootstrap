@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ID_ECRAN}} — {{NOM_ECRAN}} · {{NOM_PROJET}}</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../components.css">
+<script src="../proto.js"></script>
+</head>
+<body>
+<!-- AIDE : modèle de départ d'un écran. Copie-le en ecr-NN.html, garde la structure générale (barre supérieure, navigation latérale et basse si l'application en a), remplace le contenu par l'écran réel avec des données crédibles, une section par état (data-etat), et data-f="F-xx" sur les zones fonctionnelles. Supprime les blocs de navigation si l'écran n'en a pas (connexion, page publique). -->
+<div class="app">
+  <header class="topbar">
+    <a class="brand" href="ecr-01.html"><span class="brand-mark">{{INITIALES}}</span>{{NOM_PROJET}}</a>
+    <span class="spacer"></span>
+    <a class="btn btn-ghost btn-icon" href="#" aria-label="Notifications">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+    </a>
+    <span class="avatar" aria-label="Profil">{{INITIALES_UTILISATEUR}}</span>
+  </header>
+
+  <div class="app-body">
+    <nav class="sidebar" aria-label="Navigation principale">
+      <a class="nav-item active" href="ecr-01.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V21H3z"/><path d="M9 21v-6h6v6"/></svg>
+        {{ENTREE_MENU_1}}
+      </a>
+      <a class="nav-item" href="ecr-02.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+        {{ENTREE_MENU_2}}
+      </a>
+    </nav>
+
+    <main class="main">
+      <div class="container">
+        <div class="page-header">
+          <div>
+            <h1>{{TITRE_ECRAN}}</h1>
+            <p>{{SOUS_TITRE_ECRAN}}</p>
+          </div>
+          <a class="btn btn-primary" href="ecr-02.html" data-f="F-01">{{ACTION_PRINCIPALE}}</a>
+        </div>
+
+        <section data-etat="normal">
+          {{CONTENU_NORMAL}}
+        </section>
+
+        <section data-etat="vide" hidden>
+          <div class="card empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18"/></svg>
+            <h3>{{TITRE_ETAT_VIDE}}</h3>
+            <p>{{TEXTE_ETAT_VIDE}}</p>
+            <a class="btn btn-primary" href="ecr-02.html">{{ACTION_ETAT_VIDE}}</a>
+          </div>
+        </section>
+
+        <section data-etat="chargement" hidden>
+          <div class="grid grid-3">
+            <div class="card"><div class="skeleton skeleton-line" style="width:40%"></div><div class="skeleton skeleton-line" style="width:70%;height:28px"></div></div>
+            <div class="card"><div class="skeleton skeleton-line" style="width:40%"></div><div class="skeleton skeleton-line" style="width:70%;height:28px"></div></div>
+            <div class="card"><div class="skeleton skeleton-line" style="width:40%"></div><div class="skeleton skeleton-line" style="width:70%;height:28px"></div></div>
+          </div>
+        </section>
+
+        <section data-etat="erreur" hidden>
+          <div class="alert alert-danger" role="alert">{{MESSAGE_ERREUR}}</div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <nav class="bottom-nav" aria-label="Navigation mobile">
+    <a class="active" href="ecr-01.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V21H3z"/><path d="M9 21v-6h6v6"/></svg>
+      {{ENTREE_MENU_1}}
+    </a>
+    <a href="ecr-02.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+      {{ENTREE_MENU_2}}
+    </a>
+  </nav>
+</div>
+</body>
+</html>

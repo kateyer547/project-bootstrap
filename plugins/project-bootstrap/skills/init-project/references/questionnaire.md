@@ -31,6 +31,21 @@ En mode Express, utilise ce questionnaire comme grille : pré-remplis chaque que
 6. Interface (si front) : pages ou écrans principaux, parcours critiques, responsive, thème sombre, accessibilité visée (RGAA / WCAG AA), langues.
 7. **(ouverte)** Hors périmètre : ce que l'application ne fera explicitement **pas**.
 
+## L. Identité visuelle et maquettes → `design/`, `docs/12-maquettes.md`
+
+À poser juste après le bloc B, uniquement si l'application a une interface. Les maquettes se construisent ensuite en suivant `references/maquettes.md`.
+
+1. Ambiance : sobre et professionnelle / moderne et colorée / minimaliste / ludique / premium.
+2. Couleur principale : code hexadécimal, couleur d'une charte existante, ou « propose ». Couleur d'accent idem.
+3. Thèmes : clair seulement / sombre seulement / les deux.
+4. Police : système (Recommandé pour la performance) / Inter / Roboto / Poppins / autre police Google Fonts.
+5. Forme : angles droits / légèrement arrondis (Recommandé) / très arrondis.
+6. Densité : confortable / compacte (outils de gestion avec beaucoup de données).
+7. Priorité d'affichage : mobile d'abord / ordinateur d'abord / les deux à égalité.
+8. Navigation : barre latérale / barre supérieure / navigation basse sur mobile / combinaison.
+9. **(ouverte)** Références : applications ou sites dont le style plaît à l'utilisateur, et ce qu'il aime dedans.
+10. **(ouverte)** Logo ou nom affiché, ton des textes (tutoiement ou vouvoiement, formel ou décontracté).
+
 ## C. Stack technique → `docs/03-stack-technique.md`
 
 Pour chaque couche, demande le choix **et la version** :

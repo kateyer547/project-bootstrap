@@ -1,0 +1,82 @@
+/* Identité visuelle de {{NOM_PROJET}} — source unique des couleurs, polices et dimensions.
+   Ces variables serviront de base au thème de l'application réelle. */
+
+/* AIDE : remplace la ligne suivante par l'import Google Fonts de la police choisie, ou supprime-la pour la police système. */
+{{IMPORT_POLICE}}
+
+:root {
+  /* Marque */
+  --color-primary: {{COULEUR_PRINCIPALE}};
+  --color-primary-hover: color-mix(in srgb, var(--color-primary) 85%, black);
+  --color-primary-soft: color-mix(in srgb, var(--color-primary) 12%, white);
+  --color-primary-text: var(--color-primary); /* couleur principale utilisée comme texte (liens, onglets actifs) */
+  --color-on-primary: {{COULEUR_TEXTE_SUR_PRINCIPALE}};
+  --color-accent: {{COULEUR_ACCENT}};
+
+  /* Surfaces et texte (thème clair) */
+  --color-bg: #f6f7f9;
+  --color-surface: #ffffff;
+  --color-surface-2: #f0f2f5;
+  --color-border: #e2e5ea;
+  --color-text: #161a21;
+  --color-text-muted: #5f6775;
+
+  /* Statuts */
+  --color-success: #15803d;
+  --color-success-soft: #dcfce7;
+  --color-warning: #b45309;
+  --color-warning-soft: #fef3c7;
+  --color-danger: #b91c1c;
+  --color-danger-soft: #fee2e2;
+  --color-info: #1d4ed8;
+  --color-info-soft: #dbeafe;
+
+  /* Typographie */
+  --font-sans: {{POLICE}}, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", Consolas, monospace;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.375rem;
+  --text-2xl: 1.75rem;
+
+  /* Formes et espacements */
+  --radius-sm: calc({{RAYON}} * 0.5);
+  --radius: {{RAYON}};
+  --radius-lg: calc({{RAYON}} * 1.5);
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-8: 48px;
+  --shadow-sm: 0 1px 2px rgb(16 24 40 / 0.06);
+  --shadow: 0 4px 12px rgb(16 24 40 / 0.08);
+
+  /* Densité : 1 = confortable, 0.85 = compacte */
+  --density: {{DENSITE}};
+}
+
+/* Thème sombre : activé par data-theme="dark" sur <html> (piloté par proto.js). */
+[data-theme="dark"] {
+  --color-primary-soft: color-mix(in srgb, var(--color-primary) 24%, #171b21);
+  --color-primary-text: color-mix(in srgb, var(--color-primary) 45%, white);
+  --color-success: #4ade80;
+  --color-warning: #fbbf24;
+  --color-danger: #f87171;
+  --color-info: #93b4ff;
+  --color-bg: #0f1216;
+  --color-surface: #171b21;
+  --color-surface-2: #1f242c;
+  --color-border: #2a3039;
+  --color-text: #e8ebf0;
+  --color-text-muted: #9aa3b2;
+  --color-success-soft: #12341f;
+  --color-warning-soft: #3a2a0c;
+  --color-danger-soft: #3d1414;
+  --color-info-soft: #13254a;
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow: 0 4px 12px rgb(0 0 0 / 0.4);
+}
