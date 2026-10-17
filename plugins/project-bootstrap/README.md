@@ -6,7 +6,7 @@ Transforme une idée de projet en un dépôt prêt à être développé par un a
 
 ```
 /plugin marketplace add <url-git-du-depot>
-/plugin install project-bootstrap@my-plugins
+/plugin install project-bootstrap@kateyer-plugins
 ```
 
 ## Ce que fait le plugin

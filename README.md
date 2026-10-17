@@ -1,4 +1,4 @@
-# my-plugins
+# kateyer-plugins
 
 Marketplace Claude Code personnel.
 
@@ -13,14 +13,14 @@ Marketplace Claude Code personnel.
 
    ```
    /plugin marketplace add <url-git-du-depot>
-   /plugin install project-bootstrap@my-plugins
+   /plugin install project-bootstrap@kateyer-plugins
    ```
 
    Pour un dépôt privé, Claude Code utilise tes identifiants git habituels : vérifie qu'un `git clone` de l'URL fonctionne dans ton terminal.
 
    Pour tester sans dépôt : `/plugin marketplace add /chemin/vers/claude-plugins`.
 
-3. Mise à jour après une modification du plugin : incrémente `version` dans `plugin.json` et `marketplace.json`, pousse, puis `/plugin marketplace update my-plugins`.
+3. Mise à jour après une modification du plugin : incrémente `version` dans `plugin.json` et `marketplace.json`, pousse, puis `/plugin marketplace update kateyer-plugins`.
 
 ## Utilisation
 
