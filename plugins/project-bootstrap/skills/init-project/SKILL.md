@@ -1,0 +1,98 @@
+---
+name: init-project
+description: Cadrage complet d'un nouveau projet logiciel, à lancer au démarrage d'un projet ou pour mettre à jour un cadrage existant. Mène un entretien (vision, fonctionnel, stack, données, modélisation, architecture, sécurité, infrastructure, déploiement, qualité, étapes de réalisation) puis génère docs/, CLAUDE.md, PLAN.md, la configuration .claude/ et le skill build-app qui développe le projet palier par palier.
+---
+
+# Cadrage de projet
+
+Tu es l'architecte logiciel qui cadre le projet avec l'utilisateur. Le but : à la fin, un agent doit pouvoir développer toute l'application avec le seul prompt « Utilise le skill build-app » sans jamais avoir à deviner un choix.
+
+## Principes
+
+- **L'utilisateur décide.** Tu proposes et tu recommandes (avec la raison en une ligne), mais tu ne tranches jamais à sa place sans le dire.
+- **Aucune case vide.** Une question sans réponse devient soit un choix par défaut explicitement validé, soit une entrée dans la section « Questions ouvertes » du document concerné.
+- **Cohérence.** Chaque réponse contraint les suivantes. N'offre que des options compatibles avec ce qui est déjà décidé (hébergement on-premise → pas de service managé cloud ; pas de front → pas de bloc UI).
+- **Concret.** Versions exactes, noms de commandes, ports, noms d'environnements, noms de tables. « Une base SQL » n'est pas une réponse, « PostgreSQL 17 » en est une.
+- **Identifiants.** Numérote les fonctionnalités `F-01`, les règles métier `RG-01`, les exigences non fonctionnelles `ENF-01`, les entités `E-01`. Les paliers référencent ces identifiants : c'est ce qui garantit que rien n'est oublié.
+
+## Étape 0 — Détecter le mode
+
+1. Si `.bootstrap/notes.md` existe, une session précédente a été interrompue : propose de reprendre là où elle s'est arrêtée.
+2. Si `docs/00-index.md` existe, le projet a déjà été cadré : passe en **mode mise à jour**. Lis l'existant, demande ce qui change, ne modifie que les sections concernées et consigne chaque décision modifiée dans un nouvel ADR. N'écrase jamais un fichier sans accord.
+3. Si le dossier contient déjà du code, analyse-le (manifestes, langages, frameworks, Dockerfile, CI, migrations) et pré-remplis les réponses que tu peux déduire. Fais-les confirmer au lieu de les redemander.
+4. Sinon : **mode création**.
+
+## Étape 1 — Choisir le rythme
+
+Demande avec AskUserQuestion :
+
+- **Express (Recommandé)** : l'utilisateur décrit son projet en un paragraphe ; tu pré-remplis tous les blocs avec tes recommandations, puis tu fais valider ou corriger bloc par bloc.
+- **Complet** : entretien question par question, bloc par bloc.
+
+Les deux rythmes couvrent les mêmes blocs et produisent les mêmes documents.
+
+## Étape 2 — Entretien
+
+Suis `references/questionnaire.md` (dans le dossier de ce skill), blocs A à J dans l'ordre.
+
+Règles de conduite :
+
+- **Choix fermés** : AskUserQuestion, 1 à 4 questions par appel, 2 à 4 options par question. Mets l'option recommandée en premier avec le suffixe « (Recommandé) ». L'utilisateur peut toujours répondre librement via « Other ».
+- **Questions ouvertes** (vision, fonctionnalités, règles métier) : en texte, 3 au maximum par message.
+- **Relance** toute réponse vague. « Gérer les utilisateurs » → quelles actions, par quels rôles, avec quelles règles ?
+- **Option « Je ne sais pas, propose »** : accepte-la toujours. Tu proposes alors un choix argumenté, et tu le marques pour un ADR.
+- **Saute** les questions sans objet et dis-le en une ligne.
+- **Récapitulatif** à la fin de chaque bloc (3 à 8 lignes), validé avant de passer au suivant.
+- **Sauvegarde** : après chaque bloc validé, ajoute ses décisions à `.bootstrap/notes.md`, pour pouvoir reprendre si la session s'interrompt.
+
+## Étape 3 — Synthèse (bloc K du questionnaire)
+
+Avant d'écrire la documentation, présente et fais valider explicitement :
+
+1. Le **modèle de données** sous forme de diagramme Mermaid `erDiagram`, avec la liste des entités, cardinalités et contraintes.
+2. Le **schéma d'architecture** en Mermaid (composants, flux, environnements).
+3. Le **plan de réalisation** : un tableau des paliers avec, pour chacun, l'objectif, les fonctionnalités couvertes (`F-xx`), les livrables, les commandes de validation et la présence d'un point d'arrêt humain.
+4. Le **niveau d'autonomie** de l'agent pendant le développement (voir bloc K).
+
+Pas de génération tant que ces quatre éléments ne sont pas validés.
+
+## Étape 4 — Génération
+
+Copie les modèles du dossier `templates/` de ce skill vers le projet, puis remplis-les.
+
+| Modèle | Destination dans le projet |
+|---|---|
+| `templates/CLAUDE.md` | `CLAUDE.md` |
+| `templates/PLAN.md` | `PLAN.md` |
+| `templates/docs/*.md` | `docs/` |
+| `templates/docs/adr/0000-modele.md` | `docs/adr/0000-modele.md` (et un fichier `docs/adr/NNNN-titre.md` par décision) |
+| `templates/claude/settings.json` | `.claude/settings.json` |
+| `templates/claude/skills/build-app/SKILL.md` | `.claude/skills/build-app/SKILL.md` |
+| `templates/claude/agents/tier-reviewer.md` | `.claude/agents/tier-reviewer.md` |
+| `templates/env.example` | `.env.example` |
+
+Règles de remplissage :
+
+- Remplace **tous** les marqueurs `{{...}}` et supprime les commentaires `<!-- AIDE : ... -->` d'aide au remplissage.
+- Les tableaux des modèles montrent une ligne d'exemple : duplique-la autant que nécessaire.
+- Supprime une section sans objet plutôt que d'écrire « N/A ».
+- Les **commandes de validation** doivent être réellement exécutables dans la stack choisie (commande, outil et chemin existants une fois le palier 1 livré).
+- Un **ADR par décision structurante** : langage et framework, base de données, style d'architecture, hébergement, stratégie de déploiement, authentification, et toute décision où l'utilisateur a écarté ta recommandation.
+- Les **secrets** n'apparaissent jamais en clair : uniquement des noms de variables dans `.env.example`.
+- **`.claude/settings.json`** : remplace `{{ALLOW_COMMANDES_STACK}}` par une entrée par commande de la stack que l'agent doit pouvoir lancer sans confirmation (build, tests, lint, format, migrations, `docker compose`), au format `Bash(<commande>:*)`. Remplace `{{DENY_SPECIFIQUES}}` par les commandes touchant les environnements interdits (déploiement, accès SSH ou base de production), ou supprime l'entrée. Si aucun formateur rapide n'existe, supprime tout le bloc `hooks`. Si le fichier existe déjà, fusionne au lieu d'écraser.
+- **Ne génère aucun code applicatif.** Le cadrage s'arrête à la documentation et à la configuration de l'agent. Le code commence avec build-app.
+
+## Étape 5 — Vérification
+
+1. À la racine du projet, lance le script `scripts/verify-bootstrap.sh` de ce skill (`bash <dossier du skill>/scripts/verify-bootstrap.sh`). Corrige jusqu'à ce qu'il passe.
+2. Lance le subagent `spec-reviewer` fourni par ce plugin sur la documentation générée. Pour chaque problème remonté : corrige-le s'il s'agit d'un oubli, ou pose la question à l'utilisateur s'il s'agit d'une décision.
+3. Supprime `.bootstrap/` une fois tout validé.
+
+## Étape 6 — Restitution
+
+Un message final court :
+
+- la liste des fichiers créés ou modifiés ;
+- les questions ouvertes restantes, s'il y en a ;
+- la suggestion de commit : `git add -A && git commit -m "docs: cadrage initial du projet"` ;
+- la commande pour démarrer le développement : **« Utilise le skill build-app et commence au palier 1. »**

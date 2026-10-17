@@ -1,0 +1,9 @@
+{
+  "name": "project-bootstrap",
+  "version": "1.0.0",
+  "description": "Cadrage complet d'un projet logiciel par entretien (stack, données, modélisation, architecture, sécurité, infrastructure, déploiement, paliers) et génération de la documentation et du skill build-app pour un développement par paliers validés.",
+  "author": {
+    "name": "Auteur"
+  },
+  "keywords": ["cadrage", "specification", "architecture", "agents", "bootstrap"]
+}
