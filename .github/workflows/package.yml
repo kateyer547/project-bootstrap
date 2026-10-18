@@ -37,4 +37,4 @@ jobs:
         run: |
           tag=${{ steps.version.outputs.tag }}
           git archive --format=zip --prefix="kateyer-plugins-${tag#v}/" -o "kateyer-plugins-${tag#v}.zip" HEAD
-          gh release create "$tag" "kateyer-plugins-${tag#v}.zip" --target "$GITHUB_SHA" --title "kateyer-plugins $tag" --generate-notes
+          gh release create "$tag" "kateyer-plugins-${tag#v}.zip" --target "$GITHUB_SHA" --title "$tag" --generate-notes
