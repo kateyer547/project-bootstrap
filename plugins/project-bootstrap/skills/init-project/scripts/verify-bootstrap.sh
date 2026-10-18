@@ -78,7 +78,8 @@ for f in "${required[@]}"; do
 done
 
 echo "== Marqueurs non remplis"
-present=()
+# /dev/null : sans aucun fichier, grep lirait l'entrée standard (et bash 3.2 refuse un tableau vide avec set -u).
+present=(/dev/null)
 for f in "${required[@]}"; do
   # Ce script lui-même, recopié dans le projet, contient les motifs qu'il recherche.
   [ "$f" = .claude/scripts/verify-spec.sh ] && continue
@@ -178,7 +179,7 @@ echo "== Traçabilité spécification → paliers"
 spec=docs/02-specifications-fonctionnelles.md
 if [ -f "$spec" ] && [ -f docs/11-paliers.md ]; then
   # Fonctionnalités : seules celles du MVP doivent figurer dans un palier.
-  defined=$(grep -E '^### F-[0-9]{2,3}' "$spec" | grep -o -E 'F-[0-9]{2,3}' | sort -u)
+  defined=$(grep -E '^### F-[0-9]+' "$spec" | grep -o -E 'F-[0-9]+' | sort -u)
   features=$(mvp_features "$spec")
   if [ -z "$defined" ]; then
     fail "aucune fonctionnalité au format « ### F-xx — Nom » dans $spec"
@@ -193,7 +194,7 @@ if [ -f "$spec" ] && [ -f docs/11-paliers.md ]; then
     [ -n "${later// /}" ] && info "fonctionnalités hors MVP, non exigées dans les paliers : $later"
   fi
   # Exigences non fonctionnelles : toutes doivent figurer dans un palier.
-  enfs=$(grep -o -E '\bENF-[0-9]{2,3}\b' "$spec" | sort -u)
+  enfs=$(grep -o -E '\bENF-[0-9]+\b' "$spec" | sort -u)
   if [ -z "$enfs" ]; then
     info "aucune exigence non fonctionnelle ENF-xx dans $spec"
   else
@@ -206,7 +207,7 @@ if [ -f "$spec" ] && [ -f docs/11-paliers.md ]; then
   fi
   # Identifiants cités dans les paliers mais définis nulle part.
   unknown=""
-  for id in $(grep -o -E '\b(F|ENF)-[0-9]{2,3}\b' docs/11-paliers.md | sort -u); do
+  for id in $(grep -o -E '\b(F|ENF)-[0-9]+\b' docs/11-paliers.md | sort -u); do
     case "$id" in
       F-*) echo "$defined" | grep -q -x "$id" || unknown="$unknown $id" ;;
       *)   echo "$enfs" | grep -q -x "$id" || unknown="$unknown $id" ;;

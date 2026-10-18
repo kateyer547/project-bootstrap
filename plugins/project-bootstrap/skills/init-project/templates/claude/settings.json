@@ -30,8 +30,15 @@
       "Bash(git push -f:*)",
       "Bash(git reset --hard:*)",
       "Bash(git branch -D:*)",
+      "Bash(git branch *--force*)",
+      "Bash(git branch -d -f*)",
+      "Bash(git switch -f*)",
+      "Bash(git switch * -f*)",
+      "Bash(git switch *--force*)",
+      "Bash(git switch *--discard-changes*)",
       "Bash(git * --no-verify*)",
       "Bash(git commit -n*)",
+      "Bash(git commit * -n*)",
       "{{DENY_SPECIFIQUES}}"
     ]
   },

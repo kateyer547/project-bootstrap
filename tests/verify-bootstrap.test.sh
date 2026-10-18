@@ -36,6 +36,17 @@ expect ".env versionné" 1 "\.env n'est pas ignoré" -- run
 mkproj "$P"; rm "$P/.gitignore"
 expect ".gitignore absent" 1 "\.gitignore manquant" -- run
 
+mkdir -p "$TMP/dossier-vide"
+expect "dossier vide : l'entrée standard n'est pas lue" 1 "!\{\{PIEGE\}\}" "CLAUDE.md manquant" -- \
+  bash -c 'echo "{{PIEGE}}" | bash "$1" "$2"' _ "$VERIFY" "$TMP/dossier-vide"
+
+mkproj "$P"
+edit_file "$P/docs/02-specifications-fonctionnelles.md" 's/F-0\([0-9]\)/F-\1/g'
+edit_file "$P/docs/11-paliers.md" 's/F-0\([0-9]\)/F-\1/g'
+expect "identifiants F-1 à un chiffre acceptés" 0 "fonctionnalités MVP \(2\) toutes rattachées" -- run
+edit_file "$P/docs/11-paliers.md" 's/F-1 F-3/F-1/'
+expect "F-3 à un chiffre absente des paliers" 1 "fonctionnalités MVP absentes .*F-3" -- run
+
 mkproj "$P"; rm "$P/docs/07-securite.md"
 expect "document manquant" 1 "docs/07-securite.md manquant" -- run
 

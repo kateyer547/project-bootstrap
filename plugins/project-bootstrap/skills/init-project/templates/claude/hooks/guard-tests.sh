@@ -26,8 +26,9 @@ done
 set +f
 [ "$is_test" -eq 1 ] || exit 0
 
-# Valeurs JSON d'un champ (toutes ses occurrences, MultiEdit en a plusieurs).
-champ() { printf '%s' "$input" | tr -d '\n' | grep -o -E "\"$1\"[[:space:]]*:[[:space:]]*\"([^\"\\\\]|\\\\.)*\""; }
+# Valeurs JSON d'un champ (toutes ses occurrences, MultiEdit en a plusieurs). Les \n, \t, \r
+# échappés deviennent des espaces : sinon « \nxdescribe( » ne commence pas un mot pour \b.
+champ() { printf '%s' "$input" | tr -d '\n' | grep -o -E "\"$1\"[[:space:]]*:[[:space:]]*\"([^\"\\\\]|\\\\.)*\"" | sed -E 's/\\[nrt]/ /g'; }
 compte() { grep -o -E "$MARQUEURS" | wc -l | tr -d ' '; }
 
 nouveau=$( { champ content; champ new_string; } | compte)

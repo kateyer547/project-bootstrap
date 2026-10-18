@@ -41,6 +41,10 @@ expect "Edit qui retire un .skip( : autorisé" 0 -- \
   hook $G '{"tool_name":"Edit","tool_input":{"file_path":"/p/tests/a.test.ts","old_string":"it.skip(\"a\"","new_string":"it(\"a\""}}'
 expect "chemin Windows et #[ignore] Rust : bloqué" 2 "#\[ignore\]" -- \
   hook $G '{"tool_name":"Write","tool_input":{"file_path":"C:\\projet\\tests\\stock_test.rs","content":"#[ignore]\nfn t() {}"}}'
+expect "xdescribe( en début de ligne : bloqué" 2 "xdescribe\(" -- \
+  hook $G '{"tool_name":"Write","tool_input":{"file_path":"/p/tests/a.test.ts","content":"import x\nxdescribe(\"a\", f)"}}'
+expect "xit( après une tabulation : bloqué" 2 "xit\(" -- \
+  hook $G '{"tool_name":"Write","tool_input":{"file_path":"/p/tests/a.test.ts","content":"d(\"a\", () => {\n\txit(\"b\", f)\n})"}}'
 expect "pytest.mark.skip : bloqué" 2 -- \
   hook $G '{"tool_name":"Write","tool_input":{"file_path":"/p/tests/test_stock.py","content":"@pytest.mark.skip\ndef test_a(): pass"}}'
 expect "xUnit [Fact(Skip = ...)] : bloqué" 2 -- \
@@ -101,6 +105,7 @@ expect "session-start : plus d'attente une fois le tag posé" 0 "!en attente de 
 printf '\n## Blocages\n\n- `just check` échoue sur la migration 3 : quelle stratégie ?\n' >> "$P/PLAN.md"
 edit_file "$P/PLAN.md" '/^## Journal/d'
 expect "session-start : blocage ouvert signalé" 0 "BLOCAGE ouvert" -- start
+mkdir -p "$TMP/vide"
 expect "session-start : sans PLAN.md, rien n'est affiché" 0 "!État du projet" -- env CLAUDE_PROJECT_DIR="$TMP/vide" bash "$H/session-start.sh"
 
 summary
