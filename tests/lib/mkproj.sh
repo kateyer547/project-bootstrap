@@ -8,9 +8,10 @@ mkproj() {
   mkdir -p "$p/docs/adr" "$p/.claude/skills/build-app" "$p/.claude/agents"
   (
     cd "$p" || exit 1
-    for n in 00-index 01-vision 03-stack-technique 04-donnees 06-architecture 07-securite 08-infrastructure 09-deploiement 10-qualite-tests; do
+    for n in 00-index 01-vision 04-donnees 06-architecture 07-securite 08-infrastructure 09-deploiement 10-qualite-tests; do
       printf '# %s\n\nContenu rempli.\n' "$n" > "docs/$n.md"
     done
+    printf "# 03 — Stack technique\n\n## Contrat d'outillage\n\n- **Lanceur de tâches :** just, fichier \`justfile\`\n" > docs/03-stack-technique.md
     cat > docs/02-specifications-fonctionnelles.md <<'EOF'
 # 02 — Spécifications fonctionnelles
 
@@ -55,7 +56,7 @@ EOF
 just check
 ```
 EOF
-    printf '# Projet test\n' > CLAUDE.md
+    printf '# Projet test\n\n| Action | Commande |\n|---|---|\n| **Tout vérifier (avant chaque commit)** | `just check` |\n' > CLAUDE.md
     printf '# Plan\n' > PLAN.md
     printf 'DATABASE_URL=postgres://app:changeme@localhost:5432/app\n' > .env.example
     printf '.env\n.env.*\n!.env.example\nnode_modules/\n' > .gitignore

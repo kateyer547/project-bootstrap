@@ -45,6 +45,12 @@ expect "fichiers en fins de ligne Windows (CRLF)" 0 "Cadrage complet" -- run
 raw_templates "$P"
 expect "modèles non remplis" 1 "marqueurs \{\{\.\.\.\}\} restants" "commentaires d'aide" -- run
 
+mkproj "$P"; edit_file "$P/docs/03-stack-technique.md" "s/^## Contrat d'outillage/## Outils/"
+expect "contrat d'outillage absent" 1 "pas de section « ## Contrat d'outillage »" -- run
+
+mkproj "$P"; printf '# Projet test\n' > "$P/CLAUDE.md"
+expect "commande « Tout vérifier » absente de CLAUDE.md" 1 "ligne « Tout vérifier »" -- run
+
 mkproj "$P"; edit_file "$P/docs/05-modele-donnees.md" 's/erDiagram/flowchart/'
 expect "diagramme erDiagram absent" 1 "pas de diagramme Mermaid erDiagram" -- run
 

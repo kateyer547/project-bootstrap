@@ -25,12 +25,13 @@ Lis, dans l'ordre : `docs/00-index.md` à `docs/11-paliers.md`, les ADR de `docs
 - L'hébergement (`08`) est compatible avec la stack (`03`) et le pipeline (`09`).
 - Les données personnelles de `04` ont des mesures dans `07`.
 - La volumétrie de `04` est compatible avec les choix de `05` et `06`.
-- Les commandes de `CLAUDE.md`, `10` et `11` sont identiques pour un même usage.
+- Toutes les commandes de `CLAUDE.md`, `09`, `10` et `11` passent par les cibles du lanceur de tâches déclarées dans le contrat d'outillage de `03` ; aucune n'appelle un outil directement.
+- Chaque cible de vérification du contrat d'outillage est en mode contrôle : elle ne modifie rien et renvoie un code non nul en cas de problème (`--check`, `--verify-no-changes`…). Le contrat donne aussi la commande de formatage d'un fichier, les motifs et marqueurs de tests et les sorties de build.
 
 **Exécutabilité des paliers**
 - Les paliers sont ordonnés selon leurs dépendances (pas de fonctionnalité avant les entités et l'authentification qu'elle requiert).
 - Chaque commande de validation est concrète, cohérente avec l'outillage de `03` et `10`, et échouerait réellement si le palier était incomplet.
-- Le premier palier crée bien l'outillage qu'utilisent les commandes de validation suivantes.
+- Le premier palier crée bien l'outillage qu'utilisent les commandes de validation suivantes : lanceur de tâches et cible `check`, hook git `pre-commit`, preuve d'échec de `check`, vérification du fichier de pipeline.
 
 **Ambiguïtés**
 - Termes vagues sans critère mesurable (« rapide », « sécurisé », « simple », « etc. »).

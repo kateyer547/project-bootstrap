@@ -56,7 +56,10 @@ Pour chaque couche, demande le choix **et la version** :
 4. Mobile (si applicable) : natif / Flutter / React Native / .NET MAUI / PWA.
 5. Services annexes : cache (Redis), file de messages (RabbitMQ, Kafka), recherche (Meilisearch, Elasticsearch), stockage de fichiers (disque, S3, Azure Blob), envoi d'e-mails, tâches planifiées.
 6. Gestionnaire de paquets, outil de build, versions de runtime à épingler.
-7. Outillage qualité : formatter, linter, analyseur statique, outil de tests, outil de couverture.
+7. Outillage qualité : formatter, linter, analyseur statique, outil de tests, outil de couverture. Pour chaque outil : la commande **en mode vérification**, qui ne modifie rien et renvoie un code non nul en cas de problème, et la commande qui formate un seul fichier.
+8. Lanceur de tâches, qui expose toutes les commandes sous des noms stables (`check`, `test`, `lint`…) appelés par `CLAUDE.md`, la CI et les paliers : `just` (Recommandé si la stack n'a pas déjà de scripts natifs : un seul exécutable, multiplateforme) / scripts du gestionnaire de paquets (`npm run`, `composer`) / `make` (non fourni avec Git Bash sous Windows) / script shell.
+
+Les réponses 6 à 8 remplissent le « Contrat d'outillage » de `docs/03`, avec les motifs des fichiers de test, les marqueurs d'exclusion du framework de tests et les sorties de build, que tu déduis de la stack et fais confirmer.
 
 Pour chaque choix structurant, prévois un ADR.
 
@@ -132,7 +135,7 @@ Présente le résultat sous forme de diagramme Mermaid `erDiagram`.
 1. Forge : GitHub / GitLab / Gitea / Azure DevOps. Runners hébergés ou auto-hébergés.
 2. Stratégie de branches : trunk-based / GitHub flow / GitFlow. Nom de la branche principale (`main` par défaut) et protection de celle-ci (pull request obligatoire ou non).
 3. Conventions : Conventional Commits, versionnement sémantique, changelog.
-4. Étapes du pipeline : lint → tests unitaires → build → tests d'intégration → analyse de sécurité → image → déploiement → tests de fumée.
+4. Étapes du pipeline : lint → tests unitaires → build → tests d'intégration → analyse de sécurité → image → déploiement → tests de fumée. Chaque étape appelle une cible du lanceur de tâches. Comment l'agent vérifie le fichier de pipeline sans pousser : exécution locale (`act`, `gitlab-ci-local`), analyseur (`actionlint`, `glab ci lint`), ou à défaut la première pull request.
 5. Artefacts : registre d'images ou de paquets.
 6. Déclenchement par environnement : automatique / sur tag / manuel avec validation.
 7. Stratégie de mise en production : redémarrage simple / rolling / blue-green / canary.
@@ -157,7 +160,7 @@ Propose ensuite un découpage à partir de tout ce qui précède. Base de dépar
 
 | Palier | Objectif type |
 |---|---|
-| 1 | Socle : dépôt, structure, outillage qualité, CI minimale, endpoint `/health`, environnement local |
+| 1 | Socle : dépôt, structure, outillage qualité, lanceur de tâches avec sa cible `check` et le hook git `pre-commit`, preuve d'échec de `check`, CI minimale vérifiée, endpoint `/health`, environnement local |
 | 2 | Données : schéma, migrations, seed, couche d'accès, tests d'intégration |
 | 3 | Sécurité : authentification, autorisation, comptes de test |
 | 4 à n | Fonctionnalités MVP par lots cohérents (un lot = un ensemble de `F-xx` liés) |

@@ -11,7 +11,7 @@ Réglages du projet (définis au cadrage) :
 - **Tentatives de correction avant arrêt :** {{MAX_TENTATIVES}}
 - **Branche principale :** `{{BRANCHE_PRINCIPALE}}`
 - **Branches :** {{STRATEGIE_BRANCHES}} (voir section 3)
-- **Commandes rapides après chaque tâche :** `{{CMD_LINT}}` puis `{{CMD_TEST_UNIT}}`
+- **Vérification après chaque tâche :** `{{CMD_CHECK}}` (toutes les commandes passent par le lanceur de tâches, voir `CLAUDE.md`)
 
 ## 1. Démarrage de session
 
@@ -30,10 +30,12 @@ Réglages du projet (définis au cadrage) :
 **b. Réaliser chaque tâche en commençant par ses tests.** Pour chaque tâche, dans l'ordre :
 1. Écris les tests qui traduisent ses critères d'acceptation et règles métier, cas limites compris, et vérifie qu'ils échouent. Ces tests matérialisent la spécification : tu ne les affaibliras plus ensuite, sauf si la spécification change avec l'accord de l'utilisateur.
 2. Implémente jusqu'à ce qu'ils passent.
-3. Lance les commandes rapides : tout doit être vert, tests des tâches précédentes compris.
+3. Lance `{{CMD_CHECK}}` : tout doit être vert, tests des tâches précédentes compris.
 4. Coche la tâche dans `PLAN.md` et commite au format Conventional Commits : `feat(tier-N): <résumé>` (ou `fix`, `test`, `refactor`, `chore`, `docs`).
 
 Les tâches d'infrastructure sans comportement testable unitairement (outillage, Docker, CI) sont validées par une commande qui prouve qu'elles fonctionnent. Les exigences `ENF-xx` du palier sont vérifiées par la méthode prévue dans `docs/02-specifications-fonctionnelles.md` (commande, test de charge, mesure).
+
+**Preuve d'échec.** Au palier 1, puis chaque fois qu'un outil de contrôle est ajouté ou reconfiguré, prouve que `{{CMD_CHECK}}` détecte vraiment les problèmes. Introduis temporairement, une à la fois, une erreur de formatage, une erreur de lint et un test qui échoue ; vérifie que `{{CMD_CHECK}}` renvoie un code non nul à chaque fois ; rétablis le fichier et vérifie que `{{CMD_CHECK}}` repasse au vert. Ne commite aucune de ces erreurs. Note le résultat dans le journal de `PLAN.md`. Si une erreur passe inaperçue, corrige la configuration de l'outil ou la cible du lanceur avant d'aller plus loin.
 
 **c. Valider.** Lance **toutes** les commandes du bloc « Commandes de validation » du palier, dans l'ordre. Toutes doivent réussir (code de sortie 0).
 
@@ -78,6 +80,7 @@ Applique uniquement le cas qui correspond à la stratégie retenue au cadrage. L
 ## 4. Règles permanentes
 
 - Ne modifie, ne supprime et n'ignore jamais un test pour faire passer une validation. Ne désactive jamais une règle de lint ou un avertissement.
+- Passe toujours par les cibles du lanceur de tâches, jamais par les outils directement. Le hook git `pre-commit` lance `{{CMD_CHECK}}` : un commit refusé se corrige, il ne se contourne jamais (`--no-verify` est interdit).
 - Ne passe jamais au palier suivant avec une validation en échec, ni avant que le palier courant ait son tag `tier-N`.
 - N'invente aucune fonctionnalité absente de `docs/02-specifications-fonctionnelles.md`. Si un comportement n'est pas spécifié, arrête-toi, propose deux options et demande.
 - Ne change ni la stack, ni une dépendance majeure, ni le modèle de données, ni l'architecture sans ADR validé par l'utilisateur.

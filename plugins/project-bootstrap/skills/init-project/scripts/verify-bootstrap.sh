@@ -116,6 +116,16 @@ for f in .claude/skills/build-app/SKILL.md .claude/agents/tier-reviewer.md; do
   fi
 done
 
+echo "== Contrat d'outillage"
+if [ -f docs/03-stack-technique.md ]; then
+  if grep -q "^## Contrat d'outillage" docs/03-stack-technique.md; then ok "contrat d'outillage présent dans docs/03"
+  else fail "pas de section « ## Contrat d'outillage » dans docs/03-stack-technique.md"; fi
+fi
+if [ -f CLAUDE.md ]; then
+  if grep -q -i "tout vérifier" CLAUDE.md; then ok "CLAUDE.md donne la commande « Tout vérifier »"
+  else fail "CLAUDE.md : ligne « Tout vérifier » (cible check du lanceur de tâches) absente"; fi
+fi
+
 echo "== Modèle de données"
 if [ -f docs/05-modele-donnees.md ]; then
   if grep -q 'erDiagram' docs/05-modele-donnees.md; then ok "diagramme erDiagram présent"; else fail "pas de diagramme Mermaid erDiagram dans docs/05-modele-donnees.md"; fi

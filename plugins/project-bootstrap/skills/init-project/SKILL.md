@@ -93,11 +93,11 @@ Règles de remplissage :
 - Remplace **tous** les marqueurs `{{...}}` et supprime les commentaires `<!-- AIDE : ... -->` d'aide au remplissage.
 - Les tableaux des modèles montrent une ligne d'exemple : duplique-la autant que nécessaire.
 - Supprime une section sans objet plutôt que d'écrire « N/A ».
-- Les **commandes de validation** doivent être réellement exécutables dans la stack choisie (commande, outil et chemin existants une fois le palier 1 livré).
+- Les **commandes de validation** doivent être réellement exécutables dans la stack choisie (commande, outil et chemin existants une fois le palier 1 livré), et passer par les cibles du lanceur de tâches déclarées dans le « Contrat d'outillage » de `docs/03`. `CLAUDE.md`, `09`, `10` et `11` utilisent les mêmes noms de cibles.
 - Un **ADR par décision structurante** : langage et framework, base de données, style d'architecture, hébergement, stratégie de déploiement, authentification, et toute décision où l'utilisateur a écarté ta recommandation.
 - Les **secrets** n'apparaissent jamais en clair : uniquement des noms de variables dans `.env.example`.
 - **`.gitignore`** : remplace `{{IGNORE_STACK}}` par les dépendances, sorties de build, caches et rapports de la stack choisie. Si le fichier existe déjà, ajoute seulement les entrées manquantes. `.env` doit rester ignoré et `.env.example` versionné.
-- **`.claude/settings.json`** : remplace `{{ALLOW_COMMANDES_STACK}}` par une entrée par commande de la stack que l'agent doit pouvoir lancer sans confirmation (build, tests, lint, format, migrations, `docker compose`), au format `Bash(<commande>:*)`. Remplace `{{DENY_SPECIFIQUES}}` par les commandes touchant les environnements interdits (déploiement, accès SSH ou base de production), ou supprime l'entrée. Si aucun formateur rapide n'existe, supprime tout le bloc `hooks`. Si le fichier existe déjà, fusionne au lieu d'écraser.
+- **`.claude/settings.json`** : remplace `{{ALLOW_COMMANDES_STACK}}` par les commandes que l'agent doit pouvoir lancer sans confirmation, au format `Bash(<commande>:*)` : de préférence une seule entrée pour le lanceur de tâches (`Bash(just:*)`, `Bash(npm run:*)`), plus les rares commandes lancées hors lanceur (`docker compose`, installation des dépendances). Remplace `{{DENY_SPECIFIQUES}}` par les commandes touchant les environnements interdits (déploiement, accès SSH ou base de production), ou supprime l'entrée. Si aucun formateur rapide n'existe, supprime tout le bloc `hooks`. Si le fichier existe déjà, fusionne au lieu d'écraser.
 - **Ne génère aucun code applicatif.** Le cadrage s'arrête à la documentation et à la configuration de l'agent. Le code commence avec build-app.
 
 ## Étape 5 — Vérification

@@ -23,7 +23,7 @@ Blocs couverts :
 |---|---|
 | A. Vision | problème, utilisateurs, critères de réussite, échéances, contraintes |
 | B. Fonctionnel | fonctionnalités `F-xx`, règles métier `RG-xx`, rôles, interface, hors périmètre |
-| C. Stack | backend, accès aux données, front, mobile, services annexes, outillage, versions |
+| C. Stack | backend, accès aux données, front, mobile, services annexes, outillage, versions, lanceur de tâches et **contrat d'outillage** (commandes en mode vérification, formatage d'un fichier, marqueurs de tests) |
 | D. Données | sources, volumétrie, seed, données personnelles, cycle de vie, sauvegardes |
 | E. Modélisation | SGBD, entités, relations, conventions, index, migrations (diagramme `erDiagram`) |
 | F. Architecture | style, couches, API, erreurs, configuration, observabilité |
@@ -70,7 +70,7 @@ Utilise le skill build-app et commence au palier 1.
 Pour chaque palier, `build-app` :
 1. découpe le palier en tâches dans `PLAN.md` ;
 2. écrit les tests de chaque tâche avant le code ;
-3. implémente et commite tâche par tâche ;
+3. implémente, lance `check` (la même commande que la CI et le hook `pre-commit`) et commite tâche par tâche ; au palier 1, prouve que `check` échoue vraiment sur une erreur de format, de lint ou de test ;
 4. lance toutes les commandes de validation du palier ;
 5. corrige, avec un nombre limité de tentatives avant de s'arrêter et d'expliquer le blocage ;
 6. fait relire par `tier-reviewer` ;
