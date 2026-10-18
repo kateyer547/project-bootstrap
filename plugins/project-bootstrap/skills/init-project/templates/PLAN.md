@@ -4,6 +4,7 @@
 
 **Autonomie :** {{NIVEAU_AUTONOMIE}}
 **Tentatives de correction avant arrêt :** {{MAX_TENTATIVES}}
+**Branche principale :** `{{BRANCHE_PRINCIPALE}}`
 **Stratégie de branches :** {{STRATEGIE_BRANCHES}}
 
 ## Paliers

@@ -63,7 +63,7 @@ Lis les captures et corrige : débordements horizontaux, textes coupés, éléme
 
 ## 5. Présenter et itérer
 
-Dis à l'utilisateur d'ouvrir `design/index.html` dans son navigateur (double-clic, ou `python3 -m http.server 8080 -d design` puis `http://localhost:8080`). Le tableau montre tous les écrans côte à côte, en mobile ou en ordinateur, en clair ou en sombre ; un clic sur un écran l'ouvre en plein écran pour suivre les parcours.
+Dis à l'utilisateur d'ouvrir `design/index.html` dans son navigateur : un double-clic suffit, aucun serveur n'est nécessaire. S'il préfère un serveur local : `npx -y http-server@14.1.1 design -p 8080` (Node) ou `python3 -m http.server 8080 -d design` (`py` au lieu de `python3` sous Windows), puis `http://localhost:8080`. Le tableau montre tous les écrans côte à côte, en mobile ou en ordinateur, en clair ou en sombre ; un clic sur un écran l'ouvre en plein écran pour suivre les parcours.
 
 Demande ses retours écran par écran et itère. Quand un retour change le comportement de l'application (nouveau champ, nouvelle action, règle différente), mets à jour les `F-xx` et `RG-xx` du bloc B en même temps : la spécification et les maquettes doivent toujours dire la même chose.
 

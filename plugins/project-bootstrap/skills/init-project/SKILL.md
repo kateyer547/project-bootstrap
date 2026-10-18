@@ -62,20 +62,23 @@ Avant d'écrire la documentation, présente et fais valider explicitement :
 
 1. Le **modèle de données** sous forme de diagramme Mermaid `erDiagram`, avec la liste des entités, cardinalités et contraintes.
 2. Le **schéma d'architecture** en Mermaid (composants, flux, environnements).
-3. Le **plan de réalisation** : un tableau des paliers avec, pour chacun, l'objectif, les fonctionnalités couvertes (`F-xx`), les livrables, les commandes de validation et la présence d'un point d'arrêt humain.
+3. Le **plan de réalisation** : la liste des exigences non fonctionnelles `ENF-xx` avec leur cible mesurable, puis un tableau des paliers avec, pour chacun, l'objectif, les fonctionnalités (`F-xx`) et exigences (`ENF-xx`) couvertes, les livrables, les commandes de validation et la présence d'un point d'arrêt humain.
 4. Le **niveau d'autonomie** de l'agent pendant le développement (voir bloc K).
 
 Pas de génération tant que ces quatre éléments ne sont pas validés.
 
 ## Étape 4 — Génération
 
-Copie les modèles du dossier `templates/` de ce skill vers le projet, puis remplis-les.
+Si le dossier n'est pas encore un dépôt git, initialise-le avec la branche principale choisie au bloc I : `git init -b <branche principale>` (`main` par défaut). build-app s'appuie sur git (statut propre, branches, tags `tier-N`).
+
+Copie ensuite les modèles du dossier `templates/` de ce skill vers le projet, puis remplis-les.
 
 | Modèle | Destination dans le projet |
 |---|---|
 | `templates/CLAUDE.md` | `CLAUDE.md` |
 | `templates/PLAN.md` | `PLAN.md` |
-| `templates/docs/*.md` | `docs/` |
+| `templates/gitignore` | `.gitignore` |
+| `templates/docs/00-index.md` à `11-paliers.md` | `docs/` |
 | `templates/docs/adr/0000-modele.md` | `docs/adr/0000-modele.md` (et un fichier `docs/adr/NNNN-titre.md` par décision) |
 | `templates/claude/settings.json` | `.claude/settings.json` |
 | `templates/claude/skills/build-app/SKILL.md` | `.claude/skills/build-app/SKILL.md` |
@@ -93,6 +96,7 @@ Règles de remplissage :
 - Les **commandes de validation** doivent être réellement exécutables dans la stack choisie (commande, outil et chemin existants une fois le palier 1 livré).
 - Un **ADR par décision structurante** : langage et framework, base de données, style d'architecture, hébergement, stratégie de déploiement, authentification, et toute décision où l'utilisateur a écarté ta recommandation.
 - Les **secrets** n'apparaissent jamais en clair : uniquement des noms de variables dans `.env.example`.
+- **`.gitignore`** : remplace `{{IGNORE_STACK}}` par les dépendances, sorties de build, caches et rapports de la stack choisie. Si le fichier existe déjà, ajoute seulement les entrées manquantes. `.env` doit rester ignoré et `.env.example` versionné.
 - **`.claude/settings.json`** : remplace `{{ALLOW_COMMANDES_STACK}}` par une entrée par commande de la stack que l'agent doit pouvoir lancer sans confirmation (build, tests, lint, format, migrations, `docker compose`), au format `Bash(<commande>:*)`. Remplace `{{DENY_SPECIFIQUES}}` par les commandes touchant les environnements interdits (déploiement, accès SSH ou base de production), ou supprime l'entrée. Si aucun formateur rapide n'existe, supprime tout le bloc `hooks`. Si le fichier existe déjà, fusionne au lieu d'écraser.
 - **Ne génère aucun code applicatif.** Le cadrage s'arrête à la documentation et à la configuration de l'agent. Le code commence avec build-app.
 
@@ -108,5 +112,5 @@ Un message final court :
 
 - la liste des fichiers créés ou modifiés ;
 - les questions ouvertes restantes, s'il y en a ;
-- la suggestion de commit : `git add -A && git commit -m "docs: cadrage initial du projet"` ;
+- la suggestion de commit : `git add -A && git commit -m "docs: cadrage initial du projet"` (build-app démarre sur un dépôt propre et pose le tag `tier-0` sur ce commit) ;
 - la commande pour démarrer le développement : **« Utilise le skill build-app et commence au palier 1. »**

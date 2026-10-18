@@ -9,6 +9,10 @@
       "Bash(git checkout -b:*)",
       "Bash(git switch:*)",
       "Bash(git tag:*)",
+      "Bash(git rev-parse:*)",
+      "Bash(git merge --no-ff:*)",
+      "Bash(git merge --abort:*)",
+      "Bash(git branch -d:*)",
       "{{ALLOW_COMMANDES_STACK}}"
     ],
     "deny": [
@@ -19,6 +23,7 @@
       "Bash(git push --force:*)",
       "Bash(git push -f:*)",
       "Bash(git reset --hard:*)",
+      "Bash(git branch -D:*)",
       "{{DENY_SPECIFIQUES}}"
     ]
   },

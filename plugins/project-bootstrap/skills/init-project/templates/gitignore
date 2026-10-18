@@ -1,0 +1,31 @@
+# Fichiers ignorés par git dans {{NOM_PROJET}}.
+
+# Secrets et configuration locale : seul .env.example est versionné.
+.env
+.env.*
+!.env.example
+secrets/
+
+# Notes de cadrage en cours (supprimées à la fin du cadrage)
+.bootstrap/
+
+# Réglages personnels de Claude Code
+.claude/settings.local.json
+
+# Systèmes et éditeurs
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+*.swp
+
+# Spécifique à la stack
+{{IGNORE_STACK}}
+# AIDE : dépendances, sorties de build, caches et rapports de la stack choisie,
+# un motif par ligne. Exemples : node_modules/, dist/, bin/, obj/, target/,
+# vendor/, __pycache__/, .venv/, coverage/, playwright-report/, test-results/.
+# Ne jamais ignorer les fichiers de verrouillage (package-lock.json, Cargo.lock,
+# composer.lock, uv.lock…) ni design/captures/ (référence visuelle des paliers).

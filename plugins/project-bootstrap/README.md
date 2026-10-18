@@ -31,7 +31,7 @@ Blocs couverts :
 | H. Infrastructure | hébergement, environnements, réseau, conteneurs, IaC, supervision |
 | I. Déploiement | forge, branches, pipeline, stratégie de mise en production, retour arrière |
 | J. Qualité | niveaux de tests, couverture, lint, revue, Definition of Done |
-| K. Paliers | découpage, commandes de validation, points d'arrêt, autonomie de l'agent |
+| K. Paliers | exigences non fonctionnelles `ENF-xx` chiffrées, découpage, commandes de validation, points d'arrêt, autonomie de l'agent, stratégie de branches |
 | L. Identité visuelle | ambiance, couleurs, police, thèmes, navigation, références, puis **maquettes cliquables** |
 
 **Maquettes de l'application** (si elle a une interface) : juste après le fonctionnel, Claude construit dans `design/` un prototype cliquable façon Figma. `design/index.html` affiche tous les écrans côte à côte, en mobile ou ordinateur, en clair ou sombre, avec les fonctionnalités annotées ; chaque écran s'ouvre en plein écran avec ses états (normal, vide, chargement, erreur) et ses liens vers les écrans suivants. Tu itères jusqu'à ce que le rendu te plaise, et la spec est mise à jour en même temps. Un exemple complet est dans `skills/init-project/examples/maquettes-canettes/`.
@@ -44,6 +44,7 @@ Avant d'écrire, Claude te fait valider le modèle de données, le schéma d'arc
 CLAUDE.md                          mémoire du projet (stack, commandes, règles)
 PLAN.md                            avancement partagé entre les sessions
 .env.example                       variables d'environnement
+.gitignore                         secrets, sorties de build et caches de la stack
 docs/
   00-index.md … 11-paliers.md      la spécification complète
   12-maquettes.md                  écrans, parcours, identité visuelle
@@ -57,7 +58,7 @@ design/                            maquettes cliquables (index.html = tableau de
 
 **3. Vérification**
 
-- Un script contrôle que rien ne manque : fichiers présents, aucun champ non rempli, chaque palier a ses commandes de validation, chaque fonctionnalité est rattachée à un palier, aucun secret apparent.
+- Un script contrôle que rien ne manque : fichiers présents, aucun champ non rempli, dépôt git initialisé avec `.env` ignoré, chaque palier a ses commandes de validation, chaque fonctionnalité MVP et chaque exigence non fonctionnelle est rattachée à un palier, aucun identifiant inconnu, aucun secret apparent. Il fonctionne avec Node, Python ou jq pour valider le JSON.
 - Le subagent `spec-reviewer` relit l'ensemble comme le ferait l'agent développeur et signale les oublis, contradictions et ambiguïtés.
 
 ## Développement ensuite
@@ -73,8 +74,9 @@ Pour chaque palier, `build-app` :
 4. lance toutes les commandes de validation du palier ;
 5. corrige, avec un nombre limité de tentatives avant de s'arrêter et d'expliquer le blocage ;
 6. fait relire par `tier-reviewer` ;
-7. met à jour la doc, coche le palier, pose le tag `tier-N` ;
-8. s'arrête pour ton feu vert, ou enchaîne selon le niveau d'autonomie choisi.
+7. met à jour la doc et coche le palier ;
+8. s'arrête pour ton feu vert, ou enchaîne selon le niveau d'autonomie choisi ;
+9. fusionne la branche du palier dans la branche principale (ou ouvre une pull request que tu fusionnes, selon la stratégie choisie) et pose le tag `tier-N`.
 
 Une nouvelle session reprend exactement là où la précédente s'est arrêtée, grâce à `PLAN.md` et aux tags.
 

@@ -9,12 +9,49 @@ cd "$ROOT" || { echo "Dossier introuvable : $ROOT"; exit 2; }
 errors=0
 ok()   { printf '  OK   %s\n' "$1"; }
 fail() { printf '  KO   %s\n' "$1"; errors=$((errors + 1)); }
+info() { printf '  INFO %s\n' "$1"; }
+
+# Valide un fichier JSON avec le premier interpréteur qui fonctionne réellement
+# (sous Windows, « python3 » peut n'être qu'un raccourci vers le Microsoft Store).
+# Code 0 = valide, 1 = invalide, 2 = aucun outil disponible.
+json_valid() {
+  if node -e '' >/dev/null 2>&1; then
+    node -e 'JSON.parse(require("fs").readFileSync(process.argv[1], "utf8"))' "$1" >/dev/null 2>&1
+    return $?
+  fi
+  for py in python3 python py; do
+    if "$py" -c 'import json' >/dev/null 2>&1; then
+      "$py" -c 'import json, sys; json.load(open(sys.argv[1], encoding="utf-8"))' "$1" >/dev/null 2>&1
+      return $?
+    fi
+  done
+  if command -v jq >/dev/null 2>&1; then
+    jq empty "$1" >/dev/null 2>&1
+    return $?
+  fi
+  return 2
+}
+
+# Identifiants des fonctionnalités MVP de docs/02 : sections « ### F-xx — Nom »
+# dont la ligne « Priorité » n'indique pas explicitement V2, V3… ou « Plus tard ».
+# Une priorité absente ou inattendue compte comme MVP, pour ne rien laisser passer.
+mvp_features() {
+  awk '
+    { sub(/\r$/, "") }
+    /^### F-[0-9]+/ { flush(); match($0, /F-[0-9]+/); id = substr($0, RSTART, RLENGTH); prio = ""; next }
+    /^(#|##|###) / { flush(); next }
+    id != "" && /Priorit/ { prio = toupper($0) }
+    END { flush() }
+    function flush() { if (id != "" && prio !~ /V[2-9]|PLUS TARD|LATER/) print id; id = "" }
+  ' "$1" | sort -u
+}
 
 echo "== Fichiers attendus"
 required=(
   CLAUDE.md
   PLAN.md
   .env.example
+  .gitignore
   docs/00-index.md
   docs/01-vision.md
   docs/02-specifications-fonctionnelles.md
@@ -50,13 +87,25 @@ if [ -z "$helpers" ]; then ok "aucun commentaire d'aide restant"; else
   fail "commentaires d'aide (AIDE :) restants dans : $(echo "$helpers" | tr '\n' ' ')"
 fi
 
+echo "== Dépôt git"
+if ! command -v git >/dev/null 2>&1; then
+  fail "git introuvable : build-app en a besoin (branches, tags tier-N)"
+elif git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  ok "dépôt git initialisé"
+  if git check-ignore -q .env; then ok ".env est ignoré par git"; else fail ".env n'est pas ignoré par git (ou déjà versionné) : voir .gitignore"; fi
+  if git check-ignore -q .env.example; then fail ".env.example est ignoré par git alors qu'il doit être versionné"; else ok ".env.example est versionné"; fi
+else
+  fail "le dossier n'est pas un dépôt git : lancer git init -b <branche principale>"
+fi
+
 echo "== Configuration Claude"
 if [ -f .claude/settings.json ]; then
-  if python3 -c 'import json,sys; json.load(open(sys.argv[1]))' .claude/settings.json 2>/dev/null; then
-    ok ".claude/settings.json est un JSON valide"
-  else
-    fail ".claude/settings.json n'est pas un JSON valide"
-  fi
+  json_valid .claude/settings.json
+  case $? in
+    0) ok ".claude/settings.json est un JSON valide" ;;
+    1) fail ".claude/settings.json n'est pas un JSON valide" ;;
+    *) info ".claude/settings.json non vérifié : ni node, ni python, ni jq disponible" ;;
+  esac
 fi
 for f in .claude/skills/build-app/SKILL.md .claude/agents/tier-reviewer.md; do
   [ -f "$f" ] || continue
@@ -88,19 +137,46 @@ if [ -f docs/11-paliers.md ]; then
   fi
 fi
 
-echo "== Traçabilité fonctionnalités → paliers"
-if [ -f docs/02-specifications-fonctionnelles.md ] && [ -f docs/11-paliers.md ]; then
-  features=$(grep -o -E '\bF-[0-9]{2,3}\b' docs/02-specifications-fonctionnelles.md | sort -u)
-  if [ -z "$features" ]; then
-    fail "aucun identifiant F-xx dans docs/02-specifications-fonctionnelles.md"
+echo "== Traçabilité spécification → paliers"
+spec=docs/02-specifications-fonctionnelles.md
+if [ -f "$spec" ] && [ -f docs/11-paliers.md ]; then
+  # Fonctionnalités : seules celles du MVP doivent figurer dans un palier.
+  defined=$(grep -E '^### F-[0-9]{2,3}' "$spec" | grep -o -E 'F-[0-9]{2,3}' | sort -u)
+  features=$(mvp_features "$spec")
+  if [ -z "$defined" ]; then
+    fail "aucune fonctionnalité au format « ### F-xx — Nom » dans $spec"
   else
     uncovered=""
     for id in $features; do
       grep -q -E "\b$id\b" docs/11-paliers.md || uncovered="$uncovered $id"
     done
-    if [ -z "$uncovered" ]; then ok "toutes les fonctionnalités ($(echo "$features" | wc -l | tr -d ' ')) sont rattachées à un palier"
-    else fail "fonctionnalités absentes de docs/11-paliers.md :$uncovered"; fi
+    if [ -z "$uncovered" ]; then ok "fonctionnalités MVP ($(echo "$features" | grep -c .)) toutes rattachées à un palier"
+    else fail "fonctionnalités MVP absentes de docs/11-paliers.md :$uncovered"; fi
+    later=$(comm -23 <(echo "$defined") <(echo "$features") | tr '\n' ' ')
+    [ -n "${later// /}" ] && info "fonctionnalités hors MVP, non exigées dans les paliers : $later"
   fi
+  # Exigences non fonctionnelles : toutes doivent figurer dans un palier.
+  enfs=$(grep -o -E '\bENF-[0-9]{2,3}\b' "$spec" | sort -u)
+  if [ -z "$enfs" ]; then
+    info "aucune exigence non fonctionnelle ENF-xx dans $spec"
+  else
+    uncovered=""
+    for id in $enfs; do
+      grep -q -E "\b$id\b" docs/11-paliers.md || uncovered="$uncovered $id"
+    done
+    if [ -z "$uncovered" ]; then ok "exigences non fonctionnelles ($(echo "$enfs" | grep -c .)) toutes rattachées à un palier"
+    else fail "exigences non fonctionnelles absentes de docs/11-paliers.md :$uncovered"; fi
+  fi
+  # Identifiants cités dans les paliers mais définis nulle part.
+  unknown=""
+  for id in $(grep -o -E '\b(F|ENF)-[0-9]{2,3}\b' docs/11-paliers.md | sort -u); do
+    case "$id" in
+      F-*) echo "$defined" | grep -q -x "$id" || unknown="$unknown $id" ;;
+      *)   echo "$enfs" | grep -q -x "$id" || unknown="$unknown $id" ;;
+    esac
+  done
+  if [ -n "$unknown" ]; then fail "identifiants cités dans docs/11-paliers.md mais absents de $spec :$unknown"
+  else ok "tous les identifiants cités dans les paliers existent dans la spécification"; fi
 fi
 
 echo "== Maquettes"
@@ -141,10 +217,10 @@ if [ -d design ]; then
   # Fonctionnalités MVP visibles dans au moins un écran (avertissement seulement)
   if [ -f docs/02-specifications-fonctionnelles.md ] && [ -f docs/12-maquettes.md ]; then
     nomock=""
-    for id in $(grep -o -E '\bF-[0-9]{2,3}\b' docs/02-specifications-fonctionnelles.md | sort -u); do
+    for id in $(mvp_features docs/02-specifications-fonctionnelles.md); do
       grep -q -E "\b$id\b" docs/12-maquettes.md design/ecrans.js 2>/dev/null || nomock="$nomock $id"
     done
-    [ -n "$nomock" ] && printf '  INFO fonctionnalités sans écran (normal si elles n%sont pas d%sinterface) :%s\n' "'" "'" "$nomock"
+    [ -n "$nomock" ] && info "fonctionnalités MVP sans écran (normal si elles n'ont pas d'interface) :$nomock"
   fi
 else
   ok "pas de dossier design/ (application sans interface)"

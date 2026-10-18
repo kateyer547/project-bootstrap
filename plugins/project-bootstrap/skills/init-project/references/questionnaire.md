@@ -130,7 +130,7 @@ Présente le résultat sous forme de diagramme Mermaid `erDiagram`.
 ## I. Déploiement et CI/CD → `docs/09-deploiement.md`
 
 1. Forge : GitHub / GitLab / Gitea / Azure DevOps. Runners hébergés ou auto-hébergés.
-2. Stratégie de branches : trunk-based / GitHub flow / GitFlow. Protection de la branche principale.
+2. Stratégie de branches : trunk-based / GitHub flow / GitFlow. Nom de la branche principale (`main` par défaut) et protection de celle-ci (pull request obligatoire ou non).
 3. Conventions : Conventional Commits, versionnement sémantique, changelog.
 4. Étapes du pipeline : lint → tests unitaires → build → tests d'intégration → analyse de sécurité → image → déploiement → tests de fumée.
 5. Artefacts : registre d'images ou de paquets.
@@ -149,9 +149,11 @@ Présente le résultat sous forme de diagramme Mermaid `erDiagram`.
 5. Definition of Done d'une fonctionnalité.
 6. Documentation attendue : README, OpenAPI, guide d'exploitation, changelog.
 
-## K. Étapes de réalisation et validation → `docs/11-paliers.md`, `PLAN.md`
+## K. Étapes de réalisation et validation → `docs/11-paliers.md`, `PLAN.md`, `docs/02-specifications-fonctionnelles.md`
 
-Propose un découpage à partir de tout ce qui précède. Base de départ à adapter :
+Commence par consolider les **exigences non fonctionnelles** `ENF-xx` exprimées dans les blocs précédents : contraintes et normes (A7), accessibilité et compatibilité (B6), volumétrie et utilisateurs simultanés (D3), RPO / RTO (D8), performance (F10), sécurité (G), disponibilité et supervision (H). Pour chacune : une cible mesurable et sa méthode de vérification (commande, test, mesure, ou contrôle manuel décrit). Relance toute exigence sans chiffre (« rapide », « disponible »). Elles vont dans la section « Exigences non fonctionnelles » de `docs/02`.
+
+Propose ensuite un découpage à partir de tout ce qui précède. Base de départ à adapter :
 
 | Palier | Objectif type |
 |---|---|
@@ -166,7 +168,7 @@ Propose un découpage à partir de tout ce qui précède. Base de départ à ada
 
 Pour chaque palier, fais préciser :
 
-1. Les fonctionnalités `F-xx` et règles `RG-xx` couvertes.
+1. Les fonctionnalités `F-xx`, règles `RG-xx` et exigences `ENF-xx` couvertes.
 2. Les livrables concrets.
 3. Les **commandes de validation** : des commandes exécutables qui renvoient un code de sortie non nul en cas d'échec.
 4. Les critères manuels éventuels, à limiter au strict nécessaire.
@@ -179,7 +181,10 @@ Puis, pour l'ensemble du développement :
    - arrêt uniquement aux paliers marqués comme points d'arrêt ;
    - autonomie complète jusqu'au dernier palier, arrêt seulement en cas de blocage.
 7. Nombre maximal de tentatives de correction avant arrêt (3 par défaut).
-8. Branche : une branche par palier fusionnée après validation / travail direct sur une branche de développement.
+8. Branches pendant le développement (si le bloc I impose une pull request pour modifier la branche principale, recommande la deuxième option) :
+   - une branche par palier, fusionnée localement par l'agent dans la branche principale à la clôture du palier (Recommandé) ;
+   - une branche par palier poussée sur la forge en pull / merge request, fusionnée par l'utilisateur ;
+   - travail direct sur une branche de développement unique, sans fusion par l'agent.
 9. Environnements et actions interdits à l'agent (par défaut : aucun accès à la production, pas de `git push --force`, pas de suppression de données hors environnement local).
 
-Vérifie avant de valider : chaque `F-xx` du MVP apparaît dans au moins un palier, et chaque palier a au moins une commande de validation.
+Vérifie avant de valider : chaque `F-xx` du MVP et chaque `ENF-xx` apparaît dans au moins un palier, et chaque palier a au moins une commande de validation. Les fonctionnalités V2 ou « plus tard » peuvent rester hors paliers.
