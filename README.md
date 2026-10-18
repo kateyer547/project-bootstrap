@@ -20,7 +20,12 @@ Marketplace Claude Code personnel.
 
    Pour tester sans dépôt : `/plugin marketplace add /chemin/vers/claude-plugins`.
 
-3. Mise à jour après une modification du plugin : incrémente `version` dans `plugin.json` et `marketplace.json`, pousse, puis `/plugin marketplace update kateyer-plugins`.
+3. Mise à jour après une modification du plugin : lance `bash tests/run.sh`, incrémente `version` dans `plugins/<plugin>/.claude-plugin/plugin.json` (seul endroit où elle est écrite : c'est elle qui fait foi), pousse, puis `/plugin marketplace update kateyer-plugins`.
+
+## Tester
+
+- `bash tests/run.sh` : contrôles rapides et gratuits (script de vérification, modèles, copies, syntaxe), à lancer à chaque modification.
+- `claude plugin eval plugins/project-bootstrap --tag rapide` : évaluation du comportement sur de vraies sessions, payante en jetons, à lancer avant une nouvelle version. Voir [plugins/project-bootstrap/evals/README.md](plugins/project-bootstrap/evals/README.md).
 
 ## Utilisation
 

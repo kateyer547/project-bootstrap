@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+# Faux projets pour tester verify-bootstrap.sh. À sourcer après assert.sh.
+
+# mkproj <dossier> : projet cadré, complet et valide (sans interface).
+mkproj() {
+  local p=$1 n
+  rm -rf "$p"
+  mkdir -p "$p/docs/adr" "$p/.claude/skills/build-app" "$p/.claude/agents"
+  (
+    cd "$p" || exit 1
+    for n in 00-index 01-vision 03-stack-technique 04-donnees 06-architecture 07-securite 08-infrastructure 09-deploiement 10-qualite-tests; do
+      printf '# %s\n\nContenu rempli.\n' "$n" > "docs/$n.md"
+    done
+    cat > docs/02-specifications-fonctionnelles.md <<'EOF'
+# 02 — Spécifications fonctionnelles
+
+## Fonctionnalités
+
+### F-01 — Connexion
+- **Priorité :** MVP
+
+### F-02 — Export
+- **Priorité :** V2
+
+### F-03 — Tableau de bord
+- **Priorité :** MVP
+
+#### Détail
+Sous-titre de niveau 4 : ne termine pas la fonctionnalité.
+
+## Règles métier
+
+| ID | Règle | Fonctionnalités concernées |
+|---|---|---|
+| RG-01 | Une seule session active | F-01, F-03 |
+
+## Exigences non fonctionnelles
+
+| ID | Catégorie | Exigence | Cible mesurable | Vérification |
+|---|---|---|---|---|
+| ENF-01 | Performance | Tableau de bord rapide | p95 < 300 ms | k6 |
+EOF
+    printf '# 05\n\n```mermaid\nerDiagram\n  UTILISATEUR ||--o{ SESSION : ouvre\n```\n' > docs/05-modele-donnees.md
+    cat > docs/11-paliers.md <<'EOF'
+# 11 — Paliers de réalisation
+
+## Palier 1 — Socle
+
+- **Fonctionnalités et règles :** F-01 F-03 RG-01
+- **Exigences non fonctionnelles :** ENF-01
+
+### Commandes de validation
+
+```bash
+just check
+```
+EOF
+    printf '# Projet test\n' > CLAUDE.md
+    printf '# Plan\n' > PLAN.md
+    printf 'DATABASE_URL=postgres://app:changeme@localhost:5432/app\n' > .env.example
+    printf '.env\n.env.*\n!.env.example\nnode_modules/\n' > .gitignore
+    printf '{"permissions":{"allow":["Bash(git status:*)"],"deny":[]}}\n' > .claude/settings.json
+    printf -- '---\nname: build-app\ndescription: test\n---\n' > .claude/skills/build-app/SKILL.md
+    printf -- '---\nname: tier-reviewer\ndescription: test\n---\n' > .claude/agents/tier-reviewer.md
+    git init -q -b main
+  )
+}
+
+# add_design <dossier> : ajoute les maquettes de l'exemple et docs/12.
+add_design() {
+  local p=$1
+  cp -R "$IP/examples/maquettes-canettes" "$p/design"
+  rm -rf "$p/design/captures"
+  printf '# 12 — Maquettes\n\n| ECR-01 | Connexion | F-01 |\n| ECR-02 | Tableau de bord | F-03 |\n' > "$p/docs/12-maquettes.md"
+}
+
+# raw_templates <dossier> : modèles copiés tels quels, sans remplissage.
+raw_templates() {
+  local p=$1 t="$IP/templates"
+  rm -rf "$p"
+  mkdir -p "$p/docs/adr" "$p/.claude/skills/build-app" "$p/.claude/agents"
+  cp "$t/CLAUDE.md" "$t/PLAN.md" "$p/"
+  cp "$t/gitignore" "$p/.gitignore"
+  cp "$t/env.example" "$p/.env.example"
+  cp "$t"/docs/*.md "$p/docs/"
+  rm "$p/docs/12-maquettes.md"
+  cp "$t/claude/settings.json" "$p/.claude/"
+  cp "$t/claude/skills/build-app/SKILL.md" "$p/.claude/skills/build-app/"
+  cp "$t/claude/agents/tier-reviewer.md" "$p/.claude/agents/"
+  (cd "$p" && git init -q -b main)
+}

@@ -54,9 +54,9 @@ Niveau de finition attendu : ouvre l'exemple `examples/maquettes-canettes/` de c
 Si Node est disponible, capture chaque écran et regarde les images avant de les montrer :
 
 ```bash
-npx -y playwright@latest install chromium
-npx -y playwright@latest screenshot --viewport-size=390,844 --full-page design/ecrans/ecr-01.html design/captures/ecr-01-mobile.png
-npx -y playwright@latest screenshot --viewport-size=1280,800 --full-page design/ecrans/ecr-01.html design/captures/ecr-01-desktop.png
+npx -y playwright@1.63.0 install chromium
+npx -y playwright@1.63.0 screenshot --viewport-size=390,844 --full-page design/ecrans/ecr-01.html design/captures/ecr-01-mobile.png
+npx -y playwright@1.63.0 screenshot --viewport-size=1280,800 --full-page design/ecrans/ecr-01.html design/captures/ecr-01-desktop.png
 ```
 
 Lis les captures et corrige : débordements horizontaux, textes coupés, éléments superposés, contrastes faibles, écrans vides ou trop pauvres. Si les captures ne sont pas possibles, relis attentivement le HTML.

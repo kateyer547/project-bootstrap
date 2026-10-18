@@ -92,6 +92,13 @@ Relance `/project-bootstrap:init-project` dans un projet déjà cadré : Claude 
 - Contrôles automatiques : `skills/init-project/scripts/verify-bootstrap.sh`
 - Relecture de la spec : `agents/spec-reviewer.md`
 
+`index.html`, `proto.js` et `components.css` existent en deux exemplaires identiques : dans `templates/design/` et dans l'exemple `examples/maquettes-canettes/`, qui doit rester ouvrable seul. Après une modification du modèle, recopie-les dans l'exemple ; `bash tests/run.sh` échoue tant que les copies diffèrent.
+
+## Tester le plugin
+
+- `bash tests/run.sh` (racine du dépôt) : tests automatiques du script de vérification et des modèles.
+- `evals/` : évaluations `claude plugin eval` du comportement réel, voir [evals/README.md](evals/README.md).
+
 ## Conseils
 
 - Lance le développement dans un environnement isolé (conteneur, VM ou ton serveur d'agents) si tu choisis l'autonomie complète.
