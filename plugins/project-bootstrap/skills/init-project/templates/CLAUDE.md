@@ -55,6 +55,7 @@ Lis uniquement ce qui est utile à la tâche en cours :
 ## Méthode de travail
 
 - Le développement suit le skill **build-app**, palier par palier. L'avancement est dans `PLAN.md`.
+- Un bug signalé passe par le skill **fix-bug** (test qui reproduit d'abord), une fonctionnalité absente de `docs/02` par le skill **add-feature** (spécification et palier avant tout code).
 - Une tâche n'est terminée que lorsque `{{CMD_CHECK}}` et les commandes de validation passent. Le hook git `pre-commit` lance `{{CMD_CHECK}}` : un commit refusé se corrige, il ne se contourne pas.
 - Toute décision qui modifie la stack, le modèle de données ou l'architecture passe par un nouvel ADR, validé par l'utilisateur avant d'être appliqué.
 - En cas d'ambiguïté dans la spécification : s'arrêter et demander, ne pas inventer.

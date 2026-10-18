@@ -66,7 +66,10 @@ required=(
   docs/11-paliers.md
   .claude/settings.json
   .claude/skills/build-app/SKILL.md
+  .claude/skills/fix-bug/SKILL.md
+  .claude/skills/add-feature/SKILL.md
   .claude/agents/tier-reviewer.md
+  .claude/scripts/verify-spec.sh
   .claude/hooks/session-start.sh
   .claude/hooks/guard-tests.sh
 )
@@ -76,7 +79,11 @@ done
 
 echo "== Marqueurs non remplis"
 present=()
-for f in "${required[@]}"; do [ -f "$f" ] && present+=("$f"); done
+for f in "${required[@]}"; do
+  # Ce script lui-même, recopié dans le projet, contient les motifs qu'il recherche.
+  [ "$f" = .claude/scripts/verify-spec.sh ] && continue
+  [ -f "$f" ] && present+=("$f")
+done
 if [ -d docs/adr ]; then
   while IFS= read -r f; do present+=("$f"); done < <(find docs/adr -name '*.md' ! -name '0000-modele.md')
 fi
@@ -126,7 +133,7 @@ if [ -f .claude/settings.json ]; then
     [ -f "$h" ] || fail "settings.json déclare $h, qui n'existe pas"
   done
 fi
-for f in .claude/skills/build-app/SKILL.md .claude/agents/tier-reviewer.md; do
+for f in .claude/skills/build-app/SKILL.md .claude/skills/fix-bug/SKILL.md .claude/skills/add-feature/SKILL.md .claude/agents/tier-reviewer.md; do
   [ -f "$f" ] || continue
   if head -1 "$f" | grep -q '^---$' && grep -q '^name:' "$f" && grep -q '^description:' "$f"; then
     ok "$f a un frontmatter valide"

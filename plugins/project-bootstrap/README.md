@@ -54,7 +54,10 @@ design/                            maquettes cliquables (index.html = tableau de
   settings.json                    permissions (allow, ask, deny) et déclaration des hooks
   hooks/                           garde-fous exécutés par Claude Code (voir ci-dessous)
   skills/build-app/SKILL.md        le développement par paliers
-  agents/tier-reviewer.md          relecteur indépendant de chaque palier
+  skills/fix-bug/SKILL.md          la correction d'un bug, test qui le reproduit d'abord
+  skills/add-feature/SKILL.md      l'ajout d'une fonctionnalité : spécification et palier avant le code
+  agents/tier-reviewer.md          relecteur indépendant de chaque palier ou correctif
+  scripts/verify-spec.sh           copie du script de vérification, relancée par add-feature
 ```
 
 **Garde-fous réels**, appliqués par Claude Code à chaque action et pas seulement écrits dans les consignes :
@@ -91,7 +94,14 @@ Pour chaque palier, `build-app` :
 8. s'arrête pour ton feu vert, ou enchaîne selon le niveau d'autonomie choisi ;
 9. fusionne la branche du palier dans la branche principale (ou ouvre une pull request que tu fusionnes, selon la stratégie choisie) et pose le tag `tier-N`.
 
-Une nouvelle session reprend exactement là où la précédente s'est arrêtée, grâce à `PLAN.md` et aux tags.
+Une nouvelle session reprend exactement là où la précédente s'est arrêtée, grâce à `PLAN.md`, aux tags et au hook `session-start.sh`.
+
+## Bugs et nouvelles fonctionnalités
+
+Pendant et après le MVP, deux skills gardent la même discipline :
+
+- **« Il y a un bug… »** → `fix-bug` : il écrit d'abord un test qui reproduit le bug, cherche la cause, corrige, lance `check`, fait relire par `tier-reviewer` et note le correctif dans `PLAN.md`. Si le comportement attendu n'est pas spécifié, il te le fait trancher et ajoute la règle métier.
+- **« Ajoute… »** → `add-feature` : il mène un entretien court, met à jour la spécification (`F-xx`, `RG-xx`, `ENF-xx`), le modèle, l'API et la maquette, ajoute un palier et relance la vérification. `build-app` réalise ensuite ce palier.
 
 ## Mettre à jour un cadrage
 

@@ -18,7 +18,7 @@ Tu es l'architecte logiciel qui cadre le projet avec l'utilisateur. Le but : à 
 ## Étape 0 — Détecter le mode
 
 1. Si `.bootstrap/notes.md` existe, une session précédente a été interrompue : propose de reprendre là où elle s'est arrêtée.
-2. Si `docs/00-index.md` existe, le projet a déjà été cadré : passe en **mode mise à jour**. Lis l'existant, demande ce qui change, ne modifie que les sections concernées et consigne chaque décision modifiée dans un nouvel ADR. N'écrase jamais un fichier sans accord.
+2. Si `docs/00-index.md` existe, le projet a déjà été cadré : passe en **mode mise à jour**. Lis l'existant, demande ce qui change, ne modifie que les sections concernées et consigne chaque décision modifiée dans un nouvel ADR. N'écrase jamais un fichier sans accord. Pour une seule fonctionnalité à ajouter, propose plutôt le skill `add-feature` du projet, plus léger. Remplace `.claude/scripts/verify-spec.sh` par la version actuelle de `scripts/verify-bootstrap.sh`, et propose d'ajouter les fichiers des modèles absents du projet (skills, hooks) apparus depuis le cadrage.
 3. Si le dossier contient déjà du code, analyse-le (manifestes, langages, frameworks, Dockerfile, CI, migrations) et pré-remplis les réponses que tu peux déduire. Fais-les confirmer au lieu de les redemander.
 4. Sinon : **mode création**.
 
@@ -82,6 +82,9 @@ Copie ensuite les modèles du dossier `templates/` de ce skill vers le projet, p
 | `templates/docs/adr/0000-modele.md` | `docs/adr/0000-modele.md` (et un fichier `docs/adr/NNNN-titre.md` par décision) |
 | `templates/claude/settings.json` | `.claude/settings.json` |
 | `templates/claude/skills/build-app/SKILL.md` | `.claude/skills/build-app/SKILL.md` |
+| `templates/claude/skills/fix-bug/SKILL.md` | `.claude/skills/fix-bug/SKILL.md` |
+| `templates/claude/skills/add-feature/SKILL.md` | `.claude/skills/add-feature/SKILL.md` |
+| `scripts/verify-bootstrap.sh` (copié tel quel) | `.claude/scripts/verify-spec.sh`, que `add-feature` relance après chaque ajout |
 | `templates/claude/agents/tier-reviewer.md` | `.claude/agents/tier-reviewer.md` |
 | `templates/claude/hooks/` (`session-start.sh`, `guard-tests.sh`, `format-file.sh`) | `.claude/hooks/` |
 | `templates/env.example` | `.env.example` |

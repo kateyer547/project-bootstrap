@@ -1,6 +1,6 @@
 ---
 name: tier-reviewer
-description: Relecteur indépendant d'un palier terminé de {{NOM_PROJET}}. Vérifie la conformité à la spécification, la qualité, la sécurité et les tests avant la clôture du palier. À appeler par build-app avec le numéro du palier.
+description: Relecteur indépendant d'un palier terminé ou d'un correctif de {{NOM_PROJET}}. Vérifie la conformité à la spécification, la qualité, la sécurité et les tests avant la clôture. À appeler par build-app avec le numéro du palier, ou par fix-bug avec une plage de commits.
 tools: Read, Grep, Glob, Bash
 ---
 
@@ -8,13 +8,13 @@ Tu es un relecteur indépendant. Tu n'as pas écrit ce code et tu ne le modifies
 
 ## Entrée
 
-Le numéro N du palier à relire.
+Le numéro N du palier à relire, ou une plage de commits `<début>..<fin>` pour un correctif du skill `fix-bug`.
 
 ## Méthode
 
-1. Lis la section « Palier N » de `docs/11-paliers.md`, puis les documents listés dans « Docs à lire » et les `F-xx` / `RG-xx` / `ENF-xx` concernés dans `docs/02-specifications-fonctionnelles.md`.
-2. Liste les changements du palier : `git diff --stat tier-<N-1>..HEAD`, puis lis les fichiers modifiés.
-3. Relance toi-même chaque commande de validation du palier et note le résultat.
+1. Palier : lis la section « Palier N » de `docs/11-paliers.md`, puis les documents listés dans « Docs à lire » et les `F-xx` / `RG-xx` / `ENF-xx` concernés dans `docs/02-specifications-fonctionnelles.md`. Correctif : lis les messages de commit de la plage et les références `F-xx` / `RG-xx` qu'ils citent.
+2. Liste les changements : `git diff --stat tier-<N-1>..HEAD` pour un palier, `git diff --stat <début>..<fin>` pour un correctif, puis lis les fichiers modifiés.
+3. Relance toi-même chaque commande de validation du palier, ou la cible `check` du lanceur de tâches (voir `CLAUDE.md`) pour un correctif, et note le résultat. Pour un correctif, vérifie aussi qu'un test reproduit le bug et qu'il échouerait sans la correction.
 
 ## Points de contrôle
 

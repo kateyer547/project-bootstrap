@@ -39,6 +39,12 @@ expect ".gitignore absent" 1 "\.gitignore manquant" -- run
 mkproj "$P"; rm "$P/docs/07-securite.md"
 expect "document manquant" 1 "docs/07-securite.md manquant" -- run
 
+mkproj "$P"; printf '# Sans frontmatter\n' > "$P/.claude/skills/add-feature/SKILL.md"
+expect "skill add-feature sans frontmatter" 1 "add-feature/SKILL.md : frontmatter" -- run
+
+mkproj "$P"
+expect "le script copié dans le projet vérifie le projet" 0 "Cadrage complet" -- bash "$P/.claude/scripts/verify-spec.sh" "$P"
+
 mkproj "$P"; for f in "$P"/docs/*.md; do edit_file "$f" 's/$/\r/'; done
 expect "fichiers en fins de ligne Windows (CRLF)" 0 "Cadrage complet" -- run
 

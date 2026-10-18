@@ -74,6 +74,10 @@ EOF
 }
 EOF
     printf -- '---\nname: build-app\ndescription: test\n---\n' > .claude/skills/build-app/SKILL.md
+    mkdir -p .claude/skills/fix-bug .claude/skills/add-feature .claude/scripts
+    printf -- '---\nname: fix-bug\ndescription: test\n---\n' > .claude/skills/fix-bug/SKILL.md
+    printf -- '---\nname: add-feature\ndescription: test\n---\n' > .claude/skills/add-feature/SKILL.md
+    cp "$VERIFY" .claude/scripts/verify-spec.sh
     printf -- '---\nname: tier-reviewer\ndescription: test\n---\n' > .claude/agents/tier-reviewer.md
     mkdir -p .claude/hooks
     printf '#!/usr/bin/env bash\necho "État du projet"\n' > .claude/hooks/session-start.sh
@@ -102,6 +106,8 @@ raw_templates() {
   rm "$p/docs/12-maquettes.md"
   cp "$t/claude/settings.json" "$p/.claude/"
   cp "$t/claude/skills/build-app/SKILL.md" "$p/.claude/skills/build-app/"
+  cp -R "$t/claude/skills/fix-bug" "$t/claude/skills/add-feature" "$p/.claude/skills/"
+  mkdir -p "$p/.claude/scripts" && cp "$VERIFY" "$p/.claude/scripts/verify-spec.sh"
   cp "$t/claude/agents/tier-reviewer.md" "$p/.claude/agents/"
   cp -R "$t/claude/hooks" "$p/.claude/hooks"
   (cd "$p" && git init -q -b main)

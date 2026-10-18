@@ -25,7 +25,9 @@ fi
 # Chaque chemin de fichier cité par le skill existe dans le plugin.
 missing=""
 for doc in "$IP/SKILL.md" "$IP/references/maquettes.md" "$IP/references/questionnaire.md"; do
-  for ref in $(grep -o -E '(templates|examples|references|scripts)/[A-Za-z0-9_./-]+' "$doc" | sed -E 's/[.)]+$//' | sort -u); do
+  # Chemins relatifs au skill seulement : « .claude/scripts/… » désigne un fichier du projet généré.
+  for ref in $(grep -o -E '(^|[^A-Za-z0-9_./-])(templates|examples|references|scripts)/[A-Za-z0-9_./-]+' "$doc" \
+      | sed -E 's/^[^A-Za-z0-9_./-]//; s/[.)]+$//' | sort -u); do
     [ -e "$IP/$ref" ] || missing="$missing ${doc#"$IP"/}→$ref"
   done
 done

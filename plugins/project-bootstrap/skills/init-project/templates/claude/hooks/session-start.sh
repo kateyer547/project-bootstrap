@@ -38,5 +38,5 @@ if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   modifies=$(git status --porcelain 2>/dev/null | wc -l | tr -d ' ')
   echo "- Branche : ${branche:-détachée} ; dernier tag de palier : $tag ; fichiers non commités : $modifies"
 fi
-echo "- Développement par paliers : skill build-app. Lis CLAUDE.md avant de modifier le code."
+echo "- Skills du projet : build-app (paliers), fix-bug (bug signalé), add-feature (fonctionnalité absente de docs/02). Lis CLAUDE.md avant de modifier le code."
 exit 0
