@@ -28,7 +28,7 @@ En mode Express, utilise ce questionnaire comme grille : pré-remplis chaque que
 3. Rôles et permissions : quels rôles existent, et la matrice rôle × action.
 4. **(ouverte)** Règles métier `RG-xx` : calculs, statuts et transitions, limites, unicités, délais, cas d'erreur. Relance sur les cas limites (doublons, suppression d'un élément référencé, accès concurrent).
 5. Notifications : aucune / e-mail / push / temps réel dans l'interface / webhooks.
-6. Interface (si front) : pages ou écrans principaux, parcours critiques, responsive, thème sombre, accessibilité visée (RGAA / WCAG AA), langues.
+6. Interface (si front) : pages ou écrans principaux, parcours critiques, responsive, thème sombre, accessibilité visée (RGAA / WCAG AA). Navigateurs et appareils pris en charge, avec leurs versions minimales. Langues, langue par défaut, formats de date, de nombre et de devise, fuseau d'affichage. Les navigateurs, l'accessibilité et les langues deviendront des `ENF-xx` au bloc K.
 7. **(ouverte)** Hors périmètre : ce que l'application ne fera explicitement **pas**.
 
 ## L. Identité visuelle et maquettes → `design/`, `docs/12-maquettes.md`
@@ -56,7 +56,10 @@ Pour chaque couche, demande le choix **et la version** :
 4. Mobile (si applicable) : natif / Flutter / React Native / .NET MAUI / PWA.
 5. Services annexes : cache (Redis), file de messages (RabbitMQ, Kafka), recherche (Meilisearch, Elasticsearch), stockage de fichiers (disque, S3, Azure Blob), envoi d'e-mails, tâches planifiées.
 6. Gestionnaire de paquets, outil de build, versions de runtime à épingler.
-7. Outillage qualité : formatter, linter, analyseur statique, outil de tests, outil de couverture.
+7. Outillage qualité : formatter, linter, analyseur statique, outil de tests, outil de couverture. Pour chaque outil : la commande **en mode vérification**, qui ne modifie rien et renvoie un code non nul en cas de problème, et la commande qui formate un seul fichier.
+8. Lanceur de tâches, qui expose toutes les commandes sous des noms stables (`check`, `test`, `lint`…) appelés par `CLAUDE.md`, la CI et les paliers : `just` (Recommandé si la stack n'a pas déjà de scripts natifs : un seul exécutable, multiplateforme) / scripts du gestionnaire de paquets (`npm run`, `composer`) / `make` (non fourni avec Git Bash sous Windows) / script shell.
+
+Les réponses 6 à 8 remplissent le « Contrat d'outillage » de `docs/03`, avec les motifs des fichiers de test, les marqueurs d'exclusion du framework de tests et les sorties de build, que tu déduis de la stack et fais confirmer.
 
 Pour chaque choix structurant, prévois un ADR.
 
@@ -70,6 +73,7 @@ Pour chaque choix structurant, prévois un ADR.
 6. Données sensibles : ce qui doit être chiffré au repos, masqué dans les logs, exclu des exports.
 7. Cycle de vie : archivage, purge, historisation, suppression logique ou physique.
 8. Sauvegardes : fréquence, rétention, lieu de stockage, objectif de restauration (RPO / RTO), test de restauration.
+9. Reprise de données (si une base ou des fichiers existants sont à reprendre, voir D1) : volume, correspondance avec les entités, nettoyage et rejets, script rejouable, essai à blanc, contrôles par comptage, bascule et retour arrière.
 
 ## E. Modélisation des données → `docs/05-modele-donnees.md`
 
@@ -91,7 +95,7 @@ Déduis une première proposition à partir des blocs B et D, puis fais-la valid
 
 Présente le résultat sous forme de diagramme Mermaid `erDiagram`.
 
-## F. Architecture → `docs/06-architecture.md`
+## F. Architecture → `docs/06-architecture.md`, `docs/13-integrations.md`
 
 1. Style global : monolithe modulaire (Recommandé par défaut) / microservices / serverless / monolithe classique.
 2. Organisation du code : architecture en couches / hexagonale (ports et adaptateurs) / clean architecture / vertical slices / MVC.
@@ -103,6 +107,8 @@ Présente le résultat sous forme de diagramme Mermaid `erDiagram`.
 8. Configuration : variables d'environnement, fichiers par environnement, gestion des secrets.
 9. Journalisation et observabilité applicative : format des logs (JSON structuré), niveaux, corrélation des requêtes, endpoint `/health`, métriques.
 10. Performance : temps de réponse visés, mise en cache, traitements lourds en tâche de fond.
+11. Architecture front (si interface) : routage et routes protégées, gestion d'état, client d'API (généré depuis le contrat OpenAPI ou écrit), validation des formulaires (schéma partagé avec le back ou non), affichage des erreurs de l'API, organisation des composants, fichiers de traduction.
+12. Intégrations externes → `docs/13-integrations.md` : paiement, e-mail transactionnel, SMS, SSO, stockage, API métier, webhooks entrants. Pour chacune : fournisseur, environnement d'essai, **bouchon pour les tests automatisés**, quotas, délai d'attente et nouvelles tentatives, comportement en panne, vérification de la signature des webhooks. Les sources externes de D2 appelées par l'application y figurent aussi.
 
 ## G. Sécurité → `docs/07-securite.md`
 
@@ -130,15 +136,16 @@ Présente le résultat sous forme de diagramme Mermaid `erDiagram`.
 ## I. Déploiement et CI/CD → `docs/09-deploiement.md`
 
 1. Forge : GitHub / GitLab / Gitea / Azure DevOps. Runners hébergés ou auto-hébergés.
-2. Stratégie de branches : trunk-based / GitHub flow / GitFlow. Protection de la branche principale.
+2. Stratégie de branches : trunk-based / GitHub flow / GitFlow. Nom de la branche principale (`main` par défaut) et protection de celle-ci (pull request obligatoire ou non).
 3. Conventions : Conventional Commits, versionnement sémantique, changelog.
-4. Étapes du pipeline : lint → tests unitaires → build → tests d'intégration → analyse de sécurité → image → déploiement → tests de fumée.
+4. Étapes du pipeline : lint → tests unitaires → build → tests d'intégration → analyse de sécurité → image → déploiement → tests de fumée. Chaque étape appelle une cible du lanceur de tâches. Comment l'agent vérifie le fichier de pipeline sans pousser : exécution locale (`act`, `gitlab-ci-local`), analyseur (`actionlint`, `glab ci lint`), ou à défaut la première pull request.
 5. Artefacts : registre d'images ou de paquets.
 6. Déclenchement par environnement : automatique / sur tag / manuel avec validation.
 7. Stratégie de mise en production : redémarrage simple / rolling / blue-green / canary.
 8. Migrations de base au déploiement : automatiques ou manuelles, compatibilité ascendante.
 9. Retour arrière : procédure et délai visé.
 10. Vérification après déploiement : healthcheck, tests de fumée, surveillance.
+11. Publication mobile (si application mobile) : stores visés et comptes développeur, signature et stockage des certificats en secrets de CI, numérotation des builds, canaux de test (TestFlight, test interne Google Play), mise à jour forcée, certificats de notifications push.
 
 ## J. Qualité et tests → `docs/10-qualite-tests.md`
 
@@ -149,13 +156,15 @@ Présente le résultat sous forme de diagramme Mermaid `erDiagram`.
 5. Definition of Done d'une fonctionnalité.
 6. Documentation attendue : README, OpenAPI, guide d'exploitation, changelog.
 
-## K. Étapes de réalisation et validation → `docs/11-paliers.md`, `PLAN.md`
+## K. Étapes de réalisation et validation → `docs/11-paliers.md`, `PLAN.md`, `docs/02-specifications-fonctionnelles.md`
 
-Propose un découpage à partir de tout ce qui précède. Base de départ à adapter :
+Commence par consolider les **exigences non fonctionnelles** `ENF-xx` exprimées dans les blocs précédents : contraintes et normes (A7), accessibilité et compatibilité (B6), volumétrie et utilisateurs simultanés (D3), RPO / RTO (D8), performance (F10), sécurité (G), disponibilité et supervision (H). Pour chacune : une cible mesurable et sa méthode de vérification (commande, test, mesure, ou contrôle manuel décrit). Relance toute exigence sans chiffre (« rapide », « disponible »). Elles vont dans la section « Exigences non fonctionnelles » de `docs/02`.
+
+Propose ensuite un découpage à partir de tout ce qui précède. Base de départ à adapter :
 
 | Palier | Objectif type |
 |---|---|
-| 1 | Socle : dépôt, structure, outillage qualité, CI minimale, endpoint `/health`, environnement local |
+| 1 | Socle : dépôt, structure, outillage qualité, lanceur de tâches avec sa cible `check` et le hook git `pre-commit`, preuve d'échec de `check`, CI minimale vérifiée, endpoint `/health`, environnement local |
 | 2 | Données : schéma, migrations, seed, couche d'accès, tests d'intégration |
 | 3 | Sécurité : authentification, autorisation, comptes de test |
 | 4 à n | Fonctionnalités MVP par lots cohérents (un lot = un ensemble de `F-xx` liés) |
@@ -166,7 +175,7 @@ Propose un découpage à partir de tout ce qui précède. Base de départ à ada
 
 Pour chaque palier, fais préciser :
 
-1. Les fonctionnalités `F-xx` et règles `RG-xx` couvertes.
+1. Les fonctionnalités `F-xx`, règles `RG-xx` et exigences `ENF-xx` couvertes.
 2. Les livrables concrets.
 3. Les **commandes de validation** : des commandes exécutables qui renvoient un code de sortie non nul en cas d'échec.
 4. Les critères manuels éventuels, à limiter au strict nécessaire.
@@ -179,7 +188,10 @@ Puis, pour l'ensemble du développement :
    - arrêt uniquement aux paliers marqués comme points d'arrêt ;
    - autonomie complète jusqu'au dernier palier, arrêt seulement en cas de blocage.
 7. Nombre maximal de tentatives de correction avant arrêt (3 par défaut).
-8. Branche : une branche par palier fusionnée après validation / travail direct sur une branche de développement.
+8. Branches pendant le développement (si le bloc I impose une pull request pour modifier la branche principale, recommande la deuxième option) :
+   - une branche par palier, fusionnée localement par l'agent dans la branche principale à la clôture du palier (Recommandé) ;
+   - une branche par palier poussée sur la forge en pull / merge request, fusionnée par l'utilisateur ;
+   - travail direct sur une branche de développement unique, sans fusion par l'agent.
 9. Environnements et actions interdits à l'agent (par défaut : aucun accès à la production, pas de `git push --force`, pas de suppression de données hors environnement local).
 
-Vérifie avant de valider : chaque `F-xx` du MVP apparaît dans au moins un palier, et chaque palier a au moins une commande de validation.
+Vérifie avant de valider : chaque `F-xx` du MVP et chaque `ENF-xx` apparaît dans au moins un palier, et chaque palier a au moins une commande de validation. Les fonctionnalités V2 ou « plus tard » peuvent rester hors paliers.

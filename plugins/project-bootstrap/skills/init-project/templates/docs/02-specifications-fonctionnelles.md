@@ -27,6 +27,14 @@
 |---|---|---|
 | RG-01 | {{REGLE}} | {{F_IDS}} |
 
+## Exigences non fonctionnelles
+
+| ID | Catégorie | Exigence | Cible mesurable | Vérification |
+|---|---|---|---|---|
+| ENF-01 | {{CATEGORIE}} | {{EXIGENCE}} | {{CIBLE}} | {{VERIFICATION}} |
+
+<!-- AIDE : catégories usuelles : performance, disponibilité, volumétrie, sécurité, accessibilité, compatibilité (navigateurs, appareils), exploitabilité, conformité. La cible est chiffrée (ex. « p95 < 300 ms sur GET /api/v1/commandes avec 10 000 commandes », « RGAA AA, 0 erreur axe-core sur les écrans du MVP »). La vérification est une commande, un test ou, à défaut, un contrôle manuel décrit. Chaque ENF-xx est rattachée à au moins un palier de docs/11-paliers.md. -->
+
 ## Notifications
 
 {{NOTIFICATIONS}}
@@ -34,7 +42,7 @@
 ## Interface utilisateur
 
 {{INTERFACE}}
-<!-- AIDE : écrans principaux, parcours critiques, responsive, accessibilité visée, langues. Supprime la section si l'application n'a pas d'interface. -->
+<!-- AIDE : écrans principaux, parcours critiques, responsive, accessibilité visée, navigateurs et appareils pris en charge, langues et formats. Les navigateurs, l'accessibilité et les langues sont aussi des ENF-xx vérifiables. Supprime la section si l'application n'a pas d'interface. -->
 
 ## Hors périmètre
 

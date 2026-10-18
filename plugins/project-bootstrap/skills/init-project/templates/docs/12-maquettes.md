@@ -4,13 +4,13 @@ Les maquettes de `design/` montrent l'application finale attendue. Elles font r�
 
 ## Consulter les maquettes
 
-Ouvrir `design/index.html` dans un navigateur, ou :
+Ouvrir `design/index.html` dans un navigateur (double-clic, aucun serveur nécessaire), ou servir le dossier en local :
 
 ```bash
-python3 -m http.server 8080 -d design
+npx -y http-server@14.1.1 design -p 8080
 ```
 
-puis `http://localhost:8080`. Le tableau affiche tous les écrans en mobile ou ordinateur, en thème clair ou sombre, avec ou sans annotations des fonctionnalités. Un clic ouvre l'écran en plein écran ; la barre d'outils permet de passer d'un état à l'autre (normal, vide, chargement, erreur).
+(ou `python3 -m http.server 8080 -d design`, `py` sous Windows) puis `http://localhost:8080`. Le tableau affiche tous les écrans en mobile ou ordinateur, en thème clair ou sombre, avec ou sans annotations des fonctionnalités. Un clic ouvre l'écran en plein écran ; la barre d'outils permet de passer d'un état à l'autre (normal, vide, chargement, erreur).
 
 ## Identité visuelle
 

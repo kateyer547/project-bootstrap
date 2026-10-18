@@ -9,7 +9,17 @@
       "Bash(git checkout -b:*)",
       "Bash(git switch:*)",
       "Bash(git tag:*)",
+      "Bash(git rev-parse:*)",
+      "Bash(git merge --no-ff:*)",
+      "Bash(git merge --abort:*)",
+      "Bash(git branch -d:*)",
       "{{ALLOW_COMMANDES_STACK}}"
+    ],
+    "ask": [
+      "Edit(/.claude/**)",
+      "Edit(/.githooks/**)",
+      "Bash(git config *hooksPath*)",
+      "{{ASK_CONFIG_QUALITE}}"
     ],
     "deny": [
       "Read(./.env)",
@@ -19,17 +29,42 @@
       "Bash(git push --force:*)",
       "Bash(git push -f:*)",
       "Bash(git reset --hard:*)",
+      "Bash(git branch -D:*)",
+      "Bash(git * --no-verify*)",
+      "Bash(git commit -n*)",
       "{{DENY_SPECIFIQUES}}"
     ]
   },
   "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PROJECT_DIR}/.claude/hooks/session-start.sh\""
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PROJECT_DIR}/.claude/hooks/guard-tests.sh\""
+          }
+        ]
+      }
+    ],
     "PostToolUse": [
       {
         "matcher": "Edit|Write|MultiEdit",
         "hooks": [
           {
             "type": "command",
-            "command": "{{CMD_FORMAT_HOOK}}"
+            "command": "bash \"${CLAUDE_PROJECT_DIR}/.claude/hooks/format-file.sh\""
           }
         ]
       }

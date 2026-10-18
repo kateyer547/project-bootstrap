@@ -18,7 +18,7 @@ Tu es l'architecte logiciel qui cadre le projet avec l'utilisateur. Le but : à 
 ## Étape 0 — Détecter le mode
 
 1. Si `.bootstrap/notes.md` existe, une session précédente a été interrompue : propose de reprendre là où elle s'est arrêtée.
-2. Si `docs/00-index.md` existe, le projet a déjà été cadré : passe en **mode mise à jour**. Lis l'existant, demande ce qui change, ne modifie que les sections concernées et consigne chaque décision modifiée dans un nouvel ADR. N'écrase jamais un fichier sans accord.
+2. Si `docs/00-index.md` existe, le projet a déjà été cadré : passe en **mode mise à jour**. Lis l'existant, demande ce qui change, ne modifie que les sections concernées et consigne chaque décision modifiée dans un nouvel ADR. N'écrase jamais un fichier sans accord. Pour une seule fonctionnalité à ajouter, propose plutôt le skill `add-feature` du projet, plus léger. Remplace `.claude/scripts/verify-spec.sh` par la version actuelle de `scripts/verify-bootstrap.sh`, et propose d'ajouter les fichiers des modèles absents du projet (skills, hooks) apparus depuis le cadrage.
 3. Si le dossier contient déjà du code, analyse-le (manifestes, langages, frameworks, Dockerfile, CI, migrations) et pré-remplis les réponses que tu peux déduire. Fais-les confirmer au lieu de les redemander.
 4. Sinon : **mode création**.
 
@@ -62,26 +62,34 @@ Avant d'écrire la documentation, présente et fais valider explicitement :
 
 1. Le **modèle de données** sous forme de diagramme Mermaid `erDiagram`, avec la liste des entités, cardinalités et contraintes.
 2. Le **schéma d'architecture** en Mermaid (composants, flux, environnements).
-3. Le **plan de réalisation** : un tableau des paliers avec, pour chacun, l'objectif, les fonctionnalités couvertes (`F-xx`), les livrables, les commandes de validation et la présence d'un point d'arrêt humain.
+3. Le **plan de réalisation** : la liste des exigences non fonctionnelles `ENF-xx` avec leur cible mesurable, puis un tableau des paliers avec, pour chacun, l'objectif, les fonctionnalités (`F-xx`) et exigences (`ENF-xx`) couvertes, les livrables, les commandes de validation et la présence d'un point d'arrêt humain.
 4. Le **niveau d'autonomie** de l'agent pendant le développement (voir bloc K).
 
 Pas de génération tant que ces quatre éléments ne sont pas validés.
 
 ## Étape 4 — Génération
 
-Copie les modèles du dossier `templates/` de ce skill vers le projet, puis remplis-les.
+Si le dossier n'est pas encore un dépôt git, initialise-le avec la branche principale choisie au bloc I : `git init -b <branche principale>` (`main` par défaut). build-app s'appuie sur git (statut propre, branches, tags `tier-N`).
+
+Copie ensuite les modèles du dossier `templates/` de ce skill vers le projet, puis remplis-les.
 
 | Modèle | Destination dans le projet |
 |---|---|
 | `templates/CLAUDE.md` | `CLAUDE.md` |
 | `templates/PLAN.md` | `PLAN.md` |
-| `templates/docs/*.md` | `docs/` |
+| `templates/gitignore` | `.gitignore` |
+| `templates/docs/00-index.md` à `11-paliers.md` | `docs/` |
 | `templates/docs/adr/0000-modele.md` | `docs/adr/0000-modele.md` (et un fichier `docs/adr/NNNN-titre.md` par décision) |
 | `templates/claude/settings.json` | `.claude/settings.json` |
 | `templates/claude/skills/build-app/SKILL.md` | `.claude/skills/build-app/SKILL.md` |
+| `templates/claude/skills/fix-bug/SKILL.md` | `.claude/skills/fix-bug/SKILL.md` |
+| `templates/claude/skills/add-feature/SKILL.md` | `.claude/skills/add-feature/SKILL.md` |
+| `scripts/verify-bootstrap.sh` (copié tel quel) | `.claude/scripts/verify-spec.sh`, que `add-feature` relance après chaque ajout |
 | `templates/claude/agents/tier-reviewer.md` | `.claude/agents/tier-reviewer.md` |
+| `templates/claude/hooks/` (`session-start.sh`, `guard-tests.sh`, `format-file.sh`) | `.claude/hooks/` |
 | `templates/env.example` | `.env.example` |
 | `templates/docs/12-maquettes.md` | `docs/12-maquettes.md` (seulement si `design/` existe) |
+| `templates/docs/13-integrations.md` | `docs/13-integrations.md` (seulement si l'application utilise des services externes ou reçoit des webhooks) |
 
 Le dossier `design/` a déjà été créé à l'étape 2 bis ; vérifie seulement qu'il est cohérent avec la version finale de la spécification.
 
@@ -90,10 +98,12 @@ Règles de remplissage :
 - Remplace **tous** les marqueurs `{{...}}` et supprime les commentaires `<!-- AIDE : ... -->` d'aide au remplissage.
 - Les tableaux des modèles montrent une ligne d'exemple : duplique-la autant que nécessaire.
 - Supprime une section sans objet plutôt que d'écrire « N/A ».
-- Les **commandes de validation** doivent être réellement exécutables dans la stack choisie (commande, outil et chemin existants une fois le palier 1 livré).
+- Les **commandes de validation** doivent être réellement exécutables dans la stack choisie (commande, outil et chemin existants une fois le palier 1 livré), et passer par les cibles du lanceur de tâches déclarées dans le « Contrat d'outillage » de `docs/03`. `CLAUDE.md`, `09`, `10` et `11` utilisent les mêmes noms de cibles.
 - Un **ADR par décision structurante** : langage et framework, base de données, style d'architecture, hébergement, stratégie de déploiement, authentification, et toute décision où l'utilisateur a écarté ta recommandation.
 - Les **secrets** n'apparaissent jamais en clair : uniquement des noms de variables dans `.env.example`.
-- **`.claude/settings.json`** : remplace `{{ALLOW_COMMANDES_STACK}}` par une entrée par commande de la stack que l'agent doit pouvoir lancer sans confirmation (build, tests, lint, format, migrations, `docker compose`), au format `Bash(<commande>:*)`. Remplace `{{DENY_SPECIFIQUES}}` par les commandes touchant les environnements interdits (déploiement, accès SSH ou base de production), ou supprime l'entrée. Si aucun formateur rapide n'existe, supprime tout le bloc `hooks`. Si le fichier existe déjà, fusionne au lieu d'écraser.
+- **`.gitignore`** : remplace `{{IGNORE_STACK}}` par les dépendances, sorties de build, caches et rapports de la stack choisie. Si le fichier existe déjà, ajoute seulement les entrées manquantes. `.env` doit rester ignoré et `.env.example` versionné.
+- **`.claude/settings.json`** : remplace `{{ALLOW_COMMANDES_STACK}}` par les commandes que l'agent doit pouvoir lancer sans confirmation, au format `Bash(<commande>:*)` : de préférence une seule entrée pour le lanceur de tâches (`Bash(just:*)`, `Bash(npm run:*)`), plus les rares commandes lancées hors lanceur (`docker compose`, installation des dépendances). Remplace `{{DENY_SPECIFIQUES}}` par les commandes touchant les environnements interdits (déploiement, accès SSH ou base de production), ou supprime l'entrée. Remplace `{{ASK_CONFIG_QUALITE}}` par une règle `Edit(/<fichier>)` par fichier de configuration qualité du contrat d'outillage (ex. `Edit(/eslint.config.js)`) : l'agent devra demander avant de les modifier. N'écris jamais de règle `Write(...)` sur un chemin, Claude Code ne la consulte pas : `Edit(...)` couvre aussi la création de fichiers. Si le fichier existe déjà, fusionne au lieu d'écraser.
+- **Hooks de `.claude/hooks/`** : remplis les variables en tête de chaque script à partir du contrat d'outillage de `docs/03` (motifs des fichiers de test et marqueurs d'exclusion au format indiqué, extensions et commande de formatage d'un fichier), puis supprime les lignes `# AIDE :`. Si la stack n'a pas de formateur de fichier, supprime `format-file.sh` et l'entrée `PostToolUse` de `settings.json`.
 - **Ne génère aucun code applicatif.** Le cadrage s'arrête à la documentation et à la configuration de l'agent. Le code commence avec build-app.
 
 ## Étape 5 — Vérification
@@ -108,5 +118,5 @@ Un message final court :
 
 - la liste des fichiers créés ou modifiés ;
 - les questions ouvertes restantes, s'il y en a ;
-- la suggestion de commit : `git add -A && git commit -m "docs: cadrage initial du projet"` ;
+- la suggestion de commit : `git add -A && git commit -m "docs: cadrage initial du projet"` (build-app démarre sur un dépôt propre et pose le tag `tier-0` sur ce commit) ;
 - la commande pour démarrer le développement : **« Utilise le skill build-app et commence au palier 1. »**

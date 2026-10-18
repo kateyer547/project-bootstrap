@@ -24,6 +24,10 @@ flowchart LR
 
 Fichier de pipeline : `{{FICHIER_PIPELINE}}`
 
+Vérification du pipeline sans pousser : `{{VALIDATION_PIPELINE}}`
+
+<!-- AIDE : chaque étape appelle une cible du lanceur de tâches de docs/03, pour que la CI lance exactement les mêmes commandes que l'agent en local. La vérification du pipeline est une exécution locale (`act` pour GitHub ou Gitea Actions, `gitlab-ci-local`) ou un analyseur (`actionlint`, `glab ci lint`) ; à défaut, écris « première pull request » et le palier 1 le vérifie ainsi. -->
+
 ## Déploiement par environnement
 
 | Environnement | Déclenchement | Stratégie | Validation humaine |
@@ -42,6 +46,19 @@ Fichier de pipeline : `{{FICHIER_PIPELINE}}`
 
 {{ROLLBACK}}
 <!-- AIDE : procédure pas à pas, délai visé, cas des migrations déjà appliquées. -->
+
+## Publication mobile
+
+| Store | Compte développeur | Canal de test | Validation avant publication |
+|---|---|---|---|
+| {{STORE}} | {{COMPTE_STORE}} | {{CANAL_TEST_STORE}} | {{VALIDATION_STORE}} |
+
+- **Signature :** {{SIGNATURE_MOBILE}}
+- **Numéros de version et de build :** {{NUMEROTATION_BUILD}}
+- **Mise à jour forcée :** {{MAJ_FORCEE}}
+- **Notifications push :** {{PUSH_MOBILE}}
+
+<!-- AIDE : supprime la section s'il n'y a pas d'application mobile. Canal de test : TestFlight, test interne Google Play, distribution interne. Signature : certificats, profils et clés de signature stockés en secrets de CI, jamais dans le dépôt. Numérotation : d'où viennent le numéro de version et le numéro de build (tag, compteur de CI). Mise à jour forcée : version minimale exigée par l'API et message affiché. -->
 
 ## Variables et secrets de CI
 
