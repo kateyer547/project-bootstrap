@@ -1,2 +1,4 @@
-# Résultats des évaluations claude plugin eval
+# Résultats des évaluations claude plugin eval (sous le plugin, ou à la racine quand
+# la commande est lancée ici sans chemin de plugin)
 plugins/*/evals/results/
+evals/results/
