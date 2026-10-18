@@ -1,0 +1,33 @@
+# Teste le dépôt puis le publie en artefact .zip téléchargeable depuis l'onglet Actions.
+name: Paquet zip
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  paquet:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Tests
+        run: bash tests/run.sh
+
+      - name: Version du plugin
+        id: version
+        run: echo "version=$(jq -r .version plugins/project-bootstrap/.claude-plugin/plugin.json)" >> "$GITHUB_OUTPUT"
+
+      # Contenu exact du commit (fichiers suivis par git seulement) ; l'artefact est zippé par GitHub au téléchargement.
+      - name: Préparer le contenu
+        run: mkdir paquet && git archive HEAD | tar -x -C paquet
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kateyer-plugins-${{ steps.version.outputs.version }}
+          path: paquet/
+          if-no-files-found: error
