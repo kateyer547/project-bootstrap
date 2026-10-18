@@ -51,10 +51,23 @@ docs/
   adr/                             une décision structurante par fichier
 design/                            maquettes cliquables (index.html = tableau des écrans)
 .claude/
-  settings.json                    permissions et hook de formatage
+  settings.json                    permissions (allow, ask, deny) et déclaration des hooks
+  hooks/                           garde-fous exécutés par Claude Code (voir ci-dessous)
   skills/build-app/SKILL.md        le développement par paliers
   agents/tier-reviewer.md          relecteur indépendant de chaque palier
 ```
+
+**Garde-fous réels**, appliqués par Claude Code à chaque action et pas seulement écrits dans les consignes :
+
+| Garde-fou | Effet |
+|---|---|
+| `hooks/guard-tests.sh` | refuse l'ajout de `skip`, `only`, `ignore`… dans un fichier de test |
+| `hooks/session-start.sh` | à chaque ouverture de session, rappelle le palier courant, les blocages ouverts, un palier en attente de fusion, la branche et le dernier tag |
+| `hooks/format-file.sh` | formate uniquement le fichier qui vient d'être modifié |
+| règles `deny` | interdisent `--no-verify`, `push --force`, `reset --hard`, `branch -D` |
+| règles `ask` | demandent ton accord avant toute modification de `.claude/`, de `.githooks/` ou des fichiers de configuration qualité |
+
+Ce sont des filets, pas des barrières absolues : une commande shell écrite autrement peut passer à travers. `tier-reviewer` contrôle aussi ces contournements à chaque palier.
 
 **3. Vérification**
 

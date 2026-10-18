@@ -83,6 +83,7 @@ Copie ensuite les modèles du dossier `templates/` de ce skill vers le projet, p
 | `templates/claude/settings.json` | `.claude/settings.json` |
 | `templates/claude/skills/build-app/SKILL.md` | `.claude/skills/build-app/SKILL.md` |
 | `templates/claude/agents/tier-reviewer.md` | `.claude/agents/tier-reviewer.md` |
+| `templates/claude/hooks/` (`session-start.sh`, `guard-tests.sh`, `format-file.sh`) | `.claude/hooks/` |
 | `templates/env.example` | `.env.example` |
 | `templates/docs/12-maquettes.md` | `docs/12-maquettes.md` (seulement si `design/` existe) |
 
@@ -97,7 +98,8 @@ Règles de remplissage :
 - Un **ADR par décision structurante** : langage et framework, base de données, style d'architecture, hébergement, stratégie de déploiement, authentification, et toute décision où l'utilisateur a écarté ta recommandation.
 - Les **secrets** n'apparaissent jamais en clair : uniquement des noms de variables dans `.env.example`.
 - **`.gitignore`** : remplace `{{IGNORE_STACK}}` par les dépendances, sorties de build, caches et rapports de la stack choisie. Si le fichier existe déjà, ajoute seulement les entrées manquantes. `.env` doit rester ignoré et `.env.example` versionné.
-- **`.claude/settings.json`** : remplace `{{ALLOW_COMMANDES_STACK}}` par les commandes que l'agent doit pouvoir lancer sans confirmation, au format `Bash(<commande>:*)` : de préférence une seule entrée pour le lanceur de tâches (`Bash(just:*)`, `Bash(npm run:*)`), plus les rares commandes lancées hors lanceur (`docker compose`, installation des dépendances). Remplace `{{DENY_SPECIFIQUES}}` par les commandes touchant les environnements interdits (déploiement, accès SSH ou base de production), ou supprime l'entrée. Si aucun formateur rapide n'existe, supprime tout le bloc `hooks`. Si le fichier existe déjà, fusionne au lieu d'écraser.
+- **`.claude/settings.json`** : remplace `{{ALLOW_COMMANDES_STACK}}` par les commandes que l'agent doit pouvoir lancer sans confirmation, au format `Bash(<commande>:*)` : de préférence une seule entrée pour le lanceur de tâches (`Bash(just:*)`, `Bash(npm run:*)`), plus les rares commandes lancées hors lanceur (`docker compose`, installation des dépendances). Remplace `{{DENY_SPECIFIQUES}}` par les commandes touchant les environnements interdits (déploiement, accès SSH ou base de production), ou supprime l'entrée. Remplace `{{ASK_CONFIG_QUALITE}}` par une règle `Edit(/<fichier>)` par fichier de configuration qualité du contrat d'outillage (ex. `Edit(/eslint.config.js)`) : l'agent devra demander avant de les modifier. N'écris jamais de règle `Write(...)` sur un chemin, Claude Code ne la consulte pas : `Edit(...)` couvre aussi la création de fichiers. Si le fichier existe déjà, fusionne au lieu d'écraser.
+- **Hooks de `.claude/hooks/`** : remplis les variables en tête de chaque script à partir du contrat d'outillage de `docs/03` (motifs des fichiers de test et marqueurs d'exclusion au format indiqué, extensions et commande de formatage d'un fichier), puis supprime les lignes `# AIDE :`. Si la stack n'a pas de formateur de fichier, supprime `format-file.sh` et l'entrée `PostToolUse` de `settings.json`.
 - **Ne génère aucun code applicatif.** Le cadrage s'arrête à la documentation et à la configuration de l'agent. Le code commence avec build-app.
 
 ## Étape 5 — Vérification

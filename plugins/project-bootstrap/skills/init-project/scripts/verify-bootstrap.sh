@@ -67,6 +67,8 @@ required=(
   .claude/settings.json
   .claude/skills/build-app/SKILL.md
   .claude/agents/tier-reviewer.md
+  .claude/hooks/session-start.sh
+  .claude/hooks/guard-tests.sh
 )
 for f in "${required[@]}"; do
   if [ -s "$f" ]; then ok "$f"; else fail "$f manquant ou vide"; fi
@@ -78,6 +80,7 @@ for f in "${required[@]}"; do [ -f "$f" ] && present+=("$f"); done
 if [ -d docs/adr ]; then
   while IFS= read -r f; do present+=("$f"); done < <(find docs/adr -name '*.md' ! -name '0000-modele.md')
 fi
+[ -f .claude/hooks/format-file.sh ] && present+=(.claude/hooks/format-file.sh)
 leftovers=$(grep -n -E '\{\{[^}]*\}\}' "${present[@]}" 2>/dev/null || true)
 if [ -z "$leftovers" ]; then ok "aucun marqueur {{...}} restant"; else
   fail "marqueurs {{...}} restants :"; echo "$leftovers" | head -30 | sed 's/^/         /'
@@ -106,6 +109,22 @@ if [ -f .claude/settings.json ]; then
     1) fail ".claude/settings.json n'est pas un JSON valide" ;;
     *) info ".claude/settings.json non vérifié : ni node, ni python, ni jq disponible" ;;
   esac
+fi
+if [ -f .claude/settings.json ]; then
+  # Garde-fous attendus dans les permissions.
+  grep -q -F 'Edit(/.claude/**)' .claude/settings.json && ok "modification de .claude/ soumise à confirmation" \
+    || fail ".claude/settings.json : règle ask « Edit(/.claude/**) » absente"
+  grep -q -F -- '--no-verify' .claude/settings.json && ok "contournement des hooks git (--no-verify) interdit" \
+    || fail ".claude/settings.json : règle deny sur --no-verify absente"
+  grep -q -E '"Write\([^)]' .claude/settings.json && fail ".claude/settings.json : règle Write(<chemin>) ignorée par Claude Code, utiliser Edit(<chemin>)"
+  # Chaque script de .claude/hooks/ est déclaré dans settings.json, et inversement.
+  for h in .claude/hooks/*.sh; do
+    [ -f "$h" ] || continue
+    grep -q -F "$h" .claude/settings.json && ok "$h déclaré dans settings.json" || fail "$h n'est déclaré dans aucun hook de settings.json"
+  done
+  for h in $(grep -o -E '\.claude/hooks/[A-Za-z0-9_.-]+\.sh' .claude/settings.json | sort -u); do
+    [ -f "$h" ] || fail "settings.json déclare $h, qui n'existe pas"
+  done
 fi
 for f in .claude/skills/build-app/SKILL.md .claude/agents/tier-reviewer.md; do
   [ -f "$f" ] || continue

@@ -60,9 +60,24 @@ EOF
     printf '# Plan\n' > PLAN.md
     printf 'DATABASE_URL=postgres://app:changeme@localhost:5432/app\n' > .env.example
     printf '.env\n.env.*\n!.env.example\nnode_modules/\n' > .gitignore
-    printf '{"permissions":{"allow":["Bash(git status:*)"],"deny":[]}}\n' > .claude/settings.json
+    cat > .claude/settings.json <<'EOF'
+{
+  "permissions": {
+    "allow": ["Bash(git status:*)", "Bash(just:*)"],
+    "ask": ["Edit(/.claude/**)"],
+    "deny": ["Bash(git * --no-verify*)"]
+  },
+  "hooks": {
+    "SessionStart": [{ "hooks": [{ "type": "command", "command": "bash \"${CLAUDE_PROJECT_DIR}/.claude/hooks/session-start.sh\"" }] }],
+    "PreToolUse": [{ "matcher": "Edit|Write", "hooks": [{ "type": "command", "command": "bash \"${CLAUDE_PROJECT_DIR}/.claude/hooks/guard-tests.sh\"" }] }]
+  }
+}
+EOF
     printf -- '---\nname: build-app\ndescription: test\n---\n' > .claude/skills/build-app/SKILL.md
     printf -- '---\nname: tier-reviewer\ndescription: test\n---\n' > .claude/agents/tier-reviewer.md
+    mkdir -p .claude/hooks
+    printf '#!/usr/bin/env bash\necho "État du projet"\n' > .claude/hooks/session-start.sh
+    printf '#!/usr/bin/env bash\nexit 0\n' > .claude/hooks/guard-tests.sh
     git init -q -b main
   )
 }
@@ -88,5 +103,6 @@ raw_templates() {
   cp "$t/claude/settings.json" "$p/.claude/"
   cp "$t/claude/skills/build-app/SKILL.md" "$p/.claude/skills/build-app/"
   cp "$t/claude/agents/tier-reviewer.md" "$p/.claude/agents/"
+  cp -R "$t/claude/hooks" "$p/.claude/hooks"
   (cd "$p" && git init -q -b main)
 }

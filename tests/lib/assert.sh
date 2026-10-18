@@ -23,7 +23,7 @@ ko_case() {
 
 # expect <nom> <code attendu> [motif…] -- <commande…>
 # Lance la commande, vérifie son code de sortie et la présence de chaque motif
-# (expression régulière étendue) dans sa sortie.
+# (expression régulière étendue) dans sa sortie. Un motif préfixé par « ! » doit être absent.
 expect() {
   local name=$1 want=$2
   shift 2
@@ -39,7 +39,12 @@ expect() {
   fi
   local p
   for p in "${patterns[@]}"; do
-    if ! printf '%s\n' "$out" | grep -q -E -- "$p"; then
+    if [ "${p#!}" != "$p" ]; then
+      if printf '%s\n' "$out" | grep -q -E -- "${p#!}"; then
+        ko_case "$name" "motif présent alors qu'il devrait être absent : ${p#!}" "$out"
+        return
+      fi
+    elif ! printf '%s\n' "$out" | grep -q -E -- "$p"; then
       ko_case "$name" "motif absent : $p" "$out"
       return
     fi

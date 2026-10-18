@@ -66,4 +66,5 @@ Lis uniquement ce qui est utile à la tâche en cours :
 - Agir sur les environnements : {{ENVS_INTERDITS}}.
 - `git push --force`, réécriture de l'historique de la branche principale, `--no-verify` sur un commit ou un push.
 - Ajouter une dépendance majeure sans la justifier dans `PLAN.md`.
+- Contourner un hook de `.claude/hooks/` ou une règle de `.claude/settings.json` par un autre chemin (commande shell, autre outil) : demander à l'utilisateur.
 {{INTERDITS_SPECIFIQUES}}

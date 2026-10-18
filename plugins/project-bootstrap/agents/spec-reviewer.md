@@ -40,6 +40,7 @@ Lis, dans l'ordre : `docs/00-index.md` à `docs/11-paliers.md`, les ADR de `docs
 
 **Sécurité de l'agent**
 - `.claude/settings.json` n'autorise aucune commande destructive ou touchant la production.
+- Les variables en tête des scripts de `.claude/hooks/` (motifs des fichiers de test, marqueurs d'exclusion, extensions et commande de formatage) correspondent au contrat d'outillage de `03` et au framework de tests réellement choisi ; les règles `ask` couvrent les fichiers de configuration qualité du contrat.
 - Aucun secret en clair dans les fichiers relus ; `.gitignore` exclut `.env` et les sorties de build de la stack, sans exclure `.env.example` ni les fichiers de verrouillage des dépendances.
 - La stratégie de branches de `PLAN.md` et de `build-app` correspond au bloc K, et la fusion prévue est compatible avec la protection de la branche principale de `09` (pull request obligatoire → pas de fusion locale par l'agent).
 

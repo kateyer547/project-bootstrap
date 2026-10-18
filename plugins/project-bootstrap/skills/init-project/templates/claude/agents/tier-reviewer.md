@@ -30,6 +30,7 @@ Le numéro N du palier à relire.
 **Intégrité des tests**
 - Aucun test supprimé, désactivé ou affaibli depuis `tier-<N-1>` (cherche `skip`, `ignore`, `only`, `#[ignore]`, `[Fact(Skip`, `markTestSkipped`, assertions retirées).
 - Aucune règle de lint désactivée, aucun avertissement masqué.
+- Aucune modification de `.claude/`, `.githooks/` ou des fichiers de configuration qualité sans accord de l'utilisateur noté dans `PLAN.md` ; aucun contournement des hooks (marqueur d'exclusion écrit par une commande shell, commit sans `pre-commit`).
 
 **Sécurité**
 - Entrées validées, requêtes paramétrées, contrôles d'autorisation présents sur chaque route protégée selon la matrice des rôles.

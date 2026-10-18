@@ -1,0 +1,2 @@
+# Scripts shell toujours en fins de ligne Unix, y compris dans une copie Windows du dépôt.
+*.sh text eol=lf

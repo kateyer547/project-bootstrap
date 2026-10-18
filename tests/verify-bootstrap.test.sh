@@ -45,6 +45,18 @@ expect "fichiers en fins de ligne Windows (CRLF)" 0 "Cadrage complet" -- run
 raw_templates "$P"
 expect "modèles non remplis" 1 "marqueurs \{\{\.\.\.\}\} restants" "commentaires d'aide" -- run
 
+mkproj "$P"; printf '#!/usr/bin/env bash\nexit 0\n' > "$P/.claude/hooks/autre.sh"
+expect "hook présent mais non déclaré" 1 "autre\.sh n'est déclaré dans aucun hook" -- run
+
+mkproj "$P"; rm "$P/.claude/hooks/guard-tests.sh"
+expect "hook déclaré mais absent" 1 "guard-tests\.sh manquant" "déclare \.claude/hooks/guard-tests\.sh, qui n'existe pas" -- run
+
+mkproj "$P"; edit_file "$P/.claude/settings.json" 's#"ask": \["Edit(/.claude/\*\*)"\]#"ask": ["Write(/.claude/**)"]#'
+expect "protection de .claude/ écrite avec Write" 1 "règle ask « Edit\(/\.claude/\*\*\) » absente" "règle Write\(<chemin>\) ignorée" -- run
+
+mkproj "$P"; edit_file "$P/.claude/settings.json" 's#"Bash(git \* --no-verify\*)"##'
+expect "--no-verify non interdit" 1 "règle deny sur --no-verify absente" -- run
+
 mkproj "$P"; edit_file "$P/docs/03-stack-technique.md" "s/^## Contrat d'outillage/## Outils/"
 expect "contrat d'outillage absent" 1 "pas de section « ## Contrat d'outillage »" -- run
 

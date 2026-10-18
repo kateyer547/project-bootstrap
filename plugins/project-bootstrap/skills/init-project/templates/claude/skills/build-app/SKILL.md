@@ -81,6 +81,7 @@ Applique uniquement le cas qui correspond à la stratégie retenue au cadrage. L
 
 - Ne modifie, ne supprime et n'ignore jamais un test pour faire passer une validation. Ne désactive jamais une règle de lint ou un avertissement.
 - Passe toujours par les cibles du lanceur de tâches, jamais par les outils directement. Le hook git `pre-commit` lance `{{CMD_CHECK}}` : un commit refusé se corrige, il ne se contourne jamais (`--no-verify` est interdit).
+- Quand un hook de `.claude/hooks/` refuse une action ou qu'une règle demande confirmation, ne cherche jamais à passer par un autre chemin (commande shell, autre fichier, autre outil) : explique ce que tu voulais faire et demande à l'utilisateur.
 - Ne passe jamais au palier suivant avec une validation en échec, ni avant que le palier courant ait son tag `tier-N`.
 - N'invente aucune fonctionnalité absente de `docs/02-specifications-fonctionnelles.md`. Si un comportement n'est pas spécifié, arrête-toi, propose deux options et demande.
 - Ne change ni la stack, ni une dépendance majeure, ni le modèle de données, ni l'architecture sans ADR validé par l'utilisateur.
