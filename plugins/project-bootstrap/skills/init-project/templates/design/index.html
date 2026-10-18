@@ -199,14 +199,14 @@
 
   function sync() {
     document.querySelectorAll('[data-device]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.device === state.device)); });
-    document.querySelectorAll('[data-skin]')).forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.skin === state.theme)); });
+    document.querySelectorAll('[data-skin]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.skin === state.theme)); });
     document.querySelectorAll('[data-annot]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.annot === state.annot)); });
     try { localStorage.setItem('proto-board', JSON.stringify(state)); } catch (e) { /* stockage indisponible */ }
     render();
   }
 
   document.querySelectorAll('[data-device]').forEach(function (b) { b.addEventListener('click', function () { state.device = b.dataset.device; sync(); }); });
-  document.querySelectorAll('[data-skin]')).forEach(function (b) { b.addEventListener('click', function () { state.theme = b.dataset.skin; sync(); }); });
+  document.querySelectorAll('[data-skin]').forEach(function (b) { b.addEventListener('click', function () { state.theme = b.dataset.skin; sync(); }); });
   document.querySelectorAll('[data-annot]').forEach(function (b) { b.addEventListener('click', function () { state.annot = b.dataset.annot; sync(); }); });
   sync();
 })();
