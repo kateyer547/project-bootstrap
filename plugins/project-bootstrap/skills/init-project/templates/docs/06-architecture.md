@@ -65,6 +65,18 @@ flowchart LR
 
 {{PERFORMANCE}}
 
+## Architecture front
+
+- **Routage :** {{ROUTAGE_FRONT}}
+- **Gestion d'état :** {{ETAT_FRONT}}
+- **Client d'API :** {{CLIENT_API}}
+- **Formulaires et validation :** {{VALIDATION_FORMULAIRES}}
+- **Erreurs et états vide / chargement :** {{ETATS_FRONT}}
+- **Organisation des composants :** {{ORGANISATION_COMPOSANTS}}
+- **Traduction et formats :** {{I18N_FRONT}}
+
+<!-- AIDE : supprime la section s'il n'y a pas d'interface. Routage : routes déclarées ou par fichiers, routes protégées par rôle. État : local, store global, cache des requêtes. Client d'API : généré depuis le contrat OpenAPI ou écrit à la main, transmission du jeton. Validation : schéma partagé avec le back ou dupliqué, affichage des messages. Erreurs : traduction du format d'erreur de l'API en messages, page d'erreur, nouvelle tentative. Composants : reprise de design/components.css et design/tokens.css. Traduction : fichiers de traduction, langue par défaut, formats de date, de nombre et de devise. -->
+
 ## Questions ouvertes
 
 {{QUESTIONS_OUVERTES}}

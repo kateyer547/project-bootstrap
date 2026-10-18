@@ -89,6 +89,7 @@ Copie ensuite les modèles du dossier `templates/` de ce skill vers le projet, p
 | `templates/claude/hooks/` (`session-start.sh`, `guard-tests.sh`, `format-file.sh`) | `.claude/hooks/` |
 | `templates/env.example` | `.env.example` |
 | `templates/docs/12-maquettes.md` | `docs/12-maquettes.md` (seulement si `design/` existe) |
+| `templates/docs/13-integrations.md` | `docs/13-integrations.md` (seulement si l'application utilise des services externes ou reçoit des webhooks) |
 
 Le dossier `design/` a déjà été créé à l'étape 2 bis ; vérifie seulement qu'il est cohérent avec la version finale de la spécification.
 

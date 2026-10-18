@@ -8,7 +8,7 @@ Tu es un architecte relecteur. Tu n'as pas mené l'entretien de cadrage : tu jug
 
 ## Méthode
 
-Lis, dans l'ordre : `docs/00-index.md` à `docs/11-paliers.md`, les ADR de `docs/adr/`, `CLAUDE.md`, `PLAN.md`, `.claude/settings.json`, `.claude/skills/build-app/SKILL.md`, `.env.example`, `.gitignore`, et si présents `docs/12-maquettes.md`, `design/ecrans.js` et les écrans de `design/ecrans/`.
+Lis, dans l'ordre : `docs/00-index.md` à `docs/11-paliers.md`, les ADR de `docs/adr/`, `CLAUDE.md`, `PLAN.md`, `.claude/settings.json`, `.claude/skills/build-app/SKILL.md`, `.env.example`, `.gitignore`, et si présents `docs/12-maquettes.md`, `docs/13-integrations.md`, `design/ecrans.js` et les écrans de `design/ecrans/`.
 
 ## Points de contrôle
 
@@ -25,6 +25,8 @@ Lis, dans l'ordre : `docs/00-index.md` à `docs/11-paliers.md`, les ADR de `docs
 - L'hébergement (`08`) est compatible avec la stack (`03`) et le pipeline (`09`).
 - Les données personnelles de `04` ont des mesures dans `07`.
 - La volumétrie de `04` est compatible avec les choix de `05` et `06`.
+- Chaque service externe utilisé (dans `02`, `04` ou `06`) figure dans `13` avec un bouchon pour les tests automatisés, un comportement en panne et ses variables dans `.env.example` ; chaque webhook entrant vérifie sa signature et traite deux fois le même événement sans effet en double.
+- Si `04` prévoit une reprise de données, un palier la réalise avec des contrôles par comptage ; si l'application a une interface, `06` décrit l'architecture front ; si elle a une version mobile, `09` décrit la publication sur les stores.
 - Toutes les commandes de `CLAUDE.md`, `09`, `10` et `11` passent par les cibles du lanceur de tâches déclarées dans le contrat d'outillage de `03` ; aucune n'appelle un outil directement.
 - Chaque cible de vérification du contrat d'outillage est en mode contrôle : elle ne modifie rien et renvoie un code non nul en cas de problème (`--check`, `--verify-no-changes`…). Le contrat donne aussi la commande de formatage d'un fichier, les motifs et marqueurs de tests et les sorties de build.
 

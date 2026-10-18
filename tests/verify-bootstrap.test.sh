@@ -42,6 +42,9 @@ expect "document manquant" 1 "docs/07-securite.md manquant" -- run
 mkproj "$P"; printf '# Sans frontmatter\n' > "$P/.claude/skills/add-feature/SKILL.md"
 expect "skill add-feature sans frontmatter" 1 "add-feature/SKILL.md : frontmatter" -- run
 
+mkproj "$P"; cp "$IP/templates/docs/13-integrations.md" "$P/docs/"
+expect "docs/13 présent mais non rempli" 1 "13-integrations\.md:.*\{\{SERVICE\}\}" -- run
+
 mkproj "$P"
 expect "le script copié dans le projet vérifie le projet" 0 "Cadrage complet" -- bash "$P/.claude/scripts/verify-spec.sh" "$P"
 

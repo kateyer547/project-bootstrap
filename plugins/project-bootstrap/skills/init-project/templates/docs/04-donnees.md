@@ -38,6 +38,18 @@ Droits des personnes (accès, export, effacement) : {{DROITS}}
 {{CYCLE_DE_VIE}}
 <!-- AIDE : archivage, purge, historisation, suppression logique ou physique. -->
 
+## Reprise de données existantes
+
+- **Source :** {{SOURCE_REPRISE}}, volume {{VOLUME_REPRISE}}
+- **Correspondance des champs :** {{CORRESPONDANCE_REPRISE}}
+- **Nettoyage et rejets :** {{NETTOYAGE_REPRISE}}
+- **Script :** {{SCRIPT_REPRISE}}, rejouable sans créer de doublons
+- **Essai à blanc :** {{ESSAI_BLANC_REPRISE}}
+- **Contrôles :** {{CONTROLES_REPRISE}}
+- **Bascule et retour arrière :** {{BASCULE_REPRISE}}
+
+<!-- AIDE : supprime la section s'il n'y a aucune donnée à reprendre d'un système existant. Correspondance : table ou fichier source → entité E-xx de 05. Nettoyage : règles appliquées et sort des lignes rejetées (fichier de rejets). Essai à blanc : sur une copie des données, avant la mise en production. Contrôles : comptages et sommes comparés entre source et cible, par une commande qui échoue en cas d'écart. Bascule : gel de l'ancien système, reprise finale, retour arrière possible. -->
+
 ## Sauvegardes
 
 - **Fréquence :** {{FREQUENCE_SAUVEGARDE}}

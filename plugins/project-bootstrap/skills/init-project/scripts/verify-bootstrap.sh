@@ -88,6 +88,7 @@ if [ -d docs/adr ]; then
   while IFS= read -r f; do present+=("$f"); done < <(find docs/adr -name '*.md' ! -name '0000-modele.md')
 fi
 [ -f .claude/hooks/format-file.sh ] && present+=(.claude/hooks/format-file.sh)
+[ -f docs/13-integrations.md ] && present+=(docs/13-integrations.md)
 leftovers=$(grep -n -E '\{\{[^}]*\}\}' "${present[@]}" 2>/dev/null || true)
 if [ -z "$leftovers" ]; then ok "aucun marqueur {{...}} restant"; else
   fail "marqueurs {{...}} restants :"; echo "$leftovers" | head -30 | sed 's/^/         /'

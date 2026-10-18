@@ -22,14 +22,14 @@ Blocs couverts :
 | Bloc | Sujets |
 |---|---|
 | A. Vision | problème, utilisateurs, critères de réussite, échéances, contraintes |
-| B. Fonctionnel | fonctionnalités `F-xx`, règles métier `RG-xx`, rôles, interface, hors périmètre |
+| B. Fonctionnel | fonctionnalités `F-xx`, règles métier `RG-xx`, rôles, interface, hors périmètre, navigateurs, langues et formats |
 | C. Stack | backend, accès aux données, front, mobile, services annexes, outillage, versions, lanceur de tâches et **contrat d'outillage** (commandes en mode vérification, formatage d'un fichier, marqueurs de tests) |
-| D. Données | sources, volumétrie, seed, données personnelles, cycle de vie, sauvegardes |
+| D. Données | sources, volumétrie, seed, données personnelles, cycle de vie, sauvegardes, reprise de données existantes |
 | E. Modélisation | SGBD, entités, relations, conventions, index, migrations (diagramme `erDiagram`) |
-| F. Architecture | style, couches, API, erreurs, configuration, observabilité |
+| F. Architecture | style, couches, API, erreurs, configuration, observabilité, architecture front, intégrations externes (`13-integrations.md`) |
 | G. Sécurité | authentification, autorisation, protections, secrets, audit |
 | H. Infrastructure | hébergement, environnements, réseau, conteneurs, IaC, supervision |
-| I. Déploiement | forge, branches, pipeline, stratégie de mise en production, retour arrière |
+| I. Déploiement | forge, branches, pipeline, stratégie de mise en production, retour arrière, publication mobile |
 | J. Qualité | niveaux de tests, couverture, lint, revue, Definition of Done |
 | K. Paliers | exigences non fonctionnelles `ENF-xx` chiffrées, découpage, commandes de validation, points d'arrêt, autonomie de l'agent, stratégie de branches |
 | L. Identité visuelle | ambiance, couleurs, police, thèmes, navigation, références, puis **maquettes cliquables** |
@@ -47,7 +47,8 @@ PLAN.md                            avancement partagé entre les sessions
 .gitignore                         secrets, sorties de build et caches de la stack
 docs/
   00-index.md … 11-paliers.md      la spécification complète
-  12-maquettes.md                  écrans, parcours, identité visuelle
+  12-maquettes.md                  écrans, parcours, identité visuelle (si interface)
+  13-integrations.md               services externes, bouchons de test, pannes (si besoin)
   adr/                             une décision structurante par fichier
 design/                            maquettes cliquables (index.html = tableau des écrans)
 .claude/

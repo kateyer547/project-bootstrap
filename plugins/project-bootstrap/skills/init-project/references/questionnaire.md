@@ -28,7 +28,7 @@ En mode Express, utilise ce questionnaire comme grille : pré-remplis chaque que
 3. Rôles et permissions : quels rôles existent, et la matrice rôle × action.
 4. **(ouverte)** Règles métier `RG-xx` : calculs, statuts et transitions, limites, unicités, délais, cas d'erreur. Relance sur les cas limites (doublons, suppression d'un élément référencé, accès concurrent).
 5. Notifications : aucune / e-mail / push / temps réel dans l'interface / webhooks.
-6. Interface (si front) : pages ou écrans principaux, parcours critiques, responsive, thème sombre, accessibilité visée (RGAA / WCAG AA), langues.
+6. Interface (si front) : pages ou écrans principaux, parcours critiques, responsive, thème sombre, accessibilité visée (RGAA / WCAG AA). Navigateurs et appareils pris en charge, avec leurs versions minimales. Langues, langue par défaut, formats de date, de nombre et de devise, fuseau d'affichage. Les navigateurs, l'accessibilité et les langues deviendront des `ENF-xx` au bloc K.
 7. **(ouverte)** Hors périmètre : ce que l'application ne fera explicitement **pas**.
 
 ## L. Identité visuelle et maquettes → `design/`, `docs/12-maquettes.md`
@@ -73,6 +73,7 @@ Pour chaque choix structurant, prévois un ADR.
 6. Données sensibles : ce qui doit être chiffré au repos, masqué dans les logs, exclu des exports.
 7. Cycle de vie : archivage, purge, historisation, suppression logique ou physique.
 8. Sauvegardes : fréquence, rétention, lieu de stockage, objectif de restauration (RPO / RTO), test de restauration.
+9. Reprise de données (si une base ou des fichiers existants sont à reprendre, voir D1) : volume, correspondance avec les entités, nettoyage et rejets, script rejouable, essai à blanc, contrôles par comptage, bascule et retour arrière.
 
 ## E. Modélisation des données → `docs/05-modele-donnees.md`
 
@@ -94,7 +95,7 @@ Déduis une première proposition à partir des blocs B et D, puis fais-la valid
 
 Présente le résultat sous forme de diagramme Mermaid `erDiagram`.
 
-## F. Architecture → `docs/06-architecture.md`
+## F. Architecture → `docs/06-architecture.md`, `docs/13-integrations.md`
 
 1. Style global : monolithe modulaire (Recommandé par défaut) / microservices / serverless / monolithe classique.
 2. Organisation du code : architecture en couches / hexagonale (ports et adaptateurs) / clean architecture / vertical slices / MVC.
@@ -106,6 +107,8 @@ Présente le résultat sous forme de diagramme Mermaid `erDiagram`.
 8. Configuration : variables d'environnement, fichiers par environnement, gestion des secrets.
 9. Journalisation et observabilité applicative : format des logs (JSON structuré), niveaux, corrélation des requêtes, endpoint `/health`, métriques.
 10. Performance : temps de réponse visés, mise en cache, traitements lourds en tâche de fond.
+11. Architecture front (si interface) : routage et routes protégées, gestion d'état, client d'API (généré depuis le contrat OpenAPI ou écrit), validation des formulaires (schéma partagé avec le back ou non), affichage des erreurs de l'API, organisation des composants, fichiers de traduction.
+12. Intégrations externes → `docs/13-integrations.md` : paiement, e-mail transactionnel, SMS, SSO, stockage, API métier, webhooks entrants. Pour chacune : fournisseur, environnement d'essai, **bouchon pour les tests automatisés**, quotas, délai d'attente et nouvelles tentatives, comportement en panne, vérification de la signature des webhooks. Les sources externes de D2 appelées par l'application y figurent aussi.
 
 ## G. Sécurité → `docs/07-securite.md`
 
@@ -142,6 +145,7 @@ Présente le résultat sous forme de diagramme Mermaid `erDiagram`.
 8. Migrations de base au déploiement : automatiques ou manuelles, compatibilité ascendante.
 9. Retour arrière : procédure et délai visé.
 10. Vérification après déploiement : healthcheck, tests de fumée, surveillance.
+11. Publication mobile (si application mobile) : stores visés et comptes développeur, signature et stockage des certificats en secrets de CI, numérotation des builds, canaux de test (TestFlight, test interne Google Play), mise à jour forcée, certificats de notifications push.
 
 ## J. Qualité et tests → `docs/10-qualite-tests.md`
 

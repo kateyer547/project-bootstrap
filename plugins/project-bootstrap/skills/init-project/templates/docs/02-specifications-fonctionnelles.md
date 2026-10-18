@@ -42,7 +42,7 @@
 ## Interface utilisateur
 
 {{INTERFACE}}
-<!-- AIDE : écrans principaux, parcours critiques, responsive, accessibilité visée, langues. Supprime la section si l'application n'a pas d'interface. -->
+<!-- AIDE : écrans principaux, parcours critiques, responsive, accessibilité visée, navigateurs et appareils pris en charge, langues et formats. Les navigateurs, l'accessibilité et les langues sont aussi des ENF-xx vérifiables. Supprime la section si l'application n'a pas d'interface. -->
 
 ## Hors périmètre
 
