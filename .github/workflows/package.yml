@@ -1,5 +1,6 @@
-# Teste le dépôt puis le publie en artefact .zip téléchargeable depuis l'onglet Actions.
-name: Paquet zip
+# Teste le dépôt puis publie une Release GitHub v<version> avec le zip du dépôt,
+# une seule fois par version de plugins/project-bootstrap/.claude-plugin/plugin.json.
+name: Release
 
 on:
   push:
@@ -7,11 +8,13 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  paquet:
+  release:
     runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v4
 
@@ -20,14 +23,18 @@ jobs:
 
       - name: Version du plugin
         id: version
-        run: echo "version=$(jq -r .version plugins/project-bootstrap/.claude-plugin/plugin.json)" >> "$GITHUB_OUTPUT"
+        run: |
+          version=$(jq -r .version plugins/project-bootstrap/.claude-plugin/plugin.json)
+          echo "tag=v$version" >> "$GITHUB_OUTPUT"
+          if gh release view "v$version" >/dev/null 2>&1; then
+            echo "existe=oui" >> "$GITHUB_OUTPUT"
+            echo "La Release v$version existe déjà : incrémente la version pour en publier une nouvelle."
+          fi
 
-      # Contenu exact du commit (fichiers suivis par git seulement) ; l'artefact est zippé par GitHub au téléchargement.
-      - name: Préparer le contenu
-        run: mkdir paquet && git archive HEAD | tar -x -C paquet
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: kateyer-plugins-${{ steps.version.outputs.version }}
-          path: paquet/
-          if-no-files-found: error
+      # Fichiers suivis par git seulement, dans un dossier kateyer-plugins-<version>/ à l'intérieur du zip.
+      - name: Zip et Release
+        if: steps.version.outputs.existe != 'oui'
+        run: |
+          tag=${{ steps.version.outputs.tag }}
+          git archive --format=zip --prefix="kateyer-plugins-${tag#v}/" -o "kateyer-plugins-${tag#v}.zip" HEAD
+          gh release create "$tag" "kateyer-plugins-${tag#v}.zip" --target "$GITHUB_SHA" --title "kateyer-plugins $tag" --generate-notes

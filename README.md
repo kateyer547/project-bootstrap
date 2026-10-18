@@ -22,9 +22,12 @@ Marketplace Claude Code personnel.
 
 3. Mise à jour après une modification du plugin : lance `bash tests/run.sh`, incrémente `version` dans `plugins/<plugin>/.claude-plugin/plugin.json` (seul endroit où elle est écrite : c'est elle qui fait foi), pousse, puis `/plugin marketplace update kateyer-plugins`.
 
-## Paquet zip
+## Release
 
-À chaque push sur `main` (ou à la demande, bouton « Run workflow »), le workflow `.github/workflows/package.yml` lance `bash tests/run.sh`, puis publie le dépôt en artefact `kateyer-plugins-<version>`. Il se télécharge en `.zip` depuis l'onglet **Actions** de GitHub, sur la page de l'exécution. GitHub le conserve 90 jours. Si les tests échouent, aucun artefact n'est produit.
+À chaque push sur `main` (ou à la demande, bouton « Run workflow »), le workflow `.github/workflows/package.yml` lance `bash tests/run.sh`. Si la version de `plugin.json` n'a pas encore de Release, il crée la Release GitHub `v<version>` (tag compris) avec `kateyer-plugins-<version>.zip` en pièce jointe et des notes générées depuis les commits. Le zip se télécharge depuis la page **Releases** du dépôt et n'expire pas.
+
+- Sans changement de version, le push ne publie rien : incrémente `version` dans `plugin.json` pour une nouvelle Release.
+- Si les tests échouent, aucune Release n'est créée.
 
 ## Tester
 
