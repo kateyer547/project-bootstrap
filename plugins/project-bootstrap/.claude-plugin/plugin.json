@@ -1,6 +1,6 @@
 {
   "name": "project-bootstrap",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "description": "Cadrage complet d'un projet logiciel par entretien (fonctionnel, maquettes cliquables de l'application, stack, données, modélisation, architecture, sécurité, paliers) et génération de la documentation et du skill build-app pour un développement par paliers validés.",
   "author": {
     "name": "kateyer"
