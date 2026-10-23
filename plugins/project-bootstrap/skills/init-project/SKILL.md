@@ -1,6 +1,6 @@
 ---
 name: init-project
-description: Cadrage complet d'un nouveau projet logiciel, à lancer au démarrage d'un projet ou pour mettre à jour un cadrage existant. Mène un entretien (vision, fonctionnel, identité visuelle avec maquettes cliquables de l'application, stack, données, modélisation, architecture, sécurité, infrastructure, déploiement, qualité, étapes de réalisation) puis génère docs/, CLAUDE.md, PLAN.md, la configuration .claude/ et le skill build-app qui développe le projet palier par palier.
+description: Cadrage complet d'un nouveau projet logiciel, à lancer au démarrage d'un projet ou pour mettre à jour un cadrage existant. Mène un entretien (vision, fonctionnel, identité visuelle avec maquettes cliquables de l'application, stack, données, modélisation, architecture, sécurité, étapes de réalisation) puis génère docs/, CLAUDE.md, PLAN.md, la configuration .claude/ et le skill build-app qui développe le projet palier par palier.
 ---
 
 # Cadrage de projet
@@ -14,6 +14,7 @@ Tu es l'architecte logiciel qui cadre le projet avec l'utilisateur. Le but : à 
 - **Cohérence.** Chaque réponse contraint les suivantes. N'offre que des options compatibles avec ce qui est déjà décidé (hébergement on-premise → pas de service managé cloud ; pas de front → pas de bloc UI).
 - **Concret.** Versions exactes, noms de commandes, ports, noms d'environnements, noms de tables. « Une base SQL » n'est pas une réponse, « PostgreSQL 17 » en est une.
 - **Identifiants.** Numérote les fonctionnalités `F-01`, les règles métier `RG-01`, les exigences non fonctionnelles `ENF-01`, les entités `E-01`. Les paliers référencent ces identifiants : c'est ce qui garantit que rien n'est oublié.
+- **Force de proposition.** Ne te limite pas aux questions du questionnaire. À chaque bloc, propose 1 à 3 idées auxquelles l'utilisateur n'a probablement pas pensé : fonctionnalité qui manque au parcours, risque ou cas limite, alternative plus simple, bonne pratique du domaine, service existant qui évite du code. Présente-les comme des suggestions, chacune en une ligne avec sa raison ; l'utilisateur les accepte ou les écarte, et seules les idées acceptées entrent dans la spécification. Pas d'idée pour la forme : n'en propose que si elle apporte quelque chose.
 
 ## Étape 0 — Détecter le mode
 
@@ -33,7 +34,7 @@ Les deux rythmes couvrent les mêmes blocs et produisent les mêmes documents.
 
 ## Étape 2 — Entretien
 
-Suis `references/questionnaire.md` (dans le dossier de ce skill), dans l'ordre A, B, L, puis C à J. Le bloc L (identité visuelle) ne concerne que les applications avec une interface.
+Suis `references/questionnaire.md` (dans le dossier de ce skill), dans l'ordre A, B, L, puis C à G, et enfin K. Le bloc L (identité visuelle) ne concerne que les applications avec une interface.
 
 Règles de conduite :
 
@@ -69,7 +70,7 @@ Pas de génération tant que ces quatre éléments ne sont pas validés.
 
 ## Étape 4 — Génération
 
-Si le dossier n'est pas encore un dépôt git, initialise-le avec la branche principale choisie au bloc I : `git init -b <branche principale>` (`main` par défaut). build-app s'appuie sur git (statut propre, branches, tags `tier-N`).
+Si le dossier n'est pas encore un dépôt git, initialise-le avec la branche principale choisie au bloc K : `git init -b <branche principale>` (`main` par défaut). build-app s'appuie sur git (statut propre, branches, tags `tier-N`).
 
 Copie ensuite les modèles du dossier `templates/` de ce skill vers le projet, puis remplis-les.
 
@@ -98,8 +99,8 @@ Règles de remplissage :
 - Remplace **tous** les marqueurs `{{...}}` et supprime les commentaires `<!-- AIDE : ... -->` d'aide au remplissage.
 - Les tableaux des modèles montrent une ligne d'exemple : duplique-la autant que nécessaire.
 - Supprime une section sans objet plutôt que d'écrire « N/A ».
-- Les **commandes de validation** doivent être réellement exécutables dans la stack choisie (commande, outil et chemin existants une fois le palier 1 livré), et passer par les cibles du lanceur de tâches déclarées dans le « Contrat d'outillage » de `docs/03`. `CLAUDE.md`, `09`, `10` et `11` utilisent les mêmes noms de cibles.
-- Un **ADR par décision structurante** : langage et framework, base de données, style d'architecture, hébergement, stratégie de déploiement, authentification, et toute décision où l'utilisateur a écarté ta recommandation.
+- Les **commandes de validation** doivent être réellement exécutables dans la stack choisie (commande, outil et chemin existants une fois le palier 1 livré), et passer par les cibles du lanceur de tâches déclarées dans le « Contrat d'outillage » de `docs/03`. `CLAUDE.md` et `11` utilisent les mêmes noms de cibles.
+- Un **ADR par décision structurante** : langage et framework, base de données, style d'architecture, authentification, et toute décision où l'utilisateur a écarté ta recommandation.
 - Les **secrets** n'apparaissent jamais en clair : uniquement des noms de variables dans `.env.example`.
 - **`.gitignore`** : remplace `{{IGNORE_STACK}}` par les dépendances, sorties de build, caches et rapports de la stack choisie. Si le fichier existe déjà, ajoute seulement les entrées manquantes. `.env` doit rester ignoré et `.env.example` versionné.
 - **`.claude/settings.json`** : remplace `{{ALLOW_COMMANDES_STACK}}` par les commandes que l'agent doit pouvoir lancer sans confirmation, au format `Bash(<commande>:*)` : de préférence une seule entrée pour le lanceur de tâches (`Bash(just:*)`, `Bash(npm run:*)`), plus les rares commandes lancées hors lanceur (`docker compose`, installation des dépendances). Remplace `{{DENY_SPECIFIQUES}}` par les commandes touchant les environnements interdits (déploiement, accès SSH ou base de production), ou supprime l'entrée. Remplace `{{ASK_CONFIG_QUALITE}}` par une règle `Edit(/<fichier>)` par fichier de configuration qualité du contrat d'outillage (ex. `Edit(/eslint.config.js)`) : l'agent devra demander avant de les modifier. N'écris jamais de règle `Write(...)` sur un chemin, Claude Code ne la consulte pas : `Edit(...)` couvre aussi la création de fichiers. Si le fichier existe déjà, fusionne au lieu d'écraser.

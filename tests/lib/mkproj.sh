@@ -8,7 +8,7 @@ mkproj() {
   mkdir -p "$p/docs/adr" "$p/.claude/skills/build-app" "$p/.claude/agents"
   (
     cd "$p" || exit 1
-    for n in 00-index 01-vision 04-donnees 06-architecture 07-securite 08-infrastructure 09-deploiement 10-qualite-tests; do
+    for n in 00-index 01-vision 04-donnees 06-architecture 07-securite; do
       printf '# %s\n\nContenu rempli.\n' "$n" > "docs/$n.md"
     done
     printf "# 03 — Stack technique\n\n## Contrat d'outillage\n\n- **Lanceur de tâches :** just, fichier \`justfile\`\n" > docs/03-stack-technique.md

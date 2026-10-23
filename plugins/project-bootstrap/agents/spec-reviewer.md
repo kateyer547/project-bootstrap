@@ -21,19 +21,18 @@ Lis, dans l'ordre : `docs/00-index.md` à `docs/11-paliers.md`, les ADR de `docs
 - Chaque route d'API de `06` a ses rôles autorisés, cohérents avec la matrice de `02`.
 
 **Cohérence**
-- Les versions et technologies sont identiques partout (`03`, `CLAUDE.md`, `08`, `09`).
-- L'hébergement (`08`) est compatible avec la stack (`03`) et le pipeline (`09`).
+- Les versions et technologies sont identiques partout (`03`, `CLAUDE.md`).
 - Les données personnelles de `04` ont des mesures dans `07`.
 - La volumétrie de `04` est compatible avec les choix de `05` et `06`.
 - Chaque service externe utilisé (dans `02`, `04` ou `06`) figure dans `13` avec un bouchon pour les tests automatisés, un comportement en panne et ses variables dans `.env.example` ; chaque webhook entrant vérifie sa signature et traite deux fois le même événement sans effet en double.
-- Si `04` prévoit une reprise de données, un palier la réalise avec des contrôles par comptage ; si l'application a une interface, `06` décrit l'architecture front ; si elle a une version mobile, `09` décrit la publication sur les stores.
-- Toutes les commandes de `CLAUDE.md`, `09`, `10` et `11` passent par les cibles du lanceur de tâches déclarées dans le contrat d'outillage de `03` ; aucune n'appelle un outil directement.
+- Si `04` prévoit une reprise de données, un palier la réalise avec des contrôles par comptage ; si l'application a une interface, `06` décrit l'architecture front.
+- Toutes les commandes de `CLAUDE.md` et `11` passent par les cibles du lanceur de tâches déclarées dans le contrat d'outillage de `03` ; aucune n'appelle un outil directement.
 - Chaque cible de vérification du contrat d'outillage est en mode contrôle : elle ne modifie rien et renvoie un code non nul en cas de problème (`--check`, `--verify-no-changes`…). Le contrat donne aussi la commande de formatage d'un fichier, les motifs et marqueurs de tests et les sorties de build.
 
 **Exécutabilité des paliers**
 - Les paliers sont ordonnés selon leurs dépendances (pas de fonctionnalité avant les entités et l'authentification qu'elle requiert).
-- Chaque commande de validation est concrète, cohérente avec l'outillage de `03` et `10`, et échouerait réellement si le palier était incomplet.
-- Le premier palier crée bien l'outillage qu'utilisent les commandes de validation suivantes : lanceur de tâches et cible `check`, hook git `pre-commit`, preuve d'échec de `check`, vérification du fichier de pipeline.
+- Chaque commande de validation est concrète, cohérente avec l'outillage de `03`, et échouerait réellement si le palier était incomplet.
+- Le premier palier crée bien l'outillage qu'utilisent les commandes de validation suivantes : lanceur de tâches et cible `check`, hook git `pre-commit`, preuve d'échec de `check`.
 
 **Ambiguïtés**
 - Termes vagues sans critère mesurable (« rapide », « sécurisé », « simple », « etc. »).
@@ -44,7 +43,7 @@ Lis, dans l'ordre : `docs/00-index.md` à `docs/11-paliers.md`, les ADR de `docs
 - `.claude/settings.json` n'autorise aucune commande destructive ou touchant la production.
 - Les variables en tête des scripts de `.claude/hooks/` (motifs des fichiers de test, marqueurs d'exclusion, extensions et commande de formatage) correspondent au contrat d'outillage de `03` et au framework de tests réellement choisi ; les règles `ask` couvrent les fichiers de configuration qualité du contrat.
 - Aucun secret en clair dans les fichiers relus ; `.gitignore` exclut `.env` et les sorties de build de la stack, sans exclure `.env.example` ni les fichiers de verrouillage des dépendances.
-- La stratégie de branches de `PLAN.md` et de `build-app` correspond au bloc K, et la fusion prévue est compatible avec la protection de la branche principale de `09` (pull request obligatoire → pas de fusion locale par l'agent).
+- La stratégie de branches de `PLAN.md` et de `build-app` correspond au bloc K, et la fusion prévue est compatible avec la protection de la branche principale choisie au bloc K (pull request obligatoire → pas de fusion locale par l'agent).
 
 ## Sortie
 

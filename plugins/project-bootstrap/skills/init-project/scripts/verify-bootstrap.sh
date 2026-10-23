@@ -60,9 +60,6 @@ required=(
   docs/05-modele-donnees.md
   docs/06-architecture.md
   docs/07-securite.md
-  docs/08-infrastructure.md
-  docs/09-deploiement.md
-  docs/10-qualite-tests.md
   docs/11-paliers.md
   .claude/settings.json
   .claude/skills/build-app/SKILL.md

@@ -23,7 +23,7 @@
 
 ## Contrat d'outillage
 
-Source unique des commandes du projet : `CLAUDE.md`, la CI (`09`), les paliers (`11`), le `.gitignore`, les permissions et les hooks de `.claude/` reprennent ces valeurs.
+Source unique des commandes du projet : `CLAUDE.md`, la CI, les paliers (`11`), le `.gitignore`, les permissions et les hooks de `.claude/` reprennent ces valeurs.
 
 - **Lanceur de tâches :** {{LANCEUR}}, fichier `{{FICHIER_LANCEUR}}`
 

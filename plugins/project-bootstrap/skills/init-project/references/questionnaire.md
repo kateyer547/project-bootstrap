@@ -1,6 +1,8 @@
 # Questionnaire de cadrage
 
-Chaque bloc indique le ou les documents qu'il alimente. Les options listées sont des suggestions : adapte-les au contexte et aux réponses déjà données, et place toujours ta recommandation en premier. Les questions marquées **(ouverte)** se posent en texte libre.
+Chaque bloc indique le ou les documents qu'il alimente. Ce questionnaire est une grille, pas un script : les questions et les options listées sont des points de départ. Adapte-les au contexte et aux réponses déjà données, place toujours ta recommandation en premier, et ajoute toute question ou option que le projet appelle même si elle n'est pas listée. Les questions marquées **(ouverte)** se posent en texte libre.
+
+À la fin de chaque bloc, avant le récapitulatif, propose tes **idées** (voir « Force de proposition » dans `SKILL.md`).
 
 En mode Express, utilise ce questionnaire comme grille : pré-remplis chaque question à partir du paragraphe de l'utilisateur, puis fais valider le bloc entier en une fois en signalant ce que tu as déduit et ce que tu as supposé.
 
@@ -121,57 +123,21 @@ Présente le résultat sous forme de diagramme Mermaid `erDiagram`.
 7. Traçabilité : journal d'audit des actions sensibles.
 8. Contrôles automatisés : analyse des dépendances, SAST, scan des images de conteneurs.
 
-## H. Infrastructure → `docs/08-infrastructure.md`
-
-1. Hébergement : cloud public (Azure, AWS, GCP, OVHcloud, Scaleway) / PaaS (App Service, Render, Fly.io) / VM on-premise / Kubernetes / serveur personnel.
-2. Environnements : local, dev, recette, préproduction, production. Lesquels existent ? Qui y a accès ?
-3. Pour chaque environnement : machines ou services, OS, ressources, URL, réseau (VLAN, pare-feu, reverse proxy), certificats TLS.
-4. Conteneurisation : Docker + Compose / Kubernetes / sans conteneur (service systemd, IIS).
-5. Développement local : Docker Compose pour les dépendances, devcontainer, données de seed.
-6. Infrastructure as Code : Terraform / OpenTofu / Bicep / Ansible / manuel documenté.
-7. Supervision : Zabbix / Prometheus + Grafana / Azure Monitor / aucune. Logs centralisés, alertes, destinataires.
-8. Base de données : instance managée ou auto-hébergée, haute disponibilité, réplication.
-9. Coût mensuel visé.
-
-## I. Déploiement et CI/CD → `docs/09-deploiement.md`
-
-1. Forge : GitHub / GitLab / Gitea / Azure DevOps. Runners hébergés ou auto-hébergés.
-2. Stratégie de branches : trunk-based / GitHub flow / GitFlow. Nom de la branche principale (`main` par défaut) et protection de celle-ci (pull request obligatoire ou non).
-3. Conventions : Conventional Commits, versionnement sémantique, changelog.
-4. Étapes du pipeline : lint → tests unitaires → build → tests d'intégration → analyse de sécurité → image → déploiement → tests de fumée. Chaque étape appelle une cible du lanceur de tâches. Comment l'agent vérifie le fichier de pipeline sans pousser : exécution locale (`act`, `gitlab-ci-local`), analyseur (`actionlint`, `glab ci lint`), ou à défaut la première pull request.
-5. Artefacts : registre d'images ou de paquets.
-6. Déclenchement par environnement : automatique / sur tag / manuel avec validation.
-7. Stratégie de mise en production : redémarrage simple / rolling / blue-green / canary.
-8. Migrations de base au déploiement : automatiques ou manuelles, compatibilité ascendante.
-9. Retour arrière : procédure et délai visé.
-10. Vérification après déploiement : healthcheck, tests de fumée, surveillance.
-11. Publication mobile (si application mobile) : stores visés et comptes développeur, signature et stockage des certificats en secrets de CI, numérotation des builds, canaux de test (TestFlight, test interne Google Play), mise à jour forcée, certificats de notifications push.
-
-## J. Qualité et tests → `docs/10-qualite-tests.md`
-
-1. Niveaux de tests : unitaires / intégration (avec vraie base via Testcontainers ou Compose) / contrat d'API / end-to-end (Playwright, Cypress) / charge (k6).
-2. Couverture minimale visée et périmètre mesuré.
-3. Formatage, lint et analyse statique : outils et règles bloquantes.
-4. Revue : humaine obligatoire / agent reviewer / les deux.
-5. Definition of Done d'une fonctionnalité.
-6. Documentation attendue : README, OpenAPI, guide d'exploitation, changelog.
-
 ## K. Étapes de réalisation et validation → `docs/11-paliers.md`, `PLAN.md`, `docs/02-specifications-fonctionnelles.md`
 
-Commence par consolider les **exigences non fonctionnelles** `ENF-xx` exprimées dans les blocs précédents : contraintes et normes (A7), accessibilité et compatibilité (B6), volumétrie et utilisateurs simultanés (D3), RPO / RTO (D8), performance (F10), sécurité (G), disponibilité et supervision (H). Pour chacune : une cible mesurable et sa méthode de vérification (commande, test, mesure, ou contrôle manuel décrit). Relance toute exigence sans chiffre (« rapide », « disponible »). Elles vont dans la section « Exigences non fonctionnelles » de `docs/02`.
+Commence par consolider les **exigences non fonctionnelles** `ENF-xx` exprimées dans les blocs précédents : contraintes et normes (A7), accessibilité et compatibilité (B6), volumétrie et utilisateurs simultanés (D3), RPO / RTO (D8), performance (F10), sécurité (G), disponibilité. Pour chacune : une cible mesurable et sa méthode de vérification (commande, test, mesure, ou contrôle manuel décrit). Relance toute exigence sans chiffre (« rapide », « disponible »). Elles vont dans la section « Exigences non fonctionnelles » de `docs/02`.
 
 Propose ensuite un découpage à partir de tout ce qui précède. Base de départ à adapter :
 
 | Palier | Objectif type |
 |---|---|
-| 1 | Socle : dépôt, structure, outillage qualité, lanceur de tâches avec sa cible `check` et le hook git `pre-commit`, preuve d'échec de `check`, CI minimale vérifiée, endpoint `/health`, environnement local |
+| 1 | Socle : dépôt, structure, outillage qualité, lanceur de tâches avec sa cible `check` et le hook git `pre-commit`, preuve d'échec de `check`, CI minimale si le projet a une forge, endpoint `/health`, environnement local |
 | 2 | Données : schéma, migrations, seed, couche d'accès, tests d'intégration |
 | 3 | Sécurité : authentification, autorisation, comptes de test |
 | 4 à n | Fonctionnalités MVP par lots cohérents (un lot = un ensemble de `F-xx` liés) |
 | n+1 | Interface utilisateur et parcours E2E (si front) |
 | n+2 | Durcissement : sécurité, performance, observabilité, gestion d'erreurs |
-| n+3 | Déploiement : conteneurs, pipeline complet, préproduction, puis production |
-| n+4 | V2 et suivantes |
+| n+3 | V2 et suivantes |
 
 Pour chaque palier, fais préciser :
 
@@ -188,7 +154,7 @@ Puis, pour l'ensemble du développement :
    - arrêt uniquement aux paliers marqués comme points d'arrêt ;
    - autonomie complète jusqu'au dernier palier, arrêt seulement en cas de blocage.
 7. Nombre maximal de tentatives de correction avant arrêt (3 par défaut).
-8. Branches pendant le développement (si le bloc I impose une pull request pour modifier la branche principale, recommande la deuxième option) :
+8. Branche principale (`main` par défaut) et sa protection : pull request obligatoire ou non. Puis les branches pendant le développement (si une pull request est obligatoire, recommande la deuxième option) :
    - une branche par palier, fusionnée localement par l'agent dans la branche principale à la clôture du palier (Recommandé) ;
    - une branche par palier poussée sur la forge en pull / merge request, fusionnée par l'utilisateur ;
    - travail direct sur une branche de développement unique, sans fusion par l'agent.

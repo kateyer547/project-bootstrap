@@ -28,10 +28,7 @@ Blocs couverts :
 | E. Modélisation | SGBD, entités, relations, conventions, index, migrations (diagramme `erDiagram`) |
 | F. Architecture | style, couches, API, erreurs, configuration, observabilité, architecture front, intégrations externes (`13-integrations.md`) |
 | G. Sécurité | authentification, autorisation, protections, secrets, audit |
-| H. Infrastructure | hébergement, environnements, réseau, conteneurs, IaC, supervision |
-| I. Déploiement | forge, branches, pipeline, stratégie de mise en production, retour arrière, publication mobile |
-| J. Qualité | niveaux de tests, couverture, lint, revue, Definition of Done |
-| K. Paliers | exigences non fonctionnelles `ENF-xx` chiffrées, découpage, commandes de validation, points d'arrêt, autonomie de l'agent, stratégie de branches |
+| K. Paliers | exigences non fonctionnelles `ENF-xx` chiffrées, découpage, commandes de validation, points d'arrêt, autonomie de l'agent, branche principale et stratégie de branches |
 | L. Identité visuelle | ambiance, couleurs, police, thèmes, navigation, références, puis **maquettes cliquables** |
 
 **Maquettes de l'application** (si elle a une interface) : juste après le fonctionnel, Claude construit dans `design/` un prototype cliquable façon Figma. `design/index.html` affiche tous les écrans côte à côte, en mobile ou ordinateur, en clair ou sombre, avec les fonctionnalités annotées ; chaque écran s'ouvre en plein écran avec ses états (normal, vide, chargement, erreur) et ses liens vers les écrans suivants. Tu itères jusqu'à ce que le rendu te plaise, et la spec est mise à jour en même temps. Un exemple complet est dans `skills/init-project/examples/maquettes-canettes/`.

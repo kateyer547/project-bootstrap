@@ -13,9 +13,6 @@ Cadrage réalisé le {{DATE_DU_JOUR}}. Toute évolution d'une décision passe pa
 | [05 Modèle de données](05-modele-donnees.md) | Entités, relations, contraintes, migrations |
 | [06 Architecture](06-architecture.md) | Composants, couches, API, erreurs, observabilité |
 | [07 Sécurité](07-securite.md) | Authentification, autorisation, protections |
-| [08 Infrastructure](08-infrastructure.md) | Environnements, hébergement, supervision |
-| [09 Déploiement](09-deploiement.md) | CI/CD, mise en production, retour arrière |
-| [10 Qualité et tests](10-qualite-tests.md) | Stratégie de tests, outillage, Definition of Done |
 | [11 Paliers](11-paliers.md) | Étapes de réalisation et validation |
 | [12 Maquettes](12-maquettes.md) | Écrans, parcours, identité visuelle (`design/`) |
 | [13 Intégrations](13-integrations.md) | Services externes, bouchons de test, comportement en panne |
