@@ -47,6 +47,7 @@ En mode Express, utilise ce questionnaire comme grille : pré-remplis chaque que
 8. Navigation : barre latérale / barre supérieure / navigation basse sur mobile / combinaison.
 9. **(ouverte)** Références : applications ou sites dont le style plaît à l'utilisateur, et ce qu'il aime dedans.
 10. **(ouverte)** Logo ou nom affiché, ton des textes (tutoiement ou vouvoiement, formel ou décontracté).
+11. Niveau de maquettes : complètes, tous les écrans cliquables (Recommandé si l'application a plusieurs rôles ou parcours) / écran type, un seul écran complet plus la liste des écrans (plus rapide et nettement moins coûteux en jetons).
 
 ## C. Stack technique → `docs/03-stack-technique.md`
 

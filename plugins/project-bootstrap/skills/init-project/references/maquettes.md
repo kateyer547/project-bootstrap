@@ -17,10 +17,15 @@ Règles :
 - Chaque fonctionnalité `F-xx` du MVP qui a une interface apparaît dans au moins un écran.
 - Les parcours critiques du bloc B doivent pouvoir être suivis d'un écran à l'autre en cliquant.
 - Une modale ou un formulaire important peut être un écran à part entière.
+- Marque les écrans des parcours critiques (3 à 5) : ce sont eux qui se construisent en premier.
+
+Niveau de maquettes (choisi au bloc L) :
+- **Complètes** : tous les écrans de la liste, en deux lots (parcours critiques, puis le reste après validation du premier lot).
+- **Écran type** : un seul écran complet, le plus riche du parcours principal, pour valider l'identité visuelle et les composants. La liste complète des écrans va dans `docs/12-maquettes.md`, et `ecrans.js` ne déclare que l'écran construit. Les paliers d'interface s'appuient alors sur `components.css`, `tokens.css` et cette liste.
 
 ## 2. Mettre en place le dossier `design/`
 
-Copie depuis `templates/design/` de ce skill :
+Copie avec `cp` depuis `templates/design/` de ce skill. `index.html` et `proto.js` s'utilisent tels quels : ne les lis pas. Ne lis `components.css` que pour y chercher ou ajouter un composant.
 
 | Modèle | Destination |
 |---|---|
@@ -35,7 +40,7 @@ Remplis `tokens.css` avec l'identité visuelle du bloc L, et `ecrans.js` avec la
 
 ## 3. Construire chaque écran
 
-Niveau de finition attendu : ouvre l'exemple `examples/maquettes-canettes/` de ce skill (une application de collection de canettes, 5 écrans). Inspire-toi de sa densité, de ses données crédibles et de sa cohérence visuelle, mais n'en reprends ni le contenu ni la mise en page : chaque projet a sa propre identité.
+Niveau de finition attendu : ouvre un ou deux écrans de l'exemple `examples/maquettes-canettes/ecrans/` de ce skill (une application de collection de canettes), par exemple `ecr-02.html` ; inutile de lire tout l'exemple. Inspire-toi de sa densité, de ses données crédibles et de sa cohérence visuelle, mais n'en reprends ni le contenu ni la mise en page : chaque projet a sa propre identité.
 
 
 - **Données réalistes** : contenu en français, cohérent avec le métier, crédible (noms, dates, montants, statuts variés). Jamais de « Lorem ipsum » ni de « Titre 1 ».
@@ -43,7 +48,7 @@ Niveau de finition attendu : ouvre l'exemple `examples/maquettes-canettes/` de c
 - **Composants partagés** : utilise les classes de `components.css`. Si un composant manque, ajoute-le dans `components.css` (jamais de style isolé dans un écran), pour que tous les écrans restent cohérents.
 - **Couleurs et typographie** uniquement via les variables de `tokens.css`, pour que le thème clair et sombre fonctionne partout.
 - **Navigation cliquable** : liens et boutons pointent vers l'écran suivant du parcours (`href="ecr-03.html"`). Un formulaire envoyé mène à l'écran de résultat.
-- **États** : chaque état listé est une `<section data-etat="...">`. `normal` est visible par défaut, les autres ont l'attribut `hidden`. La barre d'outils de `proto.js` permet de passer de l'un à l'autre.
+- **États** : chaque état listé est une `<section data-etat="...">`. `normal` est visible par défaut, les autres ont l'attribut `hidden`. La barre d'outils de `proto.js` permet de passer de l'un à l'autre. Seul l'état `normal` est complet : les états vide, chargement et erreur restent courts (un message, un squelette, une alerte) et réutilisent les composants existants.
 - **Annotations** : ajoute `data-f="F-03"` sur les zones qui réalisent une fonctionnalité. Le bouton « Annotations » les fait apparaître.
 - **Responsive, mobile d'abord** : l'écran doit être correct à 390 px et à 1280 px de large (navigation basse sur mobile, barre latérale sur ordinateur si c'est le style choisi).
 - **Icônes** en SVG inline simples ; aucune bibliothèque externe, aucun framework JavaScript.
@@ -51,7 +56,7 @@ Niveau de finition attendu : ouvre l'exemple `examples/maquettes-canettes/` de c
 
 ## 4. Vérifier le rendu
 
-Si Node est disponible, capture chaque écran et regarde les images avant de les montrer :
+Si Node est disponible et que l'utilisateur accepte le téléchargement de Chromium par Playwright (environ 150 Mo, demande-le une fois), capture chaque écran et regarde les images avant de les montrer :
 
 ```bash
 npx -y playwright@1.63.0 install chromium

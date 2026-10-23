@@ -12,6 +12,7 @@ Prérequis :
 | `cadrage-se-declenche` | `rapide` | Une demande de démarrage de projet déclenche `init-project`, qui ouvre l'entretien sans écrire de code |
 | `hors-sujet-ne-declenche-pas` | `rapide` | Une question technique sans rapport ne déclenche pas `init-project` |
 | `generation-express` | `lourd` | En mode Express, sans utilisateur, la documentation est générée : fichiers clés présents, paliers avec commandes, ENF, aucun marqueur restant, aucun code applicatif |
+| `generation-express-interface` | `lourd` | Même chose pour une application web : maquettes (`design/`, `docs/12`), critères « Étant donné », règles métier explicites |
 
 ## Lancer
 
