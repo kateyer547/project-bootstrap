@@ -61,12 +61,14 @@ required=(
   docs/06-architecture.md
   docs/07-securite.md
   docs/11-paliers.md
+  docs/14-deploiement.md
   .claude/settings.json
   .claude/skills/build-app/SKILL.md
   .claude/skills/fix-bug/SKILL.md
   .claude/skills/add-feature/SKILL.md
   .claude/agents/tier-reviewer.md
   .claude/scripts/verify-spec.sh
+  .claude/scripts/autopilote.sh
   .claude/hooks/session-start.sh
   .claude/hooks/guard-tests.sh
 )
@@ -151,6 +153,13 @@ if [ -f CLAUDE.md ]; then
   else fail "CLAUDE.md : ligne « Tout vérifier » (cible check du lanceur de tâches) absente"; fi
 fi
 
+echo "== Livraison"
+if [ -f docs/14-deploiement.md ]; then
+  for s in "## Cible" "## Livrable"; do
+    grep -q "^$s" docs/14-deploiement.md && ok "docs/14 : section « $s » présente" || fail "docs/14-deploiement.md : section « $s » absente"
+  done
+fi
+
 echo "== Modèle de données"
 if [ -f docs/05-modele-donnees.md ]; then
   if grep -q 'erDiagram' docs/05-modele-donnees.md; then ok "diagramme erDiagram présent"; else fail "pas de diagramme Mermaid erDiagram dans docs/05-modele-donnees.md"; fi
@@ -169,6 +178,12 @@ if [ -f docs/11-paliers.md ]; then
   ' docs/11-paliers.md)
   if [ -z "$missing" ]; then ok "chaque palier a un bloc de commandes de validation"; else
     fail "paliers sans bloc de commandes de validation :"; echo "$missing" | sed 's/^/         /'
+  fi
+  # Le MVP se termine par un palier de livraison vérifié par la cible release-check.
+  if grep -q -E '^## Palier [0-9]+ — .*[Ll]ivraison' docs/11-paliers.md && grep -q 'release-check' docs/11-paliers.md; then
+    ok "palier de livraison validé par release-check"
+  else
+    fail "aucun palier « ## Palier N — Livraison » validé par la cible release-check dans docs/11-paliers.md"
   fi
 fi
 

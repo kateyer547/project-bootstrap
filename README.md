@@ -4,7 +4,7 @@ Marketplace Claude Code personnel.
 
 | Plugin | Rôle |
 |---|---|
-| [project-bootstrap](plugins/project-bootstrap) | Cadre un nouveau projet par entretien, génère toute la documentation et le skill `build-app` qui développe l'application palier par palier. |
+| [project-bootstrap](plugins/project-bootstrap) | Cadre un nouveau projet par entretien, génère toute la documentation et le skill `build-app` qui développe l'application palier par palier jusqu'à une livraison prête à déployer. |
 
 ## Installation
 
@@ -49,5 +49,13 @@ Une fois le cadrage terminé :
 ```
 Utilise le skill build-app et commence au palier 1.
 ```
+
+Ou, pour enchaîner les paliers sans intervention dans un environnement isolé :
+
+```
+bash .claude/scripts/autopilote.sh
+```
+
+Le dernier palier livre un artefact vérifié et le guide `docs/14-deploiement.md` : le déploiement, c'est toi qui le fais.
 
 Voir [plugins/project-bootstrap/README.md](plugins/project-bootstrap/README.md) pour le détail.

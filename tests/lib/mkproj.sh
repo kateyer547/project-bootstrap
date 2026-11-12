@@ -55,7 +55,17 @@ EOF
 ```bash
 just check
 ```
+
+## Palier 2 — Livraison
+
+### Commandes de validation
+
+```bash
+just release-check
+! grep -q "Rédigé au palier de livraison" docs/14-deploiement.md
+```
 EOF
+    printf '# 14 — Déploiement\n\n## Cible\n\nVM Debian 12, Docker Compose.\n\n## Livrable\n\nImage Docker test:1.0.0.\n\n## Première installation\n\nRédigé au palier de livraison.\n' > docs/14-deploiement.md
     printf '# Projet test\n\n| Action | Commande |\n|---|---|\n| **Tout vérifier (avant chaque commit)** | `just check` |\n' > CLAUDE.md
     printf '# Plan\n' > PLAN.md
     printf 'DATABASE_URL=postgres://app:changeme@localhost:5432/app\n' > .env.example
@@ -78,6 +88,7 @@ EOF
     printf -- '---\nname: fix-bug\ndescription: test\n---\n' > .claude/skills/fix-bug/SKILL.md
     printf -- '---\nname: add-feature\ndescription: test\n---\n' > .claude/skills/add-feature/SKILL.md
     cp "$VERIFY" .claude/scripts/verify-spec.sh
+    printf '#!/usr/bin/env bash\n# Autopilote de test\n' > .claude/scripts/autopilote.sh
     printf -- '---\nname: tier-reviewer\ndescription: test\n---\n' > .claude/agents/tier-reviewer.md
     mkdir -p .claude/hooks
     printf '#!/usr/bin/env bash\necho "État du projet"\n' > .claude/hooks/session-start.sh
@@ -108,6 +119,7 @@ raw_templates() {
   cp "$t/claude/skills/build-app/SKILL.md" "$p/.claude/skills/build-app/"
   cp -R "$t/claude/skills/fix-bug" "$t/claude/skills/add-feature" "$p/.claude/skills/"
   mkdir -p "$p/.claude/scripts" && cp "$VERIFY" "$p/.claude/scripts/verify-spec.sh"
+  cp "$t/claude/scripts/autopilote.sh" "$p/.claude/scripts/"
   cp "$t/claude/agents/tier-reviewer.md" "$p/.claude/agents/"
   cp -R "$t/claude/hooks" "$p/.claude/hooks"
   (cd "$p" && git init -q -b main)

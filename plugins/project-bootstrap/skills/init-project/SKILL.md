@@ -1,11 +1,11 @@
 ---
 name: init-project
-description: Cadre un nouveau projet logiciel avant d'écrire la moindre ligne de code. Utilise ce skill dès que l'utilisateur démarre ou envisage une application, un SaaS, une API ou un outil interne, même s'il ne parle pas de cadrage (« je veux lancer une appli », « par où on commence », « j'ai une idée d'app », « cahier des charges », « specs », « kick-off », « help me scope a new app »), et pour mettre à jour un cadrage existant (changement de stack, de base, d'authentification). Mène un entretien (vision, fonctionnel, maquettes cliquables, stack, données, modélisation, architecture, sécurité, paliers) puis génère docs/, CLAUDE.md, PLAN.md, la configuration .claude/ et le skill build-app qui développe le projet palier par palier. Pas pour ajouter une seule fonctionnalité à un projet déjà cadré (skill add-feature du projet), ni pour coder un palier, ni pour une question technique ponctuelle.
+description: Cadre un nouveau projet logiciel avant d'écrire la moindre ligne de code. Utilise ce skill dès que l'utilisateur démarre ou envisage une application, un SaaS, une API ou un outil interne, même s'il ne parle pas de cadrage (« je veux lancer une appli », « par où on commence », « j'ai une idée d'app », « cahier des charges », « specs », « kick-off », « help me scope a new app »), et pour mettre à jour un cadrage existant (changement de stack, de base, d'authentification). Mène un entretien (vision, fonctionnel, maquettes cliquables, stack, données, modélisation, architecture, sécurité, paliers) puis génère docs/, CLAUDE.md, PLAN.md, la configuration .claude/ et le skill build-app qui développe le projet palier par palier jusqu'à une livraison prête à déployer. Pas pour ajouter une seule fonctionnalité à un projet déjà cadré (skill add-feature du projet), ni pour coder un palier, ni pour une question technique ponctuelle.
 ---
 
 # Cadrage de projet
 
-Tu es l'architecte logiciel qui cadre le projet avec l'utilisateur. Le but : à la fin, un agent doit pouvoir développer toute l'application avec le seul prompt « Utilise le skill build-app » sans jamais avoir à deviner un choix.
+Tu es l'architecte logiciel qui cadre le projet avec l'utilisateur. Le but : à la fin, un agent doit pouvoir développer toute l'application et la livrer prête à déployer avec le seul prompt « Utilise le skill build-app », sans jamais avoir à deviner un choix structurant. Le déploiement lui-même reste fait par l'utilisateur.
 
 ## Principes
 
@@ -71,10 +71,11 @@ Avant d'écrire la documentation, présente et fais valider explicitement :
 
 1. Le **modèle de données** sous forme de diagramme Mermaid `erDiagram`, avec la liste des entités, cardinalités et contraintes.
 2. Le **schéma d'architecture** en Mermaid (composants, flux, environnements).
-3. Le **plan de réalisation** : la liste des exigences non fonctionnelles `ENF-xx` avec leur cible mesurable, puis un tableau des paliers avec, pour chacun, l'objectif, les fonctionnalités (`F-xx`) et exigences (`ENF-xx`) couvertes, les livrables, les commandes de validation et la présence d'un point d'arrêt humain.
+3. Le **plan de réalisation** : la liste des exigences non fonctionnelles `ENF-xx` avec leur cible mesurable, puis un tableau des paliers avec, pour chacun, l'objectif, les fonctionnalités (`F-xx`) et exigences (`ENF-xx`) couvertes, les livrables, les commandes de validation et la présence d'un point d'arrêt humain. Le dernier palier du MVP est « Livraison ».
 4. Le **niveau d'autonomie** de l'agent pendant le développement (voir bloc K).
+5. La **livraison** : cible de déploiement, forme de l'artefact, configuration de production d'exemple et première version (voir bloc K). L'agent ne déploie pas : il livre.
 
-Pas de génération tant que ces quatre éléments ne sont pas validés.
+Pas de génération tant que ces cinq éléments ne sont pas validés.
 
 ## Étape 4 — Génération
 
@@ -87,13 +88,14 @@ Copie ensuite les modèles du dossier `templates/` de ce skill vers le projet, p
 | `templates/CLAUDE.md` | `CLAUDE.md` |
 | `templates/PLAN.md` | `PLAN.md` |
 | `templates/gitignore` | `.gitignore` |
-| `templates/docs/00-index.md` à `11-paliers.md` | `docs/` |
+| `templates/docs/00-index.md` à `11-paliers.md`, et `14-deploiement.md` | `docs/` |
 | `templates/docs/adr/0000-modele.md` | `docs/adr/0000-modele.md` (et un fichier `docs/adr/NNNN-titre.md` par décision) |
 | `templates/claude/settings.json` | `.claude/settings.json` |
 | `templates/claude/skills/build-app/SKILL.md` | `.claude/skills/build-app/SKILL.md` |
 | `templates/claude/skills/fix-bug/SKILL.md` | `.claude/skills/fix-bug/SKILL.md` |
 | `templates/claude/skills/add-feature/SKILL.md` | `.claude/skills/add-feature/SKILL.md` |
 | `scripts/verify-bootstrap.sh` (copié tel quel) | `.claude/scripts/verify-spec.sh`, que `add-feature` relance après chaque ajout |
+| `templates/claude/scripts/autopilote.sh` | `.claude/scripts/autopilote.sh`, qui enchaîne les sessions de build-app sans intervention |
 | `templates/claude/agents/tier-reviewer.md` | `.claude/agents/tier-reviewer.md` |
 | `templates/claude/hooks/` (`session-start.sh`, `guard-tests.sh`, `format-file.sh`) | `.claude/hooks/` |
 | `templates/env.example` | `.env.example` |
@@ -111,8 +113,9 @@ Règles de remplissage :
 - Un **ADR par décision structurante** : langage et framework, base de données, style d'architecture, authentification, et toute décision où l'utilisateur a écarté ta recommandation.
 - Les **secrets** n'apparaissent jamais en clair : uniquement des noms de variables dans `.env.example`.
 - **`.gitignore`** : remplace `{{IGNORE_STACK}}` par les dépendances, sorties de build, caches et rapports de la stack choisie. Si le fichier existe déjà, ajoute seulement les entrées manquantes. `.env` doit rester ignoré et `.env.example` versionné.
-- **`.claude/settings.json`** : remplace `{{ALLOW_COMMANDES_STACK}}` par les commandes que l'agent doit pouvoir lancer sans confirmation, au format `Bash(<commande>:*)` : de préférence une seule entrée pour le lanceur de tâches (`Bash(just:*)`, `Bash(npm run:*)`), plus les rares commandes lancées hors lanceur (`docker compose`, installation des dépendances). Remplace `{{DENY_SPECIFIQUES}}` par les commandes touchant les environnements interdits (déploiement, accès SSH ou base de production), ou supprime l'entrée. Remplace `{{ASK_CONFIG_QUALITE}}` par une règle `Edit(/<fichier>)` par fichier de configuration qualité du contrat d'outillage (ex. `Edit(/eslint.config.js)`) : l'agent devra demander avant de les modifier. N'écris jamais de règle `Write(...)` sur un chemin, Claude Code ne la consulte pas : `Edit(...)` couvre aussi la création de fichiers. Si le fichier existe déjà, fusionne au lieu d'écraser.
+- **`.claude/settings.json`** : remplace `{{ALLOW_COMMANDES_STACK}}` par les commandes que l'agent doit pouvoir lancer sans confirmation, au format `Bash(<commande>:*)` : de préférence une seule entrée pour le lanceur de tâches (`Bash(just:*)`, `Bash(npm run:*)`), plus les rares commandes lancées hors lanceur (`docker compose`, installation des dépendances). Remplace `{{DENY_SPECIFIQUES}}` par les commandes de déploiement ou de publication propres à la cible de `docs/14` et aux environnements interdits (CLI de l'hébergeur, accès à la base de production…), ou supprime l'entrée ; garde les règles `deny` génériques du modèle (`ssh`, `docker push`, push de tags…). En mode autopilote, toute commande absente de `allow` est refusée : l'entrée `allow` doit couvrir tout ce que les paliers lancent, y compris `docker compose` ou l'équivalent qu'utilise la cible `release-check`. Remplace `{{ASK_CONFIG_QUALITE}}` par une règle `Edit(/<fichier>)` par fichier de configuration qualité du contrat d'outillage (ex. `Edit(/eslint.config.js)`) : l'agent devra demander avant de les modifier. N'écris jamais de règle `Write(...)` sur un chemin, Claude Code ne la consulte pas : `Edit(...)` couvre aussi la création de fichiers. Si le fichier existe déjà, fusionne au lieu d'écraser.
 - **Hooks de `.claude/hooks/`** : remplis les variables en tête de chaque script à partir du contrat d'outillage de `docs/03` (motifs des fichiers de test et marqueurs d'exclusion au format indiqué, extensions et commande de formatage d'un fichier), puis supprime les lignes `# AIDE :`. Si la stack n'a pas de formateur de fichier, supprime `format-file.sh` et l'entrée `PostToolUse` de `settings.json`.
+- **`docs/14-deploiement.md`** : remplis « Cible » et « Livrable » avec les réponses du bloc K ; laisse les sections dont le texte est « Rédigé au palier de livraison. » telles quelles, build-app les complète au palier « Livraison ». `CMD_RELEASE` et `CMD_RELEASE_CHECK` sont les cibles `release` et `release-check` du lanceur, déclarées dans le contrat d'outillage de `docs/03`.
 - **Ne génère aucun code applicatif.** Le cadrage s'arrête à la documentation et à la configuration de l'agent. Le code commence avec build-app.
 
 ## Étape 5 — Vérification
@@ -128,4 +131,4 @@ Un message final court :
 - la liste des fichiers créés ou modifiés ;
 - les questions ouvertes restantes, s'il y en a ;
 - la suggestion de commit, après relecture de `git status` : `git add -A && git commit -m "docs: cadrage initial du projet"` (build-app démarre sur un dépôt propre et pose le tag `tier-0` sur ce commit) ;
-- la commande pour démarrer le développement : **« Utilise le skill build-app et commence au palier 1. »**
+- la commande pour démarrer le développement : **« Utilise le skill build-app et commence au palier 1. »** ; ou, pour un développement sans intervention jusqu'au prochain point d'arrêt, à lancer dans un environnement isolé : `bash .claude/scripts/autopilote.sh`. Rappelle que la livraison finale est un artefact vérifié et un guide (`docs/14-deploiement.md`) : le déploiement reste à faire par l'utilisateur.

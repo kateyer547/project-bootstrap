@@ -16,6 +16,10 @@
 
 <!-- AIDE : laisse cette section vide ; build-app y consigne les blocages (erreur, hypothèses testées, question posée). -->
 
+## Décisions à confirmer
+
+<!-- AIDE : laisse cette section vide ; build-app y note les décisions mineures prises seul (une ligne « - » par décision), que l'utilisateur relit à chaque compte rendu. -->
+
 ## Journal
 
 | Date | Palier | Événement |

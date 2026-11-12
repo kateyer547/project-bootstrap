@@ -35,7 +35,7 @@ Récapitule en 3 à 8 lignes et fais valider.
 
 ## 4. Planifier
 
-1. Ajoute un palier à la fin de `docs/11-paliers.md`, au format exact « ## Palier N — Titre », avec objectif, fonctionnalités et exigences, docs à lire, point d'arrêt, dépendances, livrables, commandes de validation (cibles du lanceur de tâches) et critères vérifiés. Si le prochain palier non commencé porte sur le même sujet, propose plutôt d'y ajouter la fonctionnalité.
+1. Ajoute un palier à la fin de `docs/11-paliers.md`, au format exact « ## Palier N — Titre », avec objectif, fonctionnalités et exigences, docs à lire, point d'arrêt, dépendances, livrables, commandes de validation (cibles du lanceur de tâches) et critères vérifiés. Si le prochain palier non commencé porte sur le même sujet, propose plutôt d'y ajouter la fonctionnalité. Un palier placé après le palier « Livraison » produit une nouvelle version : ses commandes de validation se terminent par la cible `release-check`, et ses livrables incluent la mise à jour de `CHANGELOG.md` et de `docs/14-deploiement.md` (build-app, section 6).
 2. Ajoute la ligne du palier dans `PLAN.md` et une ligne au journal.
 3. Lance `bash .claude/scripts/verify-spec.sh` et corrige jusqu'à ce qu'il passe.
 4. Commite `docs(spec): ajout de F-xx — <nom>`. Si la stratégie de branches de `build-app` impose une pull request, fais-le sur une branche `spec-F-xx` et ouvre la pull request.

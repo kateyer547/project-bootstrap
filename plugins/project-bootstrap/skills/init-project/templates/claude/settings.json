@@ -39,6 +39,16 @@
       "Bash(git * --no-verify*)",
       "Bash(git commit -n*)",
       "Bash(git commit * -n*)",
+      "Bash(git push --tags:*)",
+      "Bash(git push * --tags*)",
+      "Bash(git push * v*)",
+      "Bash(ssh:*)",
+      "Bash(scp:*)",
+      "Bash(docker login:*)",
+      "Bash(docker push:*)",
+      "Bash(kubectl:*)",
+      "Bash(helm:*)",
+      "Bash(npm publish:*)",
       "{{DENY_SPECIFIQUES}}"
     ]
   },

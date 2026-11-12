@@ -50,6 +50,21 @@ expect "F-3 à un chiffre absente des paliers" 1 "fonctionnalités MVP absentes 
 mkproj "$P"; rm "$P/docs/07-securite.md"
 expect "document manquant" 1 "docs/07-securite.md manquant" -- run
 
+mkproj "$P"; rm "$P/docs/14-deploiement.md"
+expect "guide de déploiement manquant" 1 "docs/14-deploiement.md manquant" -- run
+
+mkproj "$P"; printf '# 14\n\n## Livrable\n\nImage.\n' > "$P/docs/14-deploiement.md"
+expect "docs/14 sans cible de déploiement" 1 "section « ## Cible » absente" -- run
+
+mkproj "$P"; rm "$P/.claude/scripts/autopilote.sh"
+expect "script d'autopilote manquant" 1 "autopilote\.sh manquant" -- run
+
+mkproj "$P"; edit_file "$P/docs/11-paliers.md" 's/^## Palier 2 — Livraison/## Palier 2 — Mise en forme/'
+expect "pas de palier de livraison" 1 "aucun palier « ## Palier N — Livraison »" -- run
+
+mkproj "$P"; edit_file "$P/docs/11-paliers.md" 's/just release-check/just build/'
+expect "palier de livraison sans release-check" 1 "validé par la cible release-check" -- run
+
 mkproj "$P"; printf '# Sans frontmatter\n' > "$P/.claude/skills/add-feature/SKILL.md"
 expect "skill add-feature sans frontmatter" 1 "add-feature/SKILL.md : frontmatter" -- run
 

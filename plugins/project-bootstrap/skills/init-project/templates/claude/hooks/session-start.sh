@@ -19,6 +19,14 @@ blocages=$(awk '
   END { print n + 0 }
 ' PLAN.md)
 
+decisions=$(awk '
+  { sub(/\r$/, "") }
+  /^## Décisions à confirmer/ { dans = 1; next }
+  /^## / { dans = 0 }
+  dans && /^- / { n++ }
+  END { print n + 0 }
+' PLAN.md)
+
 echo "État du projet (hook session-start) :"
 echo "- Palier courant : $courant"
 if [ "$blocages" -gt 0 ]; then
@@ -26,6 +34,7 @@ if [ "$blocages" -gt 0 ]; then
 else
   echo "- Aucun blocage ouvert."
 fi
+[ "$decisions" -gt 0 ] && echo "- $decisions décision(s) mineure(s) prise(s) seul, à faire confirmer par l'utilisateur au prochain compte rendu (PLAN.md, « Décisions à confirmer »)."
 
 if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   attente=""
