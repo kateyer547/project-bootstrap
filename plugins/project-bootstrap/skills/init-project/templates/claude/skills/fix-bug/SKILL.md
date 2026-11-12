@@ -31,6 +31,7 @@ Applique la stratégie de branches de `build-app` (section 3) avec une branche `
 1. Lance le subagent `tier-reviewer` sur la plage de commits du correctif (`{{BRANCHE_PRINCIPALE}}..HEAD`). Corrige les points bloquants et majeurs.
 2. Ajoute une ligne au journal de `PLAN.md` : date, `fix`, résumé, cause, test ajouté.
 3. Termine selon la stratégie de branches, puis présente un compte rendu court : cause, correction, test ajouté, règle de spécification ajoutée le cas échéant.
+4. Si une version a déjà été livrée (tag `v*`), propose une version corrective : `{{CMD_RELEASE_CHECK}}`, version de correctif, `CHANGELOG.md` et tag selon la section 6 de `build-app`. Tu ne déploies pas : l'utilisateur déploie.
 
 ## Règles
 

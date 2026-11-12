@@ -9,8 +9,9 @@ secrets/
 # Notes de cadrage en cours (supprimées à la fin du cadrage)
 .bootstrap/
 
-# Réglages personnels de Claude Code
+# Réglages personnels de Claude Code et journaux de l'autopilote
 .claude/settings.local.json
+.autopilote/
 
 # Systèmes et éditeurs
 .DS_Store

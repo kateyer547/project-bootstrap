@@ -99,9 +99,11 @@ EOF
 )
 start() { CLAUDE_PROJECT_DIR="$P" bash "$H/session-start.sh"; }
 expect "session-start : palier courant et palier en attente de fusion" 0 \
-  "Palier courant : Palier 2 — Données \(point d'arrêt\)" "Aucun blocage" "en attente de fusion : 1" "dernier tag de palier : tier-0" -- start
+  "Palier courant : Palier 2 — Données \(point d'arrêt\)" "Aucun blocage" "en attente de fusion : 1" "dernier tag de palier : tier-0" "!décision" -- start
 (cd "$P" && git tag tier-1)
 expect "session-start : plus d'attente une fois le tag posé" 0 "!en attente de fusion" "dernier tag de palier : tier-1" -- start
+printf '\n## Décisions à confirmer\n\n- 2026-11-12 · palier 2 · tri par défaut → date décroissante (alternative : nom)\n' >> "$P/PLAN.md"
+expect "session-start : décisions mineures à confirmer signalées" 0 "1 décision\(s\) mineure\(s\)" -- start
 printf '\n## Blocages\n\n- `just check` échoue sur la migration 3 : quelle stratégie ?\n' >> "$P/PLAN.md"
 edit_file "$P/PLAN.md" '/^## Journal/d'
 expect "session-start : blocage ouvert signalé" 0 "BLOCAGE ouvert" -- start

@@ -124,7 +124,7 @@ Présente le résultat sous forme de diagramme Mermaid `erDiagram`.
 7. Traçabilité : journal d'audit des actions sensibles.
 8. Contrôles automatisés : analyse des dépendances, SAST, scan des images de conteneurs.
 
-## K. Étapes de réalisation et validation → `docs/11-paliers.md`, `PLAN.md`, `docs/02-specifications-fonctionnelles.md`
+## K. Étapes de réalisation, validation et livraison → `docs/11-paliers.md`, `PLAN.md`, `docs/02-specifications-fonctionnelles.md`, `docs/14-deploiement.md`
 
 Commence par consolider les **exigences non fonctionnelles** `ENF-xx` exprimées dans les blocs précédents : contraintes et normes (A7), accessibilité et compatibilité (B6), volumétrie et utilisateurs simultanés (D3), RPO / RTO (D8), performance (F10), sécurité (G), disponibilité. Pour chacune : une cible mesurable et sa méthode de vérification (commande, test, mesure, ou contrôle manuel décrit). Relance toute exigence sans chiffre (« rapide », « disponible »). Elles vont dans la section « Exigences non fonctionnelles » de `docs/02`.
 
@@ -138,7 +138,8 @@ Propose ensuite un découpage à partir de tout ce qui précède. Base de dépar
 | 4 à n | Fonctionnalités MVP par lots cohérents (un lot = un ensemble de `F-xx` liés) |
 | n+1 | Interface utilisateur et parcours E2E (si front) |
 | n+2 | Durcissement : sécurité, performance, observabilité, gestion d'erreurs |
-| n+3 | V2 et suivantes |
+| n+3 | Livraison (toujours présent, point d'arrêt) : cibles `release` et `release-check`, artefact versionné, configuration de production d'exemple, `CHANGELOG.md`, guide `docs/14-deploiement.md` complété |
+| n+4 | V2 et suivantes : chaque palier relance `release-check` et produit une nouvelle version |
 
 Pour chaque palier, fais préciser :
 
@@ -153,12 +154,19 @@ Puis, pour l'ensemble du développement :
 6. Niveau d'autonomie de l'agent :
    - arrêt après chaque palier (Recommandé pour un premier projet) ;
    - arrêt uniquement aux paliers marqués comme points d'arrêt ;
-   - autonomie complète jusqu'au dernier palier, arrêt seulement en cas de blocage.
+   - autonomie complète jusqu'à la livraison, arrêt seulement en cas de blocage ou de décision bloquante (à combiner avec `.claude/scripts/autopilote.sh` dans un environnement isolé pour enchaîner les sessions sans intervention).
+
+   Dans tous les cas, l'agent prend seul les décisions mineures non spécifiées (libellé, tri, détail technique) et les note dans « Décisions à confirmer » de `PLAN.md` ; il s'arrête sur les décisions bloquantes (fonctionnel, sécurité, données, architecture).
 7. Nombre maximal de tentatives de correction avant arrêt (3 par défaut).
 8. Branche principale (`main` par défaut) et sa protection : pull request obligatoire ou non. Puis les branches pendant le développement (si une pull request est obligatoire, recommande la deuxième option) :
    - une branche par palier, fusionnée localement par l'agent dans la branche principale à la clôture du palier (Recommandé) ;
    - une branche par palier poussée sur la forge en pull / merge request, fusionnée par l'utilisateur ;
    - travail direct sur une branche de développement unique, sans fusion par l'agent.
-9. Environnements et actions interdits à l'agent (par défaut : aucun accès à la production, pas de `git push --force`, pas de suppression de données hors environnement local).
+9. Environnements et actions interdits à l'agent (par défaut : aucun déploiement ni publication, aucun accès à la production, pas de `git push --force`, pas de suppression de données hors environnement local).
+10. Livraison → `docs/14-deploiement.md`. L'utilisateur déploie lui-même ; ces réponses servent à produire un artefact et un guide qui correspondent exactement à sa façon de déployer :
+    - cible : hébergement, système, mode d'exécution (Docker Compose, service systemd, PaaS…), base de production, exposition (reverse proxy, TLS, domaine), environnements (recette, production) ;
+    - artefact : image Docker (Recommandé si la cible exécute des conteneurs) / archive / binaire / paquet ;
+    - configuration de production d'exemple livrée avec l'artefact (`compose.prod.yml`, fichier d'unité systemd…) ;
+    - première version (`1.0.0` pour le MVP par défaut).
 
-Vérifie avant de valider : chaque `F-xx` du MVP et chaque `ENF-xx` apparaît dans au moins un palier, et chaque palier a au moins une commande de validation. Les fonctionnalités V2 ou « plus tard » peuvent rester hors paliers.
+Vérifie avant de valider : chaque `F-xx` du MVP et chaque `ENF-xx` apparaît dans au moins un palier, chaque palier a au moins une commande de validation, et le dernier palier du MVP est « Livraison », validé par la cible `release-check`. Les fonctionnalités V2 ou « plus tard » peuvent rester hors paliers.

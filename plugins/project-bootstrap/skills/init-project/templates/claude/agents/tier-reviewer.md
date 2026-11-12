@@ -26,6 +26,13 @@ Le numéro N du palier à relire, ou une plage de commits `<début>..<fin>` pour
 - Le code respecte l'architecture de `docs/06-architecture.md` (sens des dépendances entre couches, format des erreurs, nommage des routes).
 - Pour les paliers d'interface : chaque écran livré respecte sa maquette de `design/` (structure, libellés, états vide / chargement / erreur, thème). Si Playwright est disponible, capture l'écran réel et la maquette à 390 px et 1280 px de large et compare-les.
 - Le schéma de base correspond à `docs/05-modele-donnees.md` et passe par des migrations versionnées.
+- Les lignes ajoutées à « Décisions à confirmer » de `PLAN.md` depuis `tier-<N-1>` sont réellement mineures (section 5 de build-app) : une décision qui touche le fonctionnel, la sécurité, les données ou l'architecture est un problème « bloquant », à remonter à l'utilisateur.
+
+**Livraison** (palier « Livraison » et paliers suivants)
+- `release-check` construit l'artefact de production, le démarre avec la configuration de production d'exemple sur une base vide, applique les migrations (et la mise à jour depuis la version précédente si elle existe), lance des tests de fumée qui échoueraient réellement si l'application ne répondait pas, puis nettoie.
+- `docs/14-deploiement.md` ne contient plus « Rédigé au palier de livraison. » ; chaque commande du guide correspond à ce que fait `release-check` ou est marquée comme à faire par l'utilisateur ; le retour arrière est décrit.
+- Chaque variable lue par le code figure dans `.env.example`, sans vraie valeur ; `CHANGELOG.md` signale migrations et nouvelles variables ; la version est la même dans le manifeste, `CHANGELOG.md` et `docs/14`.
+- Aucune commande de déploiement ou de publication n'a été lancée ni ajoutée au lanceur de tâches (push d'image, connexion à un serveur, push de tag).
 
 **Intégrité des tests**
 - Aucun test supprimé, désactivé ou affaibli depuis `tier-<N-1>` (cherche `skip`, `ignore`, `only`, `#[ignore]`, `[Fact(Skip`, `markTestSkipped`, assertions retirées).

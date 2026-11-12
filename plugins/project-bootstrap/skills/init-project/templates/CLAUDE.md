@@ -27,6 +27,8 @@ Toutes les commandes passent par le lanceur de tâches **{{LANCEUR}}** (`{{FICHI
 | Build | `{{CMD_BUILD}}` |
 | Nouvelle migration | `{{CMD_MIGRATION_ADD}}` |
 | Appliquer les migrations | `{{CMD_MIGRATION_APPLY}}` |
+| Construire l'artefact de livraison | `{{CMD_RELEASE}}` |
+| **Vérifier la livraison** (artefact démarré, migrations, tests de fumée) | `{{CMD_RELEASE_CHECK}}` |
 
 <!-- AIDE : chaque commande est une cible du lanceur (ex. `just test`). `check` enchaîne au minimum le formatage en mode vérification, le lint, les tests unitaires et le build, et s'arrête au premier échec avec un code non nul. La commande d'installation active aussi le hook git : `git config core.hooksPath .githooks`. -->
 
@@ -50,6 +52,7 @@ Lis uniquement ce qui est utile à la tâche en cours :
 - `docs/05-modele-donnees.md` : entités, relations, contraintes
 - `docs/06-architecture.md` : couches, contrat d'API, gestion des erreurs
 - `docs/11-paliers.md` : étapes de réalisation et commandes de validation
+- `docs/14-deploiement.md` : cible de déploiement, artefact livré, guide de déploiement pour l'utilisateur
 - `docs/adr/` : décisions d'architecture et leurs raisons
 
 ## Méthode de travail
@@ -58,12 +61,14 @@ Lis uniquement ce qui est utile à la tâche en cours :
 - Un bug signalé passe par le skill **fix-bug** (test qui reproduit d'abord), une fonctionnalité absente de `docs/02` par le skill **add-feature** (spécification et palier avant tout code).
 - Une tâche n'est terminée que lorsque `{{CMD_CHECK}}` et les commandes de validation passent. Le hook git `pre-commit` lance `{{CMD_CHECK}}` : un commit refusé se corrige, il ne se contourne pas.
 - Toute décision qui modifie la stack, le modèle de données ou l'architecture passe par un nouvel ADR, validé par l'utilisateur avant d'être appliqué.
-- En cas d'ambiguïté dans la spécification : s'arrêter et demander, ne pas inventer.
+- Point non tranché par la spécification : décision bloquante (fonctionnel, sécurité, données, architecture) → s'arrêter et demander ; décision mineure (libellé, tri, détail technique) → choisir l'option la plus prudente, la noter dans « Décisions à confirmer » de `PLAN.md` et continuer (build-app, section 5).
+- L'application est terminée quand une livraison passe `{{CMD_RELEASE_CHECK}}` et que `docs/14-deploiement.md` est complet. Le déploiement est fait par l'utilisateur.
 
 ## Interdits
 
 - Modifier ou supprimer un test, désactiver une règle de lint ou marquer un test comme ignoré pour faire passer une validation.
 - Écrire un secret en clair ailleurs que dans un fichier `.env` local non versionné.
+- Déployer ou publier : connexion à un serveur, push d'image ou de paquet vers un registre, push de tag de version. L'agent livre, l'utilisateur déploie.
 - Agir sur les environnements : {{ENVS_INTERDITS}}.
 - `git push --force`, réécriture de l'historique de la branche principale, `--no-verify` sur un commit ou un push.
 - Ajouter une dépendance majeure sans la justifier dans `PLAN.md`.

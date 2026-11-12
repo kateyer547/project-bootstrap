@@ -1,6 +1,6 @@
 # project-bootstrap
 
-Transforme une idée de projet en un dépôt prêt à être développé par un agent, palier par palier, avec une validation automatisée à chaque étape.
+Transforme une idée de projet en un dépôt prêt à être développé par un agent, palier par palier, avec une validation automatisée à chaque étape, jusqu'à une livraison prête à déployer. Le déploiement reste ton travail : l'agent te livre un artefact vérifié et le guide pour le mettre en service.
 
 ## Installation
 
@@ -28,7 +28,7 @@ Blocs couverts :
 | E. Modélisation | SGBD, entités, relations, conventions, index, migrations (diagramme `erDiagram`) |
 | F. Architecture | style, couches, API, erreurs, configuration, observabilité, architecture front, intégrations externes (`13-integrations.md`) |
 | G. Sécurité | authentification, autorisation, protections, secrets, audit |
-| K. Paliers | exigences non fonctionnelles `ENF-xx` chiffrées, découpage, commandes de validation, points d'arrêt, autonomie de l'agent, branche principale et stratégie de branches |
+| K. Paliers et livraison | exigences non fonctionnelles `ENF-xx` chiffrées, découpage, commandes de validation, points d'arrêt, autonomie de l'agent, branche principale et stratégie de branches, cible de déploiement et forme de l'artefact |
 | L. Identité visuelle | ambiance, couleurs, police, thèmes, navigation, références, puis **maquettes cliquables** |
 
 **Maquettes de l'application** (si elle a une interface) : juste après le fonctionnel, Claude construit dans `design/` un prototype cliquable façon Figma. `design/index.html` affiche tous les écrans côte à côte, en mobile ou ordinateur, en clair ou sombre, avec les fonctionnalités annotées ; chaque écran s'ouvre en plein écran avec ses états (normal, vide, chargement, erreur) et ses liens vers les écrans suivants. Tu itères jusqu'à ce que le rendu te plaise, et la spec est mise à jour en même temps. Un exemple complet est dans `skills/init-project/examples/maquettes-canettes/`.
@@ -46,6 +46,7 @@ docs/
   00-index.md … 11-paliers.md      la spécification complète
   12-maquettes.md                  écrans, parcours, identité visuelle (si interface)
   13-integrations.md               services externes, bouchons de test, pannes (si besoin)
+  14-deploiement.md                cible, artefact et guide de déploiement (complété à la livraison)
   adr/                             une décision structurante par fichier
 design/                            maquettes cliquables (index.html = tableau des écrans)
 .claude/
@@ -56,6 +57,7 @@ design/                            maquettes cliquables (index.html = tableau de
   skills/add-feature/SKILL.md      l'ajout d'une fonctionnalité : spécification et palier avant le code
   agents/tier-reviewer.md          relecteur indépendant de chaque palier ou correctif
   scripts/verify-spec.sh           copie du script de vérification, relancée par add-feature
+  scripts/autopilote.sh            enchaîne les sessions de build-app sans intervention
 ```
 
 **Garde-fous réels**, appliqués par Claude Code à chaque action et pas seulement écrits dans les consignes :
@@ -65,7 +67,7 @@ design/                            maquettes cliquables (index.html = tableau de
 | `hooks/guard-tests.sh` | refuse l'ajout de `skip`, `only`, `ignore`… dans un fichier de test |
 | `hooks/session-start.sh` | à chaque ouverture de session, rappelle le palier courant, les blocages ouverts, un palier en attente de fusion, la branche et le dernier tag |
 | `hooks/format-file.sh` | formate uniquement le fichier qui vient d'être modifié |
-| règles `deny` | interdisent `--no-verify`, `push --force`, `reset --hard`, `branch -D` |
+| règles `deny` | interdisent `--no-verify`, `push --force`, `reset --hard`, `branch -D`, et le déploiement ou la publication (`ssh`, `scp`, `docker push`, `kubectl`, push de tags…) |
 | règles `ask` | demandent ton accord avant toute modification de `.claude/`, de `.githooks/` ou des fichiers de configuration qualité |
 
 Ce sont des filets, pas des barrières absolues : une commande shell écrite autrement peut passer à travers. `tier-reviewer` contrôle aussi ces contournements à chaque palier.
@@ -93,6 +95,27 @@ Pour chaque palier, `build-app` :
 9. fusionne la branche du palier dans la branche principale (ou ouvre une pull request que tu fusionnes, selon la stratégie choisie) et pose le tag `tier-N`.
 
 Une nouvelle session reprend exactement là où la précédente s'est arrêtée, grâce à `PLAN.md`, aux tags et au hook `session-start.sh`.
+
+**Décisions en cours de route.** Pour avancer sans toi, l'agent distingue :
+- les décisions **bloquantes** (fonctionnalité, sécurité, données, architecture, tout ce qui serait coûteux à défaire après déploiement) : il s'arrête et te demande ;
+- les décisions **mineures** (libellé, tri, détail technique) : il choisit l'option la plus prudente, la note dans « Décisions à confirmer » de `PLAN.md` et continue. Tu relis la liste à chaque compte rendu.
+
+**Livraison.** Le dernier palier du MVP, « Livraison », produit une version que tu déploies toi-même :
+- un artefact versionné (image Docker, archive…) construit par la cible `release`, et un tag `vX.Y.Z` que tu publies ;
+- une configuration de production d'exemple et un `.env.example` complet ;
+- la cible `release-check`, qui démarre l'artefact en local dans des conditions proches de la production, applique les migrations, lance des tests de fumée et échoue au moindre problème ;
+- `CHANGELOG.md` et le guide `docs/14-deploiement.md` : première installation, mise à jour, vérification, retour arrière ;
+- un compte rendu de livraison, avec les décisions à confirmer.
+
+L'agent ne se connecte jamais à un serveur et ne publie rien. Chaque palier ajouté ensuite produit une nouvelle version de la même façon.
+
+**Autopilote.** Pour enchaîner les paliers sans intervention, lance dans un environnement isolé (conteneur, VM) :
+
+```
+bash .claude/scripts/autopilote.sh
+```
+
+Le script lance une session Claude Code non interactive par palier et s'arrête dès qu'il faut ton intervention : blocage, point d'arrêt, livraison à relire, pull request à fusionner, ou session sans commit. Les commandes absentes de `allow` dans `.claude/settings.json` sont refusées, et l'agent les consigne comme blocage. Journaux : `.autopilote/`.
 
 ## Bugs et nouvelles fonctionnalités
 
@@ -122,6 +145,8 @@ Relance `/project-bootstrap:init-project` dans un projet déjà cadré : Claude 
 
 ## Conseils
 
-- Lance le développement dans un environnement isolé (conteneur, VM ou ton serveur d'agents) si tu choisis l'autonomie complète.
-- Garde des points d'arrêt humains au moins après le socle, après le modèle de données et avant le déploiement.
+- Lance le développement dans un environnement isolé (conteneur, VM ou ton serveur d'agents) si tu choisis l'autonomie complète ou l'autopilote.
+- Plus la spécification est précise (critères d'acceptation « Étant donné… quand… alors… », règles métier, cas limites), moins l'agent a de décisions à prendre seul : c'est le premier levier d'autonomie.
+- Garde des points d'arrêt humains au moins après le socle et après le modèle de données ; la livraison en est toujours un.
+- Avant de déployer, relis les « Décisions à confirmer » et le `CHANGELOG.md`, puis suis `docs/14-deploiement.md`.
 - Quand l'agent se trompe de façon récurrente, corrige le `CLAUDE.md` ou les tests plutôt que de répéter la consigne.

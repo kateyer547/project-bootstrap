@@ -16,6 +16,7 @@ Cadrage réalisé le {{DATE_DU_JOUR}}. Toute évolution d'une décision passe pa
 | [11 Paliers](11-paliers.md) | Étapes de réalisation et validation |
 | [12 Maquettes](12-maquettes.md) | Écrans, parcours, identité visuelle (`design/`) |
 | [13 Intégrations](13-integrations.md) | Services externes, bouchons de test, comportement en panne |
+| [14 Déploiement](14-deploiement.md) | Cible, artefact livré, guide de déploiement (fait par l'utilisateur) |
 | [ADR](adr/) | Décisions d'architecture |
 
 <!-- AIDE : supprime la ligne « 12 Maquettes » si l'application n'a pas d'interface, et la ligne « 13 Intégrations » si elle n'utilise aucun service externe. -->

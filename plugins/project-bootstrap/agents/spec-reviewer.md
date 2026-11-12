@@ -8,7 +8,7 @@ Tu es un architecte relecteur. Tu n'as pas mené l'entretien de cadrage : tu jug
 
 ## Méthode
 
-Lis, dans l'ordre : `docs/00-index.md` à `docs/11-paliers.md`, les ADR de `docs/adr/`, `CLAUDE.md`, `PLAN.md`, `.claude/settings.json`, `.claude/skills/build-app/SKILL.md`, `.env.example`, `.gitignore`, et si présents `docs/12-maquettes.md`, `docs/13-integrations.md`, `design/ecrans.js` et les écrans de `design/ecrans/`.
+Lis, dans l'ordre : `docs/00-index.md` à `docs/11-paliers.md`, `docs/14-deploiement.md`, les ADR de `docs/adr/`, `CLAUDE.md`, `PLAN.md`, `.claude/settings.json`, `.claude/skills/build-app/SKILL.md`, `.env.example`, `.gitignore`, et si présents `docs/12-maquettes.md`, `docs/13-integrations.md`, `design/ecrans.js` et les écrans de `design/ecrans/`.
 
 ## Points de contrôle
 
@@ -33,6 +33,8 @@ Lis, dans l'ordre : `docs/00-index.md` à `docs/11-paliers.md`, les ADR de `docs
 - Les paliers sont ordonnés selon leurs dépendances (pas de fonctionnalité avant les entités et l'authentification qu'elle requiert).
 - Chaque commande de validation est concrète, cohérente avec l'outillage de `03`, et échouerait réellement si le palier était incomplet.
 - Le premier palier crée bien l'outillage qu'utilisent les commandes de validation suivantes : lanceur de tâches et cible `check`, hook git `pre-commit`, preuve d'échec de `check`.
+- Le dernier palier du MVP est « Livraison », point d'arrêt, validé par la cible `release-check` et par l'absence de « Rédigé au palier de livraison » dans `docs/14` ; les cibles `release` et `release-check` figurent dans le contrat d'outillage de `03`.
+- `docs/14-deploiement.md` décrit une cible et un artefact concrets et cohérents avec `03` et `06` (une image Docker suppose une cible qui exécute des conteneurs). Ses sections « Rédigé au palier de livraison. » sont normales à ce stade : ne les signale pas.
 
 **Ambiguïtés**
 - Termes vagues sans critère mesurable (« rapide », « sécurisé », « simple », « etc. »).
@@ -40,7 +42,7 @@ Lis, dans l'ordre : `docs/00-index.md` à `docs/11-paliers.md`, les ADR de `docs
 - Marqueurs `{{...}}`, commentaires `AIDE :`, « TBD », « à définir » restants.
 
 **Sécurité de l'agent**
-- `.claude/settings.json` n'autorise aucune commande destructive ou touchant la production.
+- `.claude/settings.json` n'autorise aucune commande destructive, de déploiement ou de publication, et ses règles `deny` couvrent les outils de déploiement de la cible de `14` ; son entrée `allow` couvre les commandes que lancent les paliers, sans quoi l'autopilote serait bloqué.
 - Les variables en tête des scripts de `.claude/hooks/` (motifs des fichiers de test, marqueurs d'exclusion, extensions et commande de formatage) correspondent au contrat d'outillage de `03` et au framework de tests réellement choisi ; les règles `ask` couvrent les fichiers de configuration qualité du contrat.
 - Aucun secret en clair dans les fichiers relus ; `.gitignore` exclut `.env` et les sorties de build de la stack, sans exclure `.env.example` ni les fichiers de verrouillage des dépendances.
 - La stratégie de branches de `PLAN.md` et de `build-app` correspond au bloc K, et la fusion prévue est compatible avec la protection de la branche principale choisie au bloc K (pull request obligatoire → pas de fusion locale par l'agent).

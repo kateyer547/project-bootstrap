@@ -32,7 +32,7 @@ Source unique des commandes du projet : `CLAUDE.md`, la CI, les paliers (`11`), 
 | `check` | Tout vérifier avant un commit | {{ENCHAINEMENT_CHECK}} | une des étapes échoue |
 | {{CIBLE}} | {{ROLE_CIBLE}} | `{{COMMANDE_CIBLE}}` | {{CONDITION_ECHEC}} |
 
-<!-- AIDE : une ligne par cible (install, check, format, lint, test, test-integration, test-e2e, build, migrations…). Les cibles de vérification sont en mode contrôle : elles ne modifient rien et renvoient un code non nul en cas de problème (ex. `prettier --check`, `dotnet format --verify-no-changes`, `ruff format --check`). Le palier 1 le prouve (voir build-app, « Preuve d'échec »). -->
+<!-- AIDE : une ligne par cible (install, check, format, lint, test, test-integration, test-e2e, build, migrations, release, release-check…). `release` construit l'artefact de livraison décrit dans docs/14 ; `release-check` le démarre en conditions proches de la production, applique les migrations, lance les tests de fumée et échoue au moindre problème (créées au palier « Livraison »). Les cibles de vérification sont en mode contrôle : elles ne modifient rien et renvoient un code non nul en cas de problème (ex. `prettier --check`, `dotnet format --verify-no-changes`, `ruff format --check`). Le palier 1 le prouve (voir build-app, « Preuve d'échec »). -->
 
 | Élément | Valeur |
 |---|---|
