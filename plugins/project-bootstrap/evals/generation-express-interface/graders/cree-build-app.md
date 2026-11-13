@@ -1,4 +1,4 @@
 ---
 type: file_exists
-path: ".claude/skills/build-app/SKILL.md"
+path: "claude-config/skills/build-app/SKILL.md"
 ---

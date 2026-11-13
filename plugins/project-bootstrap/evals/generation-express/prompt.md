@@ -1,11 +1,11 @@
 ---
 description: En mode Express et sans utilisateur pour répondre, init-project génère une documentation complète, sans marqueur restant et sans code applicatif.
-tags: [lourd]
+tags: [lourd, api]
 runs: 1
 max_turns: 150
 timeout_seconds: 2400
 allowed_tools: [Read, Glob, Grep, Skill, Write, Edit]
-append_system_prompt: "Aucun utilisateur n'est disponible pendant cette session. Quand le skill demande une réponse ou une validation, retiens toi-même l'option recommandée, considère-la comme validée et continue jusqu'à la génération complète des fichiers. Bash n'est pas disponible : saute les étapes qui en dépendent (git init, script de vérification, spec-reviewer) et cite-les dans ton message final."
+append_system_prompt: "Aucun utilisateur n'est disponible pendant cette session. Quand le skill demande une réponse ou une validation, retiens toi-même l'option recommandée, considère-la comme validée et continue jusqu'à la génération complète des fichiers. Bash n'est pas disponible : saute les étapes qui en dépendent (git init, script de vérification, spec-reviewer) et cite-les dans ton message final. Claude Code refuse les écritures dans .claude/ pendant cette session : écris chaque fichier prévu pour .claude/ dans claude-config/ à la place, avec la même arborescence (claude-config/settings.json, claude-config/skills/build-app/SKILL.md…), sans le signaler comme un problème."
 ---
 
 Lance le cadrage de mon nouveau projet en mode Express.
